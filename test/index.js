@@ -2,30 +2,26 @@
 
 const rayo = require('../bin/rayo');
 
-rayo.get('/home', (req, res) => {
-  res.send({ fixed: 'home' });
-});
+const middlewareOne = (req, res, next) => {
+  console.log('ONE');
+  next();
+};
 
-rayo.get('/', (req, res) => {
+const middlewareTwo = (req, res, next) => {
+  console.log('TWO');
+  next();
+};
+
+const middlewareThree = (req, res) => {
   res.end(JSON.stringify({ hello: 'world' }));
-});
+};
 
-rayo.route('GET', '/:endpoint/:id/:action', (req, res) => {
-  res.send(req.params);
-});
+rayo({ port: 9000 })
+  .through(middlewareOne, middlewareTwo)
+  .get('/', middlewareThree)
+  .start(() => {
+    console.log('Up!');
+  });
 
-rayo.route(
-  'GET',
-  '/:endpoint/:id?',
-  (req, res, next) => {
-    console.log('Going to next...');
-    next();
-  },
-  (req, res) => {
-    res.send({ params: req.params });
-  }
-);
-
-rayo.start({ port: 9000 }, () => {
-  console.log('Up!');
-});
+// router.route('/on').get(middlewareThree);
+// router.route('/off').through(middlewareOne, middlewareTwo).get(middlewareThree);

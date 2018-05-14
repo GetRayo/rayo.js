@@ -49,6 +49,7 @@
     "test": "npm run eslint && npm run unit && nyc report --reporter=text",
     "unit": "nyc --reporter=lcov _mocha --timeout 250 ./test/unit/index.js",
     "start": "nodemon -r dotenv/config --inspect",
+    "start:test": "nodemon test/index.js --inspect",
     "eslint": "eslint --quiet .",
     "eslint:fix": "eslint --quiet --fix .",
     "start:opt": "node -r dotenv/config --trace_opt --allow-natives-syntax app/index.js",
@@ -61,7 +62,7 @@
   },
   "nodemonConfig": {
     "ignore": [
-      "test/*"
+
     ],
     "delay": "100"
   }

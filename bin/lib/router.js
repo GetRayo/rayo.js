@@ -1,3 +1,4 @@
+const { METHODS } = require('http');
 const { parse } = require('matchit');
 
 class Handler {
@@ -8,31 +9,25 @@ class Handler {
 
 module.exports = class Router {
   constructor() {
-    this.routes = [];
-    this.middleware = {};
+    this.rt = [];
+    this.mw = {};
+    METHODS.forEach((method) => {
+      this[method.toLowerCase()] = this.route.bind(this, method);
+    });
   }
 
   /**
-   * The "stack" (this.routes) essentially provides middleware functionality.
-   * By passing back a stack-move-forward function, such as next(),
-   * multiple middleware can be applied to the same route/path.
-   *
    * @param method      HTTP method/verb
    * @param url         URI/path being mapped as a route
    * @param functions   Middleware functions
    * @returns {module.Router}
    */
   route(method, url, ...functions) {
-    if (!this.routes[method]) {
-      this.routes[method] = [];
-    }
+    this.rt[method] = this.rt[method] || [];
+    this.mw[method] = this.mw[method] || {};
+    this.rt[method].push(parse(url));
+    this.mw[method][url] = functions.map((fn) => new Handler(fn));
 
-    if (!this.middleware[method]) {
-      this.middleware[method] = {};
-    }
-
-    this.routes[method].push(parse(url));
-    this.middleware[method][url] = functions.map((fn) => new Handler(fn));
     return this;
   }
 };

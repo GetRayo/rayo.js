@@ -14,10 +14,28 @@ $> npm i rayo
 ```js
 const rayo = require('rayo');
 
-rayo
+rayo({ port: 5050 })
   .get('/hello/:user', (req, res) => res.end(`Hello ${req.params.user}`))
-  .start({ port: 5050 });
+  .start();
 ```
+
+## How does it compare?
+
+Here are some of the top contenders. Please note that these results are only meant as raw performance indicators. Your application's logic, which is what makes most applications slow, may not see great performance gains from using one framework or another.
+
+#### Node V.10.1.0
+ &nbsp; | Rayo | Polka | Fastify | Express
+------------ | ------------ | ------------ | ------------- | -------------
+Requests (rqs) | 39465.6 | 38454.4 | 38166.4 | 26075.2
+Latency (ms) | 2.46 | 2.53 | 2.55 | 3.74
+Throughput (Mb) | 4.4375 | 4.2625 | 5.975 | 4.0625
+
+#### Node V.8.11.1
+ &nbsp; | Rayo | Polka | Fastify | Express
+------------ | ------------ | ------------ | ------------- | -------------
+Requests (rqs) | 33304 | 32068.8 | 31449.6 | 19493.6
+Latency (ms) | 2.93 | 3.04 | 3.1 | 5.02
+Throughput (Mb) | 3.7125 | 3.5875 | 4.925 | 3.0625
 
 
 ## Contribute

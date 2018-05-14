@@ -6,18 +6,25 @@ const Router = require('./lib/router');
 const { send } = require('./lib/response');
 
 class Rayo extends Router {
-  constructor() {
+  constructor(options) {
     super();
+    ({
+      port: this.port,
+      hostname: this.hostname,
+      server: this.server = http.createServer()
+    } = options);
     this.runner = this.runner.bind(this);
-    http.METHODS.forEach((method) => {
-      this[method.toLowerCase()] = this.route.bind(this, method);
-    });
+  }
+
+  through(...functions) {
+    this.route('*', '*', ...functions);
+    return this;
   }
 
   stack(req, res, stack, error = null, statusCode = null) {
     const next = stack.shift();
     if (!next) {
-      throw new Error('Nothing left in the stack.');
+      throw new Error('Your stack is empty.');
     }
 
     if (error) {
@@ -27,22 +34,17 @@ class Rayo extends Router {
     return next.run(req, res, this.stack.bind(this, req, res, stack));
   }
 
-  /**
-   * Start Rayo on the specified port.
-   * @param options
-   * @param callback (optional)
-   * @returns void
-   */
-  start(options = {}, callback = function cb() {}) {
-    const { port, hostname, server = http.createServer() } = options;
-    server.on('request', this.runner);
-    server.listen(port, hostname, callback);
+  start(callback = function cb() {}) {
+    this.server.on('request', this.runner);
+    this.server.listen(this.port, this.hostname, callback);
+    return this.server;
   }
 
   runner(req, res) {
     res.send = send.bind(res);
     const parsedUrl = parseurl(req);
-    const routes = this.routes[req.method] || [];
+    const routes = this.rt[req.method] || [];
+
     if (!routes.length) {
       return res.send('No routes for this method were found.', 400);
     }
@@ -54,9 +56,10 @@ class Rayo extends Router {
 
     req.params = exec(parsedUrl.pathname, urlMatch);
     req.query = parseQuery(parsedUrl.query);
-    const middleware = this.middleware[req.method][urlMatch[0].old];
+    const through = this.mw['*'] && this.mw['*']['*'] ? this.mw['*']['*'] : [];
+    const middleware = through.concat(this.mw[req.method][urlMatch[0].old]);
     return this.stack.bind(this, req, res, middleware.slice())();
   }
 }
 
-module.exports = new Rayo();
+module.exports = (options = {}) => new Rayo(options);
