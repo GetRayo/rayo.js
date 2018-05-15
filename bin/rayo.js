@@ -1,7 +1,7 @@
 const http = require('http');
 const parseurl = require('parseurl');
 const { exec, match } = require('matchit');
-const { parse: parseQuery } = require('querystring');
+const { parse } = require('querystring');
 const Router = require('./lib/router');
 const { send } = require('./lib/response');
 
@@ -13,7 +13,7 @@ class Rayo extends Router {
       hostname: this.hostname,
       server: this.server = http.createServer()
     } = options);
-    this.runner = this.runner.bind(this);
+    this.dispatch = this.dispatch.bind(this);
   }
 
   through(...functions) {
@@ -34,31 +34,24 @@ class Rayo extends Router {
     return next.run(req, res, this.stack.bind(this, req, res, stack));
   }
 
-  start(callback = function cb() {}) {
-    this.server.on('request', this.runner);
-    this.server.listen(this.port, this.hostname, callback);
-    return this.server;
-  }
-
-  runner(req, res) {
+  dispatch(req, res) {
     res.send = send.bind(res);
-    const parsedUrl = parseurl(req);
-    const routes = this.rt[req.method] || [];
+    const { pathname, query } = parseurl(req);
+    const route = this.fetch(req.method, pathname);
 
-    if (!routes.length) {
-      return res.send('No routes for this method were found.', 400);
-    }
-
-    const urlMatch = match(parsedUrl.pathname, routes);
-    if (!urlMatch.length) {
+    if (!route) {
       return res.send('Page not found.', 404);
     }
 
-    req.params = exec(parsedUrl.pathname, urlMatch);
-    req.query = parseQuery(parsedUrl.query);
-    const through = this.mw['*'] && this.mw['*']['*'] ? this.mw['*']['*'] : [];
-    const middleware = through.concat(this.mw[req.method][urlMatch[0].old]);
-    return this.stack.bind(this, req, res, middleware.slice())();
+    req.params = route.params;
+    req.query = parse(query);
+    return this.stack.bind(this, req, res, route.middleware.slice())();
+  }
+
+  start(callback = function cb() {}) {
+    this.server.on('request', this.dispatch);
+    this.server.listen(this.port, this.hostname, callback);
+    return this.server;
   }
 }
 

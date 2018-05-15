@@ -3,17 +3,17 @@
 const rayo = require('../bin/rayo');
 
 const middlewareOne = (req, res, next) => {
-  console.log('ONE');
+  req.test = 10;
   next();
 };
 
 const middlewareTwo = (req, res, next) => {
-  console.log('TWO');
+  req.test *= 3;
   next();
 };
 
 const middlewareThree = (req, res) => {
-  res.end(JSON.stringify({ hello: 'world' }));
+  res.send({ hello: 'world', test: req.test });
 };
 
 rayo({ port: 9000 })

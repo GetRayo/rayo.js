@@ -1,5 +1,5 @@
 const { METHODS } = require('http');
-const { parse } = require('matchit');
+const { exec, match, parse } = require('matchit');
 
 class Handler {
   constructor(method) {
@@ -9,25 +9,31 @@ class Handler {
 
 module.exports = class Router {
   constructor() {
-    this.rt = [];
-    this.mw = {};
+    this.routes = [];
+    this.middleware = {};
     METHODS.forEach((method) => {
       this[method.toLowerCase()] = this.route.bind(this, method);
     });
   }
 
-  /**
-   * @param method      HTTP method/verb
-   * @param url         URI/path being mapped as a route
-   * @param functions   Middleware functions
-   * @returns {module.Router}
-   */
   route(method, url, ...functions) {
-    this.rt[method] = this.rt[method] || [];
-    this.mw[method] = this.mw[method] || {};
-    this.rt[method].push(parse(url));
-    this.mw[method][url] = functions.map((fn) => new Handler(fn));
+    this.routes[method] = this.routes[method] || [];
+    this.middleware[method] = this.middleware[method] || {};
+    this.routes[method].push(parse(url));
+    this.middleware[method][url] = functions.map((fn) => new Handler(fn));
 
     return this;
+  }
+
+  fetch(method, path) {
+    const url = match(path, this.routes[method] || []);
+    const through =
+      this.middleware['*'] && this.middleware['*']['*'] ? this.middleware['*']['*'] : [];
+    return !url.length
+      ? null
+      : {
+          params: exec(path, url),
+          middleware: through.concat(this.middleware[method][url[0].old])
+        };
   }
 };
