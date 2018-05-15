@@ -61,9 +61,7 @@
     "report:codacy": "cat ./coverage/lcov.info | CODACY_PROJECT_TOKEN=$CODACY_TOKEN codacy-coverage"
   },
   "nodemonConfig": {
-    "ignore": [
-
-    ],
+    "ignore": [],
     "delay": "100"
   }
 }

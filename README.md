@@ -19,6 +19,36 @@ rayo({ port: 5050 })
   .start();
 ```
 
+#### With middleware
+
+```js
+const rayo = require('rayo');
+
+const age = (req, res, next) => {
+  req.age = `Your age is ${req.params.age}`;
+  next();
+};
+
+const name = (req, res, next) => {
+  req.name = `Your name is ${req.params.user}`;
+  next();
+};
+
+rayo({ port: 5050 })
+  .through(age, name)
+  .get('/hello/:user/:age', (req, res) => {
+    res.end(
+      JSON.stringify({
+        age: req.age,
+        name: req.name
+      })
+    );
+  })
+  .start();
+```
+
+
+
 ## How does it compare?
 
 Here are some of the top contenders. Please note that these results are only meant as raw performance indicators. Your application's logic, which is what makes most applications slow, may not see great performance gains from using one framework or another.
