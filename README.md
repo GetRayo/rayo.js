@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/TheRayos/Assets/master/Images/Cover.png" alt="rayo.js" />
+  <img src="https://raw.githubusercontent.com/GetRayo/Assets/master/Images/Cover.png" alt="Rayo" />
 </p>
 
 
@@ -24,14 +24,14 @@ rayo({ port: 5050 })
 ```js
 const rayo = require('rayo');
 
-const age = (req, res, next) => {
+const age = (req, res, step) => {
   req.age = `Your age is ${req.params.age}`;
-  next();
+  step();
 };
 
-const name = (req, res, next) => {
+const name = (req, res, step) => {
   req.name = `Your name is ${req.params.user}`;
-  next();
+  step();
 };
 
 rayo({ port: 5050 })
@@ -51,7 +51,7 @@ rayo({ port: 5050 })
 
 ## How does it compare?
 
-Here are some of the top contenders. Please note that these results are only meant as raw performance indicators. Your application's logic, which is what makes most applications slow, may not see great performance gains from using one framework or another.
+Here are some of the top contenders. Please note that these results are only meant as raw performance indicators. Your application's logic, which is what makes most applications slow, may not see great performance gains from using one framework over another.
 
 #### Node V.8.11.1
  &nbsp;         | Rayo  | Polka   | Fastify | Express
@@ -70,11 +70,11 @@ Throughput (Mb) | 4.4375  | 4.2625  | 5.975   | 4.0625
 
 ## Contribute
 ```
-fork https://github.com/TheRayos/rayo.js
+fork https://github.com/GetRayo/rayo.js
 ```
 
 
 ## License
 
-[MIT](https://github.com/TheRayos/rayo.js/blob/master/LICENSE)
+[MIT](https://github.com/GetRayo/rayo.js/blob/master/LICENSE)
 

@@ -2,23 +2,23 @@
 
 const rayo = require('../bin/rayo');
 
-const middlewareOne = (req, res, next) => {
+const middlewareOne = (req, res, step) => {
   req.test = 10;
-  next();
+  step();
 };
 
-const middlewareTwo = (req, res, next) => {
+const middlewareTwo = (req, res, step) => {
   req.test *= 3;
-  next();
+  step();
 };
 
 const middlewareThree = (req, res) => {
-  res.send({ hello: 'world', test: req.test });
+  res.send({ hello: req.params.friend, test: req.test });
 };
 
 rayo({ port: 9000 })
   .through(middlewareOne, middlewareTwo)
-  .get('/', middlewareThree)
+  .get('/hello/:friend', middlewareThree)
   .start(() => {
     console.log('Up!');
   });

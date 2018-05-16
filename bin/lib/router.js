@@ -1,39 +1,42 @@
 const { METHODS } = require('http');
 const { exec, match, parse } = require('matchit');
 
-class Handler {
-  constructor(method) {
-    this.run = (...args) => method.apply(this, args);
-  }
-}
-
 module.exports = class Router {
   constructor() {
-    this.routes = [];
-    this.middleware = {};
+    this.routes = {};
+    this.mw = {};
+    this.tw = [];
     METHODS.forEach((method) => {
       this[method.toLowerCase()] = this.route.bind(this, method);
     });
   }
 
-  route(method, url, ...functions) {
+  through(...functions) {
+    if (!functions.length) {
+      this.tw = this.mw['*'] && this.mw['*']['*'] ? this.mw['*']['*'] : [];
+    } else {
+      this.route('*', '*', ...functions);
+    }
+
+    return this;
+  }
+
+  route(method, path, ...functions) {
     this.routes[method] = this.routes[method] || [];
-    this.middleware[method] = this.middleware[method] || {};
-    this.routes[method].push(parse(url));
-    this.middleware[method][url] = functions.map((fn) => new Handler(fn));
+    this.mw[method] = this.mw[method] || {};
+    this.routes[method].push(parse(path));
+    this.mw[method][path] = functions.map((fn) => (...args) => fn(...args));
 
     return this;
   }
 
   fetch(method, path) {
     const url = match(path, this.routes[method] || []);
-    const through =
-      this.middleware['*'] && this.middleware['*']['*'] ? this.middleware['*']['*'] : [];
     return !url.length
       ? null
       : {
           params: exec(path, url),
-          middleware: through.concat(this.middleware[method][url[0].old])
+          middleware: this.tw.concat(this.mw[method][url[0].old])
         };
   }
 };

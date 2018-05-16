@@ -1,14 +1,14 @@
 {
   "name": "rayo",
-  "version": "0.5.0",
-  "description": "⚡️⚡️ Lightning fast Nodejs micro framework.",
+  "version": "0.5.1",
+  "description": "⚡️⚡️ Rayo micro-framework for Nodejs.",
   "main": "bin/rayo.js",
   "engines": {
     "node": ">=8.11.1"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/RayoJS/Rayo.git"
+    "url": "https://github.com/GetRayo/rayo.js.git"
   },
   "contributors": [],
   "maintainers": [],
@@ -18,7 +18,7 @@
     "url": "https://github.com/aichholzer"
   },
   "license": "MIT",
-  "homepage": "https://github.com/RayoJS/Rayo",
+  "homepage": "https://github.com/GetRayo/rayo.js",
   "dependencies": {
     "matchit": "^1.0.5",
     "parseurl": "^1.3.2"
@@ -43,7 +43,7 @@
     "test": "test"
   },
   "bugs": {
-    "url": "https://github.com/RayoJS/Rayo/issues"
+    "url": "https://github.com/GetRayo/rayo.js/issues"
   },
   "scripts": {
     "test": "npm run eslint && npm run unit && nyc report --reporter=text",
