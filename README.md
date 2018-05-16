@@ -5,6 +5,8 @@
 
 ## Install
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/GetRayo/rayo.js.svg)](https://greenkeeper.io/)
+
 ```
 $> npm i rayo
 ```
