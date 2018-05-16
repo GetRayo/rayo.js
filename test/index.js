@@ -2,30 +2,32 @@
 
 const rayo = require('../bin/rayo');
 
-rayo.get('/home', (req, res) => {
-  res.send({ fixed: 'home' });
-});
+const middlewareOne = (req, res, step) => {
+  req.age = req.params.age;
+  step();
+};
 
-rayo.get('/', (req, res) => {
-  res.end(JSON.stringify({ hello: 'world' }));
-});
+const middlewareTwo = (req, res, step) => {
+  req.age /= 1.25;
+  step();
+};
 
-rayo.route('GET', '/:endpoint/:id/:action', (req, res) => {
-  res.send(req.params);
-});
+const middlewareThree = (req, res, step) => {
+  req.name = `Great ${req.params.name.toUpperCase()}`;
+  step();
+};
 
-rayo.route(
-  'GET',
-  '/:endpoint/:id?',
-  (req, res, next) => {
-    console.log('Going to next...');
-    next();
-  },
-  (req, res) => {
-    res.send({ params: req.params });
-  }
-);
+const middlewareFour = (req, res) => {
+  res.send({ name: req.name, age: req.age });
+};
 
-rayo.start({ port: 9000 }, () => {
-  console.log('Up!');
-});
+rayo({ port: 9000 })
+  .through(middlewareOne, middlewareTwo)
+  .get('/', (req, res) => res.end('Thunderstruck'))
+  .get('/hello/:name/:age', middlewareThree, middlewareFour)
+  .route('GET', '/more', (req, res) => {
+    res.send({ more: true });
+  })
+  .start((address) => {
+    console.log(`Up on port ${address.port}`);
+  });

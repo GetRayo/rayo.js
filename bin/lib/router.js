@@ -1,38 +1,45 @@
-const { parse } = require('matchit');
-
-class Handler {
-  constructor(method) {
-    this.run = (...args) => method.apply(this, args);
-  }
-}
+const { METHODS } = require('http');
+const { exec, match, parse } = require('matchit');
 
 module.exports = class Router {
   constructor() {
-    this.routes = [];
-    this.middleware = {};
+    this.routes = {};
+    this.mw = {};
+    this.tw = [];
+    this.cache = { urls: {}, queries: {} };
+    METHODS.forEach((method) => {
+      this[method.toLowerCase()] = this.route.bind(this, method);
+    });
   }
 
-  /**
-   * The "stack" (this.routes) essentially provides middleware functionality.
-   * By passing back a stack-move-forward function, such as next(),
-   * multiple middleware can be applied to the same route/path.
-   *
-   * @param method      HTTP method/verb
-   * @param url         URI/path being mapped as a route
-   * @param functions   Middleware functions
-   * @returns {module.Router}
-   */
-  route(method, url, ...functions) {
-    if (!this.routes[method]) {
-      this.routes[method] = [];
+  through(...functions) {
+    if (!functions.length) {
+      this.tw = this.mw['*'] && this.mw['*']['*'] ? this.mw['*']['*'] : [];
+    } else {
+      this.route('*', '*', ...functions);
     }
 
-    if (!this.middleware[method]) {
-      this.middleware[method] = {};
-    }
-
-    this.routes[method].push(parse(url));
-    this.middleware[method][url] = functions.map((fn) => new Handler(fn));
     return this;
+  }
+
+  route(method, path, ...functions) {
+    this.routes[method] = this.routes[method] || [];
+    this.mw[method] = this.mw[method] || {};
+    this.routes[method].push(parse(path));
+    this.mw[method][path] = functions.map((fn) => (...args) => fn(...args));
+
+    return this;
+  }
+
+  fetch(method, path) {
+    this.cache.urls[method] = this.cache.urls[method] || {};
+    const url = this.cache.urls[method][path] || match(path, this.routes[method] || []);
+    this.cache.urls[method][path] = url;
+    return !url.length
+      ? null
+      : {
+          params: exec(path, url),
+          middleware: this.tw.concat(this.mw[method][url[0].old])
+        };
   }
 };
