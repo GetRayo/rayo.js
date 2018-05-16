@@ -6,6 +6,7 @@ module.exports = class Router {
     this.routes = {};
     this.mw = {};
     this.tw = [];
+    this.cache = { urls: {}, queries: {} };
     METHODS.forEach((method) => {
       this[method.toLowerCase()] = this.route.bind(this, method);
     });
@@ -31,7 +32,9 @@ module.exports = class Router {
   }
 
   fetch(method, path) {
-    const url = match(path, this.routes[method] || []);
+    this.cache.urls[method] = this.cache.urls[method] || {};
+    const url = this.cache.urls[method][path] || match(path, this.routes[method] || []);
+    this.cache.urls[method][path] = url;
     return !url.length
       ? null
       : {

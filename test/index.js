@@ -3,25 +3,31 @@
 const rayo = require('../bin/rayo');
 
 const middlewareOne = (req, res, step) => {
-  req.test = 10;
+  req.age = req.params.age;
   step();
 };
 
 const middlewareTwo = (req, res, step) => {
-  req.test *= 3;
+  req.age /= 1.25;
   step();
 };
 
-const middlewareThree = (req, res) => {
-  res.send({ hello: req.params.friend, test: req.test });
+const middlewareThree = (req, res, step) => {
+  req.name = `Great ${req.params.name.toUpperCase()}`;
+  step();
+};
+
+const middlewareFour = (req, res) => {
+  res.send({ name: req.name, age: req.age });
 };
 
 rayo({ port: 9000 })
   .through(middlewareOne, middlewareTwo)
-  .get('/hello/:friend', middlewareThree)
-  .start(() => {
-    console.log('Up!');
+  .get('/', (req, res) => res.end('Thunderstruck'))
+  .get('/hello/:name/:age', middlewareThree, middlewareFour)
+  .route('GET', '/more', (req, res) => {
+    res.send({ more: true });
+  })
+  .start((address) => {
+    console.log(`Up on port ${address.port}`);
   });
-
-// router.route('/on').get(middlewareThree);
-// router.route('/off').through(middlewareOne, middlewareTwo).get(middlewareThree);

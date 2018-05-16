@@ -7,26 +7,23 @@ const { send } = require('./lib/response');
 const stack = (req, res, middleware, error = null, statusCode = null) => {
   const step = middleware.shift();
   if (!step) {
-    throw new Error('Your stack is empty.');
+    throw new Error('No middleware to move to, there is nothing left in the stack.');
   }
 
-  if (error) {
-    return res.send(error, statusCode || 400);
-  }
-
-  return step(req, res, stack.bind(null, req, res, middleware));
+  /**
+   * @TODO
+   * The send/return the error needs to be more flexible, user defined.
+   */
+  return error
+    ? res.send(error, statusCode || 400)
+    : step(req, res, stack.bind(null, req, res, middleware));
 };
 
 class Rayo extends Router {
   constructor(options) {
     super();
-    ({
-      port: this.port,
-      hostname: this.hostname,
-      server: this.server = http.createServer()
-    } = options);
+    ({ port: this.port, host: this.host, server: this.server = http.createServer() } = options);
     this.dispatch = this.dispatch.bind(this);
-    this.queries = {};
   }
 
   dispatch(req, res) {
@@ -39,15 +36,19 @@ class Rayo extends Router {
     }
 
     req.params = route.params;
-    req.query = this.queries[parsedUrl.query] || parse(parsedUrl.query);
-    this.queries[parsedUrl.query] = req.query;
+    req.query = this.cache.queries[parsedUrl.query] || parse(parsedUrl.query);
+    this.cache.queries[parsedUrl.query] = req.query;
     return stack(req, res, route.middleware.slice());
   }
 
   start(callback = function cb() {}) {
+    this.server.listen(this.port, this.host);
     this.server.on('request', this.dispatch);
-    this.server.listen(this.port, this.hostname, callback);
-    this.through();
+    this.server.on('listening', () => {
+      this.through();
+      callback(this.server.address());
+    });
+
     return this.server;
   }
 }
