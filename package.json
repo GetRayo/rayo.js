@@ -1,6 +1,6 @@
 {
   "name": "rayo",
-  "version": "0.5.4",
+  "version": "0.5.5",
   "description": "⚡️⚡️ Rayo, an extremely fast micro-framework for Nodejs.",
   "main": "bin/rayo.js",
   "engines": {
@@ -24,6 +24,9 @@
     "parseurl": "^1.3.2"
   },
   "devDependencies": {
+    "autocannon": "^2.4.1",
+    "chalk": "^2.4.1",
+    "cli-table": "^0.3.1",
     "codacy-coverage": "^3.0.0",
     "codeclimate-test-reporter": "^0.5.0",
     "dotenv": "^5.0.1",
@@ -32,9 +35,13 @@
     "eslint-config-prettier": "^2.9.0",
     "eslint-plugin-import": "^2.10.0",
     "eslint-plugin-prettier": "^2.6.0",
+    "express": "^4.16.3",
+    "fastify": "^1.4.0",
+    "hapi": "^17.4.0",
     "mocha": "^5.1.1",
-    "nodemon": "^1.17.3",
-    "nyc": "^11.7.1",
+    "nyc": "^11.8.0",
+    "ora": "^2.1.0",
+    "polka": "^0.4.0",
     "prettier": "^1.12.1",
     "should": "^13.2.1",
     "sinon": "^5.0.7"
@@ -47,21 +54,13 @@
   },
   "scripts": {
     "test": "npm run eslint && npm run unit && nyc report --reporter=text",
-    "unit": "nyc --reporter=lcov _mocha --timeout 250 ./test/unit/index.js",
-    "start": "nodemon -r dotenv/config --inspect",
-    "start:test": "nodemon test/index.js --inspect",
+    "unit": "nyc --reporter=lcov _mocha --timeout 250 test/unit",
+    "bench": "node test/benchmarks",
     "eslint": "eslint --quiet .",
     "eslint:fix": "eslint --quiet --fix .",
-    "start:opt": "node -r dotenv/config --trace_opt --allow-natives-syntax app/index.js",
-    "start:deopt": "node -r dotenv/config --trace_deopt --allow-natives-syntax app/index.js",
-    "start:trace": "node -r dotenv/config --trace_opt --trace_deopt --allow-natives-syntax app/index.js",
     "report": "npm run report:codeclimate && npm run report:codebeat && npm run report:codacy",
     "report:codeclimate": "CODECLIMATE_REPO_TOKEN=$CODECLIMATE_TOKEN codeclimate-test-reporter < ./coverage/lcov.info",
     "report:codebeat": "CODECLIMATE_REPO_TOKEN=$CODEBEAT_TOKEN CODECLIMATE_API_HOST=$CODEBEAT_HOST codeclimate-test-reporter < ./coverage/lcov.info",
     "report:codacy": "cat ./coverage/lcov.info | CODACY_PROJECT_TOKEN=$CODACY_TOKEN codacy-coverage"
-  },
-  "nodemonConfig": {
-    "ignore": [],
-    "delay": "100"
   }
 }
