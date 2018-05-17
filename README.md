@@ -79,10 +79,12 @@ rayo({ port: 5050 })
 ## API
 
 ```
-Before reading any further, think about this;
+Please keep in mind that:
 "Your code, your errors."¹
-- It's your responsibility to deal with these errors accordingly.
+- It's your responsibility to deal with them accordingly.
 ```
+
+> ¹ `Rayo` is WIP, so you may encounter actual errors that need to be dealt with. If so, please point them out to us via a `pull request`. 👍
 
 #### rayo(options = {})
 * `options.port` (_Type: number_) -Listen on this port for incoming connections. If port is omitted or is 0, the operating system will assign an arbitrary, unused, port.
@@ -107,7 +109,6 @@ Start `Rayo` and [listen](https://nodejs.org/dist/latest-v9.x/docs/api/http.html
 
 > Return: `http.Server`.
 
-> ¹ `Rayo` is WIP, so you may encounter actual errors that need to be dealt with. If so, please point them out to us via a `pull request`. 👍
 
 ## How does it compare?
 
