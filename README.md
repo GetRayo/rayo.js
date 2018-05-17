@@ -115,19 +115,24 @@ Start `Rayo` and [listen](https://nodejs.org/dist/latest-v9.x/docs/api/http.html
 Here are some of the top contenders. Please note that these results are only meant as raw performance indicators. Your application's logic, which is what makes most applications slow, may not see great performance gains from using one framework over another.
 
 #### Node V.8.11.1
- &nbsp;         | Rayo  | Polka   | Fastify | Express
---------------- | ----- | ------- | ------- | -------
-Requests (/s)   | 33304 | 32068.8 | 31449.6 | 19493.6
-Latency (ms)    | 2.93  | 3.04    | 3.1     | 5.02
-Throughput (Mb) | 3.712 | 3.5875  | 4.925   | 3.0625
+ &nbsp; | Requests/s | Latency | Throughput/Mb
+------- | ---------- | ------- | --------------
+Rayo    | 31958.4    | 3.05    | 3.54
+Polka   | 31913.6    | 3.06    | 3.54
+Fastify | 30196.8    | 3.23    | 4.54
+Express │ 22872.8    │ 4.28    │ 2.54
+Hapi    │ 18463.2    │ 5.32    │ 2.74
 
 #### Node V.10.1.0
- &nbsp;         | Rayo    | Polka   | Fastify | Express
---------------- | ------- | ------- | ------- | -------
-Requests (/s)   | 39465.6 | 38454.4 | 38166.4 | 26075.2
-Latency (ms)    | 2.46    | 2.53    | 2.55    | 3.74
-Throughput (Mb) | 4.4375  | 4.2625  | 5.975   | 4.0625
+ &nbsp; | Requests/s | Latency | Throughput/Mb
+------- | ---------- | ------- | --------------
+Rayo    | 38929.6    | 2.5     | 4.34
+Polka   | 38875.2    | 2.5     | 4.36
+Fastify | 35940.8    | 2.71    | 5.38
+Express │ 31235.2    │ 3.12    │ 3.46
+Hapi    │ 25640      │ 3.82    │ 3.84
 
+See for yourself; `npm run bench`
 
 ## Contribute
 ```
@@ -142,6 +147,8 @@ $> Submit a PR.
 - `Thank you` :clap: [TJ Holowaychuk](https://github.com/tj) for [express](https://github.com/expressjs/express) -It has been a good source of inspiration and it has served us well for many years.
 
 - `Thank you` :clap: [Luke Edwards](http://github.com/lukeed/) for [matchit](https://github.com/lukeed/matchit) -Initially we started looking at [path-to-regexp](https://github.com/pillarjs/path-to-regexp) for route matching and parsing, then we decided to roll-out our own version and the we found `matchit` -Why re-invent the wheel, right?
+
+- `Thank you` :clap: [Douglas Wilson](https://github.com/dougwilson) for [parseurl](https://github.com/pillarjs/parseurl) -Certainly makes REST a whole lot easier.
 
 - `Thank you` :clap: [Everyone](https://github.com/nodejs/node/graphs/contributors) who has made Nodejs possible.
 
