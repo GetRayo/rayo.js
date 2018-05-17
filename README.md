@@ -78,6 +78,12 @@ rayo({ port: 5050 })
 
 ## API
 
+```
+Before reading any further, think about this;
+"Your code, your errors."¹
+- It's your responsibility to deal with these errors accordingly.
+```
+
 #### rayo(options = {})
 * `options.port` (_Type: number_) -Listen on this port for incoming connections. If port is omitted or is 0, the operating system will assign an arbitrary, unused, port.
 
@@ -101,6 +107,7 @@ Start `Rayo` and [listen](https://nodejs.org/dist/latest-v9.x/docs/api/http.html
 
 > Return: `http.Server`.
 
+> ¹ `Rayo` is WIP, so you may encounter actual errors that need to be dealt with. If so, please point them out to us via a `pull request`. 👍
 
 ## How does it compare?
 
@@ -123,13 +130,15 @@ Throughput (Mb) | 4.4375  | 4.2625  | 5.975   | 4.0625
 
 ## Contribute
 ```
-fork https://github.com/GetRayo/rayo.js
+$> fork https://github.com/GetRayo/rayo.js
+$> Do your thing.
+$> Submit a PR.
 ```
 
 
 ## Acknowledgements
 
-- `Thank you` :clap: [TJ Holowaychuk](https://github.com/tj) for your pioneering work with [express](https://github.com/expressjs/express) -It has been a good source of inspiration and it has served me well for many years.
+- `Thank you` :clap: [TJ Holowaychuk](https://github.com/tj) for [express](https://github.com/expressjs/express) -It has been a good source of inspiration and it has served us well for many years.
 
 - `Thank you` :clap: [Luke Edwards](http://github.com/lukeed/) for [matchit](https://github.com/lukeed/matchit) -Initially we started looking at [path-to-regexp](https://github.com/pillarjs/path-to-regexp) for route matching and parsing, then we decided to roll-out our own version and the we found `matchit` -Why re-invent the wheel, right?
 
