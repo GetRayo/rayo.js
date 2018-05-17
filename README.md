@@ -120,8 +120,8 @@ Here are some of the top contenders. Please note that these results are only mea
 Rayo    | 31958.4    | 3.05    | 3.54
 Polka   | 31913.6    | 3.06    | 3.54
 Fastify | 30196.8    | 3.23    | 4.54
-Express │ 22872.8    │ 4.28    │ 2.54
-Hapi    │ 18463.2    │ 5.32    │ 2.74
+Express | 22872.8    | 4.28    | 2.54
+Hapi    | 18463.2    | 5.32    | 2.74
 
 #### Node V.10.1.0
  &nbsp; | Requests/s | Latency | Throughput/Mb
@@ -129,8 +129,8 @@ Hapi    │ 18463.2    │ 5.32    │ 2.74
 Rayo    | 38929.6    | 2.5     | 4.34
 Polka   | 38875.2    | 2.5     | 4.36
 Fastify | 35940.8    | 2.71    | 5.38
-Express │ 31235.2    │ 3.12    │ 3.46
-Hapi    │ 25640      │ 3.82    │ 3.84
+Express | 31235.2    | 3.12    | 3.46
+Hapi    | 25640      | 3.82    | 3.84
 
 See for yourself; `npm run bench`
 
@@ -144,11 +144,11 @@ $> Submit a PR.
 
 ## Acknowledgements
 
+- `Thank you` :clap: [TJ Holowaychuk](https://github.com/tj) for [express](https://github.com/expressjs/express) -It has been a good source of inspiration and it has served us well for many years.
+
 - `Thank you` :clap: [Luke Edwards](http://github.com/lukeed/) for [matchit](https://github.com/lukeed/matchit) -Initially we started looking at [path-to-regexp](https://github.com/pillarjs/path-to-regexp) for route matching and parsing, then we decided to roll-out our own version and the we found `matchit` -Why re-invent the wheel, right?
 
 - `Thank you` :clap: [Douglas Wilson](https://github.com/dougwilson) for [parseurl](https://github.com/pillarjs/parseurl) -Certainly makes REST a whole lot easier.
-
-- `Thank you` :clap: [TJ Holowaychuk](https://github.com/tj) for [express](https://github.com/expressjs/express) -It has been a good source of inspiration and it has served us well for many years.
 
 - `Thank you` :clap: [Everyone](https://github.com/nodejs/node/graphs/contributors) who has made Nodejs possible.
 
