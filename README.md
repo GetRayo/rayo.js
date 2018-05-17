@@ -139,9 +139,11 @@ $> Submit a PR.
 
 ## Acknowledgements
 
-- `Thank you` :clap: [TJ Holowaychuk](https://github.com/tj) for [express](https://github.com/expressjs/express) -It has been a good source of inspiration and it has served us well for many years.
-
 - `Thank you` :clap: [Luke Edwards](http://github.com/lukeed/) for [matchit](https://github.com/lukeed/matchit) -Initially we started looking at [path-to-regexp](https://github.com/pillarjs/path-to-regexp) for route matching and parsing, then we decided to roll-out our own version and the we found `matchit` -Why re-invent the wheel, right?
+
+- `Thank you` :clap: [Douglas Wilson](https://github.com/dougwilson) for [parseurl](https://github.com/pillarjs/parseurl) -Certainly makes REST a whole lot easier.
+
+- `Thank you` :clap: [TJ Holowaychuk](https://github.com/tj) for [express](https://github.com/expressjs/express) -It has been a good source of inspiration and it has served us well for many years.
 
 - `Thank you` :clap: [Everyone](https://github.com/nodejs/node/graphs/contributors) who has made Nodejs possible.
 
