@@ -132,7 +132,16 @@ Fastify | 35940.8    | 2.71    | 5.38
 Express | 31235.2    | 3.12    | 3.46
 Hapi    | 25640      | 3.82    | 3.84
 
-See for yourself; `npm run bench`
+See for yourself; clone this repository, install its dependencies and run `npm run bench`. Optionally, you may also define your test's parameters:
+```
+$> npm run bench -- -u http://localhost:5050 -c 1000 -p 25 -d 10
+```
+* `-u` (_url_) -Defaults to `http://localhost:5050`
+* `-c` (_connections_) -Defaults to `100`
+* `-p` (_pipelines_) -Defaults to `10`
+* `-d` (_duration_) -Defaults to `5` (seconds)
+
+> Please note that these results may (and they will) vary based on your hardware.
 
 ## Contribute
 ```
