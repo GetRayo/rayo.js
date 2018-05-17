@@ -3,6 +3,7 @@
 const autocannon = require('autocannon');
 const chalk = require('chalk');
 const fs = require('fs');
+const minimist = require('minimist');
 const ora = require('ora');
 const { fork } = require('child_process');
 const Table = require('cli-table');
@@ -12,16 +13,20 @@ const files = fs
   .filter((file) => file.match(/(.+)\.js$/))
   .sort();
 
-const cannon = (options = {}) =>
+const argv = minimist(process.argv.slice(2));
+const cannon = (title = null) =>
   new Promise((yes, no) => {
     autocannon(
-      {
-        title: options.file || null,
-        url: options.url || 'http://localhost:5050',
-        connections: options.connections || 100,
-        pipelining: options.pipelining || 10,
-        duration: options.duration || 5
-      },
+      Object.assign(
+        {},
+        {
+          url: argv.u || 'http://localhost:5050',
+          connections: argv.c || 100,
+          pipelining: argv.p || 10,
+          duration: argv.d || 5
+        },
+        { title }
+      ),
       (error, result) => {
         if (error) {
           return no(error);
@@ -39,12 +44,13 @@ const benchmark = async (results) => {
       const forked = fork(`${__dirname}/compare/${file}`);
       try {
         // Warm-up & test
-        const spin = ora(`Warming up ${chalk.blue(file)}...`).start();
+        const spin = ora(`Warming up ${chalk.blue(file)}`).start();
         spin.color = 'yellow';
         await cannon();
-        spin.text = `Running ${chalk.blue(file)}...`;
+        spin.text = `Running ${chalk.blue(file)}`;
         spin.color = 'green';
-        const result = await cannon({ file });
+        const result = await cannon(file);
+        spin.text = `${chalk.blue(file)}`;
         spin.succeed();
         forked.kill('SIGINT');
         return yes(result);
