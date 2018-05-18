@@ -6,17 +6,19 @@ const { send } = require('./lib/response');
 
 const stack = (req, res, middleware, error = null, statusCode = null) => {
   const step = middleware.shift();
-  if (!step) {
-    throw new Error('No middleware to move to, there is nothing left in the stack.');
-  }
-
   /**
    * @TODO
    * The send/return the error needs to be more flexible, user defined.
    */
-  return error
-    ? res.send(error, statusCode || 400)
-    : step(req, res, stack.bind(null, req, res, middleware));
+  if (error) {
+    return res.send(error, statusCode || 400);
+  }
+
+  if (step) {
+    return step(req, res, stack.bind(null, req, res, middleware));
+  }
+
+  throw new Error('No middleware to move to, there is nothing left in the stack.');
 };
 
 class Rayo extends Router {
@@ -36,6 +38,7 @@ class Rayo extends Router {
     }
 
     req.params = route.params;
+    req.pathname = parsedUrl.pathname;
     req.query = this.cache.queries[parsedUrl.query] || parse(parsedUrl.query);
     this.cache.queries[parsedUrl.query] = req.query;
     return stack(req, res, route.middleware.slice());
