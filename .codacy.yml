@@ -1,8 +1,0 @@
----
-engines:
-  ESLint:
-    enabled: true
-exclude_paths:
-  - "**.json"
-  - "**.md"
-  - "**.yml"

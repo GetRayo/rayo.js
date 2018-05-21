@@ -2,10 +2,13 @@
   <img src="https://raw.githubusercontent.com/GetRayo/Assets/master/Images/Cover.png" alt="Rayo" />
 </p>
 
-[![Codacy](https://api.codacy.com/project/badge/Grade/d392c578eaaa4860823b8e4f9dadda63)](https://www.codacy.com/app/aichholzer/rayo.js?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=GetRayo/rayo.js&amp;utm_campaign=Badge_Grade)
 [![NSP Status](https://nodesecurity.io/orgs/rayo/projects/b16aa9a6-c080-44e1-9c91-77609aa498be/badge)](https://nodesecurity.io/orgs/rayo/projects/b16aa9a6-c080-44e1-9c91-77609aa498be)
-[![Build status](https://travis-ci.org/GetRayo/rayo.js.svg?branch=master)](https://travis-ci.org/GetRayo/rayo.js)
 [![Greenkeeper badge](https://badges.greenkeeper.io/GetRayo/rayo.js.svg)](https://greenkeeper.io/)
+[![Build status](https://travis-ci.org/GetRayo/rayo.js.svg?branch=master)](https://travis-ci.org/GetRayo/rayo.js)
+[![Codacy](https://api.codacy.com/project/badge/Grade/d392c578eaaa4860823b8e4f9dadda63)](https://www.codacy.com/app/aichholzer/rayo.js?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=GetRayo/rayo.js&amp;utm_campaign=Badge_Grade)
+[![CodeFactor](https://www.codefactor.io/repository/github/aichholzer/modellr/badge)](https://www.codefactor.io/repository/github/aichholzer/modellr)
+[![Coverage Status](https://coveralls.io/repos/github/GetRayo/rayo.js/badge.svg?branch=master)](https://coveralls.io/github/GetRayo/rayo.js?branch=master)
+
 
 ```
 Everything in the -modern- web is arguable,
@@ -13,6 +16,11 @@ however we are convinced that Rayo is the fastest framework.
 In the world.
 Period.
 ```
+
+## In a nutshell
+
+- Really fast (yeah, like really fast).
+- Less than 150 lines of code, with routing and all.
 
 
 ## Install
@@ -242,6 +250,11 @@ $> npm run bench -- -u http://localhost:5050 -c 1000 -p 25 -d 10
 * `-d` (_duration_) -Defaults to `5` (seconds)
 
 > Please note that these results ~~may~~ will vary on different hardware.
+
+
+
+## Examples
+May be found [here](https://github.com/GetRayo/rayo.js/tree/master/test/examples).
 
 
 ## Contribute
