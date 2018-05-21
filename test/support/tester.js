@@ -42,15 +42,13 @@ ray
   });
 
 const y = ray.bridge('/lol');
-y
-  .through((req, res, step) => {
-    console.log('UNO');
-    step();
-  })
-  .get((req, res) => {
-    console.log('DOSaaaa');
-    res.end('LOL 1');
-  });
+y.through((req, res, step) => {
+  console.log('UNO');
+  step();
+}).get((req, res) => {
+  console.log('DOSaaaa');
+  res.end('LOL 1');
+});
 
 y.route('GET', '/pelo', (r, q) => {
   console.log('DXXXXX');
