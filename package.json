@@ -1,6 +1,6 @@
 {
   "name": "rayo",
-  "version": "0.5.7",
+  "version": "0.5.8",
   "description": "⚡️⚡️ Rayo, an extremely fast micro-framework for Nodejs.",
   "main": "bin/rayo.js",
   "engines": {

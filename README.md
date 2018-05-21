@@ -2,13 +2,13 @@
   <img src="https://raw.githubusercontent.com/GetRayo/Assets/master/Images/Cover.png" alt="Rayo" />
 </p>
 
-[![Lines of code](https://img.shields.io/badge/LOC-97-yellow.svg)](https://img.shields.io/badge/LOC-97-yellow.svg)
+[![Lines of code](https://img.shields.io/badge/LOC-108-yellow.svg)](https://img.shields.io/badge/LOC-108-yellow.svg)
 [![Codacy](https://api.codacy.com/project/badge/Grade/d392c578eaaa4860823b8e4f9dadda63)](https://www.codacy.com/app/aichholzer/rayo.js?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=GetRayo/rayo.js&amp;utm_campaign=Badge_Grade)
 [![NSP Status](https://nodesecurity.io/orgs/rayo/projects/b16aa9a6-c080-44e1-9c91-77609aa498be/badge)](https://nodesecurity.io/orgs/rayo/projects/b16aa9a6-c080-44e1-9c91-77609aa498be)
 [![Build status](https://travis-ci.org/GetRayo/rayo.js.svg?branch=master)](https://travis-ci.org/GetRayo/rayo.js)
 [![Greenkeeper badge](https://badges.greenkeeper.io/GetRayo/rayo.js.svg)](https://greenkeeper.io/)
 
-Yep, you got that right! -Only `97 lines of code` (after [ESLint](https://github.com/eslint/eslint) and [Prettier](https://github.com/prettier/prettier)).
+Yep, you got that right! -Only `108 lines of code` (after [ESLint](https://github.com/eslint/eslint) and [Prettier](https://github.com/prettier/prettier)).
 
 ```
 Everything in the -modern- web is arguable,
@@ -143,6 +143,7 @@ $> npm run bench -- -u http://localhost:5050 -c 1000 -p 25 -d 10
 
 > Please note that these results may (and they will) vary based on your hardware.
 
+
 ## Contribute
 ```
 $> fork https://github.com/GetRayo/rayo.js
@@ -153,13 +154,7 @@ $> Submit a PR.
 
 ## Acknowledgements
 
-- `Thank you` :clap: [TJ Holowaychuk](https://github.com/tj) for [express](https://github.com/expressjs/express) -It has been a good source of inspiration and it has served us well for many years.
-
-- `Thank you` :clap: [Luke Edwards](http://github.com/lukeed/) for [matchit](https://github.com/lukeed/matchit) -Initially we started looking at [path-to-regexp](https://github.com/pillarjs/path-to-regexp) for route matching and parsing, then we decided to roll-out our own version and the we found `matchit` -Why re-invent the wheel, right?
-
-- `Thank you` :clap: [Douglas Wilson](https://github.com/dougwilson) for [parseurl](https://github.com/pillarjs/parseurl) -Certainly makes REST a whole lot easier.
-
-- `Thank you` :clap: [Everyone](https://github.com/nodejs/node/graphs/contributors) who has made Nodejs possible.
+:clap: `Thank you` [everyone](https://github.com/nodejs/node/graphs/contributors) who has made Nodejs possible and to all community members actively contributing to it.
 
 
 ## License

@@ -23,10 +23,18 @@ module.exports = class Router {
   }
 
   route(method, path, ...functions) {
-    this.routes[method] = this.routes[method] || [];
-    this.mw[method] = this.mw[method] || {};
-    this.routes[method].push(parse(path));
-    this.mw[method][path] = functions.map((fn) => (...args) => fn(...args));
+    const setRoute = (m) => {
+      this.routes[m] = this.routes[m] || [];
+      this.mw[m] = this.mw[m] || {};
+      this.routes[m].push(parse(path));
+      this.mw[m][path] = functions.map((fn) => (...args) => fn(...args));
+    };
+
+    if (Array.isArray(method)) {
+      method.forEach(setRoute);
+    } else {
+      setRoute(method);
+    }
 
     return this;
   }

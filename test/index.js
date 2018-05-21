@@ -28,6 +28,9 @@ rayo({ port: 9000 })
   .route('GET', '/more', (req, res) => {
     res.send({ more: true });
   })
+  .route(['GET', 'POST', 'DELETE'], '/less', (req, res) => {
+    res.send({ less: true });
+  })
   .start((address) => {
     console.log(`Up on port ${address.port}`);
   });
