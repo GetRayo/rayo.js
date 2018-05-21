@@ -5,8 +5,8 @@ const { readFileSync } = require('fs');
 const rayo = require('../bin');
 
 const server = https.createServer({
-  key: readFileSync(`${__dirname}/../support/localhost.key`),
-  cert: readFileSync(`${__dirname}/../support/localhost.crt`)
+  key: readFileSync(`${__dirname}/localhost.key`),
+  cert: readFileSync(`${__dirname}/localhost.crt`)
 });
 
 rayo({ port: 5050, server })
