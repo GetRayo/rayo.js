@@ -21,8 +21,14 @@ const middlewareFour = (req, res) => {
   res.send({ name: req.name, age: req.age });
 };
 
-rayo({ port: 9000 })
-  .through(middlewareOne, middlewareTwo)
+const ray = rayo({ port: 9000 })
+  .through(middlewareOne, middlewareTwo);
+
+const bridge = ray.bridge('/multiple/:name');
+bridge.get((req, res) => res.end('Multiple GET'), (req, res) => res.end('Multiple GET'));
+bridge.post((req, res) => res.end('Multiple POST'));
+
+ray
   .get('/', (req, res) => res.end('Thunderstruck'))
   .get('/hello/:name/:age', middlewareThree, middlewareFour)
   .route('GET', '/more', (req, res) => {

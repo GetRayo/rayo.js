@@ -12,6 +12,11 @@ module.exports = class Router {
     });
   }
 
+  bridge(path) {
+    this.bridgedPath = path;
+    return this;
+  }
+
   through(...functions) {
     if (!functions.length) {
       this.tw = this.mw['*'] && this.mw['*']['*'] ? this.mw['*']['*'] : [];
@@ -29,6 +34,10 @@ module.exports = class Router {
       this.routes[m].push(parse(path));
       this.mw[m][path] = functions.map((fn) => (...args) => fn(...args));
     };
+
+    if (this.bridgedPath) {
+
+    }
 
     if (Array.isArray(method)) {
       method.forEach(setRoute);

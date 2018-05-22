@@ -2,13 +2,13 @@
   <img src="https://raw.githubusercontent.com/GetRayo/Assets/master/Images/Cover.png" alt="Rayo" />
 </p>
 
-[![Lines of code](https://img.shields.io/badge/LOC-108-yellow.svg)](https://img.shields.io/badge/LOC-108-yellow.svg)
+[![Lines of code](https://img.shields.io/badge/LOC-113-yellow.svg)](https://img.shields.io/badge/LOC-113-yellow.svg)
 [![Codacy](https://api.codacy.com/project/badge/Grade/d392c578eaaa4860823b8e4f9dadda63)](https://www.codacy.com/app/aichholzer/rayo.js?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=GetRayo/rayo.js&amp;utm_campaign=Badge_Grade)
 [![NSP Status](https://nodesecurity.io/orgs/rayo/projects/b16aa9a6-c080-44e1-9c91-77609aa498be/badge)](https://nodesecurity.io/orgs/rayo/projects/b16aa9a6-c080-44e1-9c91-77609aa498be)
 [![Build status](https://travis-ci.org/GetRayo/rayo.js.svg?branch=master)](https://travis-ci.org/GetRayo/rayo.js)
 [![Greenkeeper badge](https://badges.greenkeeper.io/GetRayo/rayo.js.svg)](https://greenkeeper.io/)
 
-Yep, you got that right! -Only `108 lines of code` (after [ESLint](https://github.com/eslint/eslint) and [Prettier](https://github.com/prettier/prettier)).
+Yep, you got that right! -Only `113 lines of code` (after [ESLint](https://github.com/eslint/eslint) and [Prettier](https://github.com/prettier/prettier)).
 
 ```
 Everything in the -modern- web is arguable,
@@ -101,6 +101,25 @@ Middleware functions through which every request will be sent through. Remember 
 * `functions` (_Type: function_) -Any number of functions, comma separated. Note that each function must follow the `(req, res, step)` signature, where `step` is optional unless you intend to move your program's execution past any given function in the stack.
 
 > Return: `Chainable Rayo`
+
+#### .bridge(path, methods)
+Bridge one path with multiple HTTP methods and functions
+
+* `path` (_Type: string_) -The path to which requests will be mapped to.
+
+* `methods` (_Type: object_) -An object containing the HTTP methods (and their respective functions) to be mapped onto the specified path.
+
+```js
+rayo({ port: 9000 })
+  .bridge('/users/:name', {
+    get: (req, res) => res.send({ users: req.params.name }),
+    post: (req, res) => res.send({ users: req.params.name })
+  })
+```
+
+// FIX
+* `functions` (_Type: function_) -Any number of functions, comma separated. Note that each function must follow the `(req, res, step)` signature, where `step` is optional unless you intend to move your program's execution past any given function in the stack.
+
 
 #### .start(callback)
 Start `Rayo` and [listen](https://nodejs.org/dist/latest-v9.x/docs/api/http.html#http_server_listen) on the specified port.
