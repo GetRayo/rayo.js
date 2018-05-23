@@ -9,6 +9,7 @@ const middlewareOne = (req, res, step) => {
 
 const middlewareTwo = (req, res, step) => {
   req.age /= 1.25;
+  req.params.noches *= 2;
   step();
 };
 
@@ -18,18 +19,24 @@ const middlewareThree = (req, res, step) => {
 };
 
 const middlewareFour = (req, res) => {
-  res.send({ name: req.name, age: req.age });
+  res.send({ name: req.name, age: req.age, dias: req.params.dias, noches: req.params.noches });
 };
 
-rayo({ port: 9000 })
+const ray = rayo({ port: 9000 });
+
+ray
+  .bridge('/dia/:dias')
+  .get(middlewareOne, middlewareTwo, middlewareFour)
+  .post(middlewareOne, middlewareTwo, middlewareFour);
+
+ray.bridge('/noche/:noches').get(middlewareOne, middlewareTwo, middlewareFour);
+
+ray
   .through(middlewareOne, middlewareTwo)
   .get('/', (req, res) => res.end('Thunderstruck'))
   .get('/hello/:name/:age', middlewareThree, middlewareFour)
   .route('GET', '/more', (req, res) => {
     res.send({ more: true });
-  })
-  .route(['GET', 'POST', 'DELETE'], '/less', (req, res) => {
-    res.send({ less: true });
   })
   .start((address) => {
     console.log(`Up on port ${address.port}`);
