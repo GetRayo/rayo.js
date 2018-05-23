@@ -4,27 +4,16 @@ const { parse } = require('querystring');
 const Router = require('./lib/router');
 const { send } = require('./lib/response');
 
-const stack = (req, res, middleware, error = null, statusCode = null) => {
-  const step = middleware.shift();
-  /**
-   * @TODO
-   * The send/return the error needs to be more flexible, user defined.
-   */
-  if (error) {
-    return res.send(error, statusCode || 400);
-  }
-
-  if (step) {
-    return step(req, res, stack.bind(null, req, res, middleware));
-  }
-
-  throw new Error('No middleware to move to, there is nothing left in the stack.');
-};
-
 class Rayo extends Router {
   constructor(options) {
     super();
-    ({ port: this.port, host: this.host, server: this.server = http.createServer() } = options);
+    ({
+      port: this.port,
+      host: this.host,
+      onError: this.onError = null,
+      notFound: this.notFound = null,
+      server: this.server = http.createServer()
+    } = options);
     this.dispatch = this.dispatch.bind(this);
   }
 
@@ -32,16 +21,15 @@ class Rayo extends Router {
     res.send = send.bind(res);
     const parsedUrl = parseurl(req);
     const route = this.fetch(req.method, parsedUrl.pathname);
-
     if (!route) {
-      return res.send('Page not found.', 404);
+      return this.notFound ? this.notFound.call(null, req, res) : res.send('Page not found.', 404);
     }
 
     req.params = route.params;
     req.pathname = parsedUrl.pathname;
     req.query = this.cache.queries[parsedUrl.query] || parse(parsedUrl.query);
     this.cache.queries[parsedUrl.query] = req.query;
-    return stack(req, res, route.middleware.slice());
+    return this.step(req, res, route.middleware.slice());
   }
 
   start(callback = function cb() {}) {
@@ -53,6 +41,21 @@ class Rayo extends Router {
     });
 
     return this.server;
+  }
+
+  step(req, res, middleware, error = null, statusCode = null) {
+    const fn = middleware.shift();
+    if (error) {
+      return this.onError
+        ? this.onError.call(null, error, req, res, fn)
+        : res.send(error, statusCode || 400);
+    }
+
+    if (fn) {
+      return fn(req, res, this.step.bind(this, req, res, middleware));
+    }
+
+    throw new Error('No middleware to move to, there is nothing left in the stack.');
   }
 }
 

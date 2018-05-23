@@ -22,11 +22,20 @@ const middlewareFour = (req, res) => {
   res.send({ name: req.name, age: req.age, dias: req.params.dias, noches: req.params.noches });
 };
 
-const ray = rayo({ port: 9000 });
+const ray = rayo({
+  port: 9000,
+  notFound: (req, res) => res.end('NONO'),
+  onError: (error, req, res) => res.end(error)
+});
 
 ray
+  .bridge('/err')
+  .all((req, res, step) => step('Locura'));
+
+// FIX THIS, two briges, the second one is not applied
+ray
   .bridge('/nada')
-  .all((req, res) => res.end('Nada'));
+  .all((req, res, step) => step('d'));
 
 // console.log(a);
 
