@@ -4,12 +4,14 @@ const rayo = require('../bin/rayo');
 
 const middlewareOne = (req, res, step) => {
   req.age = req.params.age;
+  console.log('MW ONE');
   step();
 };
 
 const middlewareTwo = (req, res, step) => {
   req.age /= 1.25;
   req.params.noches *= 2;
+  console.log('MW TWO');
   step();
 };
 
@@ -26,13 +28,48 @@ const ray = rayo({
   port: 9000,
   notFound: (req, res) => res.end('NONO'),
   onError: (error, req, res) => res.end(error)
-});
+}).through(middlewareOne, middlewareTwo);
 
 ray
   .bridge('/err')
-  .all((req, res, step) => step('Locura'));
+  .through((req, res, step) => {
+    console.log('UNO');
+    step();
+  })
+  .all((req, res) => {
+    console.log('DOS');
+    res.end('dddd');
+  });
 
-// FIX THIS, two briges, the second one is not applied
+const y = ray.bridge('/lol');
+y
+  .through((req, res, step) => {
+    console.log('UNO');
+    step();
+  })
+  .get((req, res) => {
+    console.log('DOSaaaa');
+    res.end('LOL 1');
+  });
+
+y.route('GET', '/pelo', (r, q, s) => {
+  console.log('DXXXXX');
+  q.send('PELO');
+});
+
+y.all((req, res) => {
+    console.log('TRES');
+    res.end('LOL 2');
+  });
+
+// console.log(x.mw.GET['/err']);
+
+ray.start((address) => {
+  console.log(`Up on port ${address.port}`);
+});
+
+/*
+
 ray
   .bridge('/nada')
   .all((req, res, step) => step('d'));
@@ -56,3 +93,4 @@ ray
   .start((address) => {
     console.log(`Up on port ${address.port}`);
   });
+ */

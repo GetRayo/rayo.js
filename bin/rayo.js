@@ -1,10 +1,10 @@
 const http = require('http');
 const parseurl = require('parseurl');
 const { parse } = require('querystring');
-const Router = require('./lib/router');
+const Bridge = require('./lib/bridge');
 const { send } = require('./lib/response');
 
-class Rayo extends Router {
+class Rayo extends Bridge {
   constructor(options) {
     super();
     ({

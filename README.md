@@ -32,24 +32,25 @@ rayo({ port: 5050 })
   .start();
 ```
 
-#### With middleware
+#### With multiple handlers
 
 ```js
 const rayo = require('rayo');
 
+// "age" handler
 const age = (req, res, step) => {
-  req.age = `Your age is ${req.params.age}`;
+  req.age = 21;
   step();
 };
 
+// "name" handler
 const name = (req, res, step) => {
-  req.name = `Your name is ${req.params.name}`;
+  req.name = `Super ${req.params.user}`;
   step();
 };
 
 rayo({ port: 5050 })
-  .through(age, name)
-  .get('/hello/:name/:age', (req, res) => {
+  .get('/hello/:user', age, name, (req, res) => {
     res.end(
       JSON.stringify({
         age: req.age,
@@ -57,23 +58,38 @@ rayo({ port: 5050 })
       })
     );
   })
-  .start((address) => {
-    console.log(`The server is listening on port ${address.port}`);
-  });
+  .start();
 ```
 
-#### A note on middleware
+#### A note on handlers
 
-`Middleware` functions accept an [IncomingMessage](https://nodejs.org/api/http.html#http_class_http_incomingmessage) (a.k.a `req`), a [ServerResponse](https://nodejs.org/dist/latest-v9.x/docs/api/http.html#http_class_http_serverresponse) (a.k.a `res`) and a `step-through` (a.k.a `step`) function. Use `step()` to move your program's execution logic to the next middleware in the stack.
+`handler` functions accept an [IncomingMessage](https://nodejs.org/api/http.html#http_class_http_incomingmessage) (a.k.a `req`), a [ServerResponse](https://nodejs.org/dist/latest-v9.x/docs/api/http.html#http_class_http_serverresponse) (a.k.a `res`) and a `step through` (a.k.a `step`) function. `step()` is optional and it may be used to move the program's execution logic to the next handler in the stack.
 
-> **Note:** An error will be thrown if `step()` is invoked on an empty middleware stack.
+`step()` may also be used to invoke an error at any time. See [error handling](#error-handling).
 
-`Rayo` exposes Node's core [ServerResponse](https://nodejs.org/dist/latest-v9.x/docs/api/http.html#http_class_http_serverresponse) (`res`) object and it's your responsibility to deal with it accordingly. However, `Rayo` does bind a smart `send()` function to the response.
+> **Note:** An error will be thrown if `step()` is called on an empty stack.
+
+Each `handler` exposes Node's core ServerResponse (`res`) object and it's your responsibility to deal with it accordingly.
+
+As a convenience, `Rayo` binds a smart `send()` function to the ServerResponse (`res`) each handler receives, therefore you may `res.send()` responses.
 
 `res.send()` will try to guess the content type and send the appropriate headers, status code and body, it will also end the response.
 
 > **Note:** `res.send()` will incur a performance hit due to the headers being written with every response, regardless of them being intended or not.
 
+#### Handler signature
+```js
+/**
+ * @param {object}   req
+ * @param {object}   res
+ * @param {function} [step]
+ */
+const fn = (req, res, step) => {
+  // Your custom logic.
+}
+```
+
+#### Error handling
 
 ## API
 
@@ -87,9 +103,10 @@ Please keep in mind that:
 
 #### rayo(options = {})
 ```
-@param {object} [options] - Options to be passed to Rayo's instance.
+@param   {object} [options]
 @returns {Rayo}
 ```
+
 * `options.port` _{number}_
 	* Listen on this port for incoming connections.
 	* If port is omitted or is 0, the operating system will assign an arbitrary, unused, port.
@@ -103,94 +120,100 @@ Please keep in mind that:
 	* `Default:` A new instance of [http.Server](https://nodejs.org/api/http.html#http_class_http_server).
 
 * `options.notFound` _{function}_
+  > Invoked when undefined paths are requested.
   ```js
   /**
-   * Invoke when undefined URL paths are requested.
-   *
-   * @param {object} req - http.IncomingMessage
-   * @param {object} res - http.ServerResponse
+   * @param {object} req
+   * @param {object} res
    */
   const fn = (req, res) => {
     // Your custom logic.
   }
   ```
-	* `Default:` `Page not found.` message with a `404` status code.
-	* `Example:` [examples/notFound](examples/notFound.js)
+  `Default:` A "Page not found." message with a `404` status code.<br />
+  `Example:` [examples/notFound.js](examples/notFound.js)
 
 * `options.onError` _{function}_
+  > Invoked when step() receives an argument.
   ```js
   /**
-   * Invoke when `step()` is called with an argument.
-   *
-   * @param {string|object} error
-   * @param {object} 	    req - http.IncomingMessage
-   * @param {object}        res - http.ServerResponse
-   * @param {function}      [step] - Allows moving the program's
-   * 			   			execution past any given
-   * 			   			function in the stack.
+   * @param {*}        error
+   * @param {object}   req
+   * @param {object}   res
+   * @param {function} [step]
    */
   const fn = (error, req, res, step) => {
     // Your custom logic.
   }
   ```
-	* `Default:` The error message (argument) with a `400` status code.
-	* `Example:` [examples/onError](examples/onError.js)
+  `Default:` The error message (the argument) with a `400` status code.<br />
+  `Example:` [examples/onError.js](examples/onError.js)
 
 
-#### .through(...functions)
+#### .verb(path, ...handlers)
 ```
-Middleware functions through which every request will be passed.
-
-@param {function|...} - Any number of functions, comma separated.
+@param   {string}   path
+@param   {function} handlers - Any number, comma separated.
 @returns {rayo}
 ```
 
-* each of `functions` _{function}_
-  ```js
-  /**
-   * @param {object}   req - http.IncomingMessage
-   * @param {object}   res - http.ServerResponse
-   * @param {function} [step] - Allows moving the program's
-   * 			   	   execution past any given
-   * 			   	   function in the stack.
-   */
-  const fn = (req, res, step) => {
-    // Your custom logic.
-  }
-  ```
+> `Rayo` exposes all HTTP verbs as instance methods.
+>
+> Requests which match the given verb and path will be routed through the specified handlers.
 
+This method is basically an alias of the [`.route`](#route) method, with the difference that the `verb` is defined by the method name itself.
+
+`Example:` [examples/verbs.js](examples/verbs.js)
+
+#### .all(path, ...handlers)
+```
+@param   {string}   path
+@param   {function} handlers - Any number, comma separated.
+@returns {rayo}
+```
+
+> Requests which match any verb and the given path will be routed through the specified handlers.
+
+`Example:` [examples/allVerbs.js](examples/allVerbs.js)
+
+#### .through(...handlers)
+```
+@param   {function} handlers - Any number, comma separated.
+@returns {rayo}
+```
+
+> All requests, any verb and any path, will be routed through the specified handlers.
+
+`Example:` [examples/through.js](examples/through.js)
+
+#### .route(verb, path, ...handlers)
+```
+@param   {string}   verb
+@param   {string}   path
+@param   {function} handlers - Any number, comma separated.
+@returns {rayo}
+```
+> Requests which match the given verb and path will be routed through the specified handlers.
+
+`Example:` [examples/route.js](examples/route.js)
 
 #### .bridge(path)
 ```
-Bridges make it possible to map one URL path to
-multiple HTTP verbs and functions.
-
-@param {string} path - The URL path to which verbs should be mapped.
+@param   {string} path - The URL path to which verbs should be mapped.
 @returns {bridge}
 ```
+> Route one path through multiple verbs and handlers.
 
-```js
-const server = rayo({
-  port: 5050
-});
+A `bridge` instance exposes all of Rayo's routing methods ([.through](.through), [.route](.route), [.verb](.verb) and [.all](.all)). You may create any number of bridges and Rayo will automagically take care of mapping them.
 
-server
-  .bridge('/home')
-  .get((req, res) => res.end('You hit home, via "GET"')
-  .post((req, res) => res.end('You hit home, via "POST"');
-
-server.start((address) => {
-  console.log(`Rayo is up on port ${address.port}`);
-});
-```
+`Example:` [examples/bridge.js](examples/bridge.js)
 
 #### .start(callback)
 ```
-Starts `Rayo` -Your server is now listening for incoming requests.
-
-@param {function} [callback] - Invoked on the server's `listening` event.
-@returns {http.Server | *}
+@param   {function} [callback] - Invoked on the server's `listening` event.
+@returns {http.Server}
 ```
+> Starts `Rayo` -Your server is now listening for incoming requests.
 
 > `Rayo` will return the server address with the callback, if one was provided. Useful, for example, to get the server port in case no port was specified in the options.
 
@@ -199,7 +222,7 @@ Starts `Rayo` -Your server is now listening for incoming requests.
 
 Here are some of the top contenders. Please note that these results are only meant as raw performance indicators. Your application's logic, which is what makes most applications slow, may not see great performance gains from using one framework over another.
 
-#### Node V.8.11.1
+#### Node V.8.11.2
  &nbsp; | Requests/s | Latency | Throughput/Mb
 ------- | ---------- | ------- | --------------
 Rayo    | 31958.4    | 3.05    | 3.54
@@ -208,14 +231,6 @@ Fastify | 30196.8    | 3.23    | 4.54
 Express | 22872.8    | 4.28    | 2.54
 Hapi    | 18463.2    | 5.32    | 2.74
 
-#### Node V.10.1.0
- &nbsp; | Requests/s | Latency | Throughput/Mb
-------- | ---------- | ------- | --------------
-Rayo    | 38929.6    | 2.5     | 4.34
-Polka   | 38875.2    | 2.5     | 4.36
-Fastify | 35940.8    | 2.71    | 5.38
-Express | 31235.2    | 3.12    | 3.46
-Hapi    | 25640      | 3.82    | 3.84
 
 See for yourself; clone this repository, install its dependencies and run `npm run bench`. Optionally, you may also define your test's parameters:
 ```
