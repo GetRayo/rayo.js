@@ -25,14 +25,20 @@ const middlewareFour = (req, res) => {
 const ray = rayo({ port: 9000 });
 
 ray
-  .bridge('/dia/:dias')
-  .get(middlewareOne, middlewareTwo, middlewareFour)
-  .post(middlewareOne, middlewareTwo, middlewareFour);
+  .bridge('/nada')
+  .all((req, res) => res.end('Nada'));
+
+// console.log(a);
+
+//  .get(middlewareOne, middlewareTwo, middlewareFour)
+//  .post(middlewareOne, middlewareTwo, middlewareFour);
+
 
 ray.bridge('/noche/:noches').get(middlewareOne, middlewareTwo, middlewareFour);
 
 ray
   .through(middlewareOne, middlewareTwo)
+  .all('/r', (req, res) => res.end('All on R'))
   .get('/', (req, res) => res.end('Thunderstruck'))
   .get('/hello/:name/:age', middlewareThree, middlewareFour)
   .route('GET', '/more', (req, res) => {

@@ -1,13 +1,9 @@
 const { METHODS } = require('http');
 const { exec, match, parse } = require('matchit');
 
-let bridges = [];
+const bridges = [];
 const bridgeThrough = (t) => {
-  if (!bridges.length) {
-    return;
-  }
-
-  bridges.forEach((b) => {
+  bridges.forEach((b, i) => {
     Object.keys(b.routes).forEach((m) => {
       t.routes[m] = b.routes[m].concat(t.routes[m] || []);
     });
@@ -18,9 +14,9 @@ const bridgeThrough = (t) => {
         t.mw[m][p] = b.mw[m][p].concat(t.mw[m][p] || []);
       });
     });
-  });
 
-  bridges = [];
+    bridges.splice(i, 1);
+  });
 };
 
 module.exports = class Router {
@@ -29,6 +25,12 @@ module.exports = class Router {
     this.mw = {};
     this.tw = [];
     this.cache = { urls: {}, queries: {} };
+    this.bridge = (pathToBridge) => {
+      const bridge = new Router(pathToBridge);
+      bridges.push(bridge);
+      return bridge;
+    };
+    METHODS.push('all');
     METHODS.forEach((method) => {
       const bind = [method];
       if (path) {
@@ -36,12 +38,6 @@ module.exports = class Router {
       }
       this[method.toLowerCase()] = this.route.bind(this, ...bind);
     });
-
-    this.bridge = (pathToBridge) => {
-      const bridge = new Router(pathToBridge);
-      bridges.push(bridge);
-      return bridge;
-    };
   }
 
   through(...functions) {
@@ -56,10 +52,18 @@ module.exports = class Router {
   }
 
   route(method, path, ...functions) {
-    this.routes[method] = this.routes[method] || [];
-    this.mw[method] = this.mw[method] || {};
-    this.routes[method].push(parse(path));
-    this.mw[method][path] = functions.map((fn) => (...args) => fn(...args));
+    const set = (m) => {
+      this.routes[m] = this.routes[m] || [];
+      this.mw[m] = this.mw[m] || {};
+      this.routes[m].push(parse(path));
+      this.mw[m][path] = functions.map((fn) => (...args) => fn(...args));
+    };
+
+    if (method === 'all') {
+      METHODS.forEach((m) => set(m));
+    } else {
+      set(method);
+    }
 
     return this;
   }
