@@ -4,8 +4,6 @@ coverage/
 test/
 
 README.md
-.codacy.yml
-.codeclimate.yml
 .editorconfig
 .eslintignore
 .eslintrc.json

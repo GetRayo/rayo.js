@@ -2,13 +2,12 @@
   <img src="https://raw.githubusercontent.com/GetRayo/Assets/master/Images/Cover.png" alt="Rayo" />
 </p>
 
-[![Lines of code](https://img.shields.io/badge/LOC-108-yellow.svg)](https://img.shields.io/badge/LOC-108-yellow.svg)
 [![Codacy](https://api.codacy.com/project/badge/Grade/d392c578eaaa4860823b8e4f9dadda63)](https://www.codacy.com/app/aichholzer/rayo.js?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=GetRayo/rayo.js&amp;utm_campaign=Badge_Grade)
 [![NSP Status](https://nodesecurity.io/orgs/rayo/projects/b16aa9a6-c080-44e1-9c91-77609aa498be/badge)](https://nodesecurity.io/orgs/rayo/projects/b16aa9a6-c080-44e1-9c91-77609aa498be)
 [![Build status](https://travis-ci.org/GetRayo/rayo.js.svg?branch=master)](https://travis-ci.org/GetRayo/rayo.js)
 [![Greenkeeper badge](https://badges.greenkeeper.io/GetRayo/rayo.js.svg)](https://greenkeeper.io/)
+[![Coverage Status](https://coveralls.io/repos/github/GetRayo/rayo.js/badge.svg?branch=master)](https://coveralls.io/github/GetRayo/rayo.js?branch=master)
 
-Yep, you got that right! -Only `108 lines of code` (after [ESLint](https://github.com/eslint/eslint) and [Prettier](https://github.com/prettier/prettier)).
 
 ```
 Everything in the -modern- web is arguable,
@@ -16,6 +15,11 @@ however we are convinced that Rayo is the fastest framework.
 In the world.
 Period.
 ```
+
+## In a nutshell
+
+- Really fast (yeah, like really fast).
+- Less than 150 lines of code, with routing and all.
 
 
 ## Install
@@ -154,7 +158,7 @@ $> Submit a PR.
 
 ## Acknowledgements
 
-:clap: `Thank you` [everyone](https://github.com/nodejs/node/graphs/contributors) who has made Nodejs possible and to all community members actively contributing to it.
+:clap: `Thank you` to [everyone](https://github.com/nodejs/node/graphs/contributors) who has made Nodejs possible and to all community members actively contributing to it.
 
 
 ## License
