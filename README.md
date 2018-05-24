@@ -81,7 +81,20 @@ Each `handler` exposes Node's core ServerResponse (`res`) object and it's your r
 
 As a convenience, `Rayo` binds a smart `send()` function to the ServerResponse (`res`) each handler receives, therefore you may `res.send()` responses.
 
-`res.send()` will try to guess the content type and send the appropriate headers, status code and body, it will also end the response. See [examples/send.js](https://github.com/GetRayo/rayo.js/tree/master/examples/send.js)
+`res.send()` will try to guess the content type and send the appropriate headers, status code and body, it will also end the response.
+
+```js
+const rayo = require('rayo');
+
+rayo({ port: 5050 })
+  .get('/', (req, res) => {
+    res.send({
+      message: 'I am .json reply.',
+      timestamp: +new Date()
+    });
+  })
+  .start();
+```
 
 > **Note:** `res.send()` will incur a performance hit due to the headers being written with every response, regardless of them being intended or not.
 
@@ -128,7 +141,9 @@ Please keep in mind that:
 	* `Default:` A new instance of [http.Server](https://nodejs.org/api/http.html#http_class_http_server).
 
 * `options.notFound` _{function}_
+
   > Invoked when undefined paths are requested.
+
   ```js
   /**
    * @param {object} req
@@ -138,11 +153,31 @@ Please keep in mind that:
     // Your custom logic.
   }
   ```
+
   `Default:` A "Page not found." message with a `404` status code.<br />
-  `Example:` [examples/notFound.js](https://github.com/GetRayo/rayo.js/tree/master/examples/notFound.js)
+
+  ```js
+  const rayo = require('rayo');
+
+  const options = {
+    port: 5050,
+    notFound: (req, res) => {
+      res.end('The requested page is magically gone.');
+    }
+  };
+
+  /**
+   * Visit `/hello` to trigger the `notFound` method.
+   */
+  rayo(options)
+    .get('/', (req, res) => res.end('Thunderstruck, GET'))
+    .start();
+  ```
 
 * `options.onError` _{function}_
-  > Invoked when step() receives an argument.
+
+  > Invoked when step() is called with an argument.
+
   ```js
   /**
    * @param {*}        error
@@ -154,8 +189,26 @@ Please keep in mind that:
     // Your custom logic.
   }
   ```
+
   `Default:` The error message (the argument) with a `400` status code.<br />
-  `Example:` [examples/onError.js](https://github.com/GetRayo/rayo.js/tree/master/examples/onError.js)
+
+  ```js
+  const rayo = require('rayo');
+
+  const options = {
+    port: 5050,
+    onError: (error, req, res) => {
+      res.end(`Here's your error: ${error}`);
+    }
+  };
+
+  /**
+   * Visit `/` to trigger the `onError` method.
+   */
+  rayo(options)
+    .get('/', (req, res, step) => step('Thunderstruck, error'))
+    .start();
+  ```
 
 
 #### .verb(path, ...handlers)
@@ -166,12 +219,22 @@ Please keep in mind that:
 ```
 
 > `Rayo` exposes all HTTP verbs as instance methods.
->
+
 > Requests which match the given verb and path will be routed through the specified handlers.
 
-This method is basically an alias of the [`.route`](#route) method, with the difference that the `verb` is defined by the method name itself.
+This method is basically an alias of the [`.route`](#routeverb-path-handlers) method, with the difference that the `verb` is defined by the method name itself.
 
-`Example:` [examples/verbs.js](https://github.com/GetRayo/rayo.js/tree/master/examples/verbs.js)
+```js
+const rayo = require('rayo');
+
+/**
+ * Setup a path ('/') on the specified HTTP verbs.
+ */
+rayo({ port: 5050 })
+  .get('/', (req, res) => res.end('Thunderstruck, GET'))
+  .head('/', (req, res) => res.end('Thunderstruck, HEAD'))
+  .start();
+```
 
 #### .all(path, ...handlers)
 ```
@@ -182,7 +245,16 @@ This method is basically an alias of the [`.route`](#route) method, with the dif
 
 > Requests which match any verb and the given path will be routed through the specified handlers.
 
-`Example:` [examples/allVerbs.js](https://github.com/GetRayo/rayo.js/tree/master/examples/allVerbs.js)
+```js
+const rayo = require('rayo');
+
+/**
+ * Setup a path ('/') on all HTTP verbs.
+ */
+rayo({ port: 5050 })
+  .all('/', (req, res) => res.end('Thunderstruck, all verbs.'))
+  .start();
+```
 
 #### .through(...handlers)
 ```
@@ -192,7 +264,27 @@ This method is basically an alias of the [`.route`](#route) method, with the dif
 
 > All requests, any verb and any path, will be routed through the specified handlers.
 
-`Example:` [examples/through.js](https://github.com/GetRayo/rayo.js/tree/master/examples/through.js)
+```js
+const rayo = require('rayo');
+
+// "age" handler
+const age = (req, res, step) => {
+  req.age = 21;
+  step();
+};
+
+// "name" handler
+const name = (req, res, step) => {
+  req.name = 'Rayo';
+  step();
+};
+
+rayo({ port: 5050 })
+  .through(age, name)
+  .get('/', (req, res) => res.end(`${req.age} | ${req.name}`))
+  .start();
+
+```
 
 #### .route(verb, path, ...handlers)
 ```
@@ -201,9 +293,16 @@ This method is basically an alias of the [`.route`](#route) method, with the dif
 @param   {function} handlers - Any number, comma separated.
 @returns {rayo}
 ```
+
 > Requests which match the given verb and path will be routed through the specified handlers.
 
-`Example:` [examples/route.js](https://github.com/GetRayo/rayo.js/tree/master/examples/route.js)
+```js
+const rayo = require('rayo');
+
+rayo({ port: 5050 })
+  .route('GET', '/', (req, res) => res.end('Thunderstruck, GET'))
+  .start();
+```
 
 #### .bridge(path)
 ```
@@ -212,9 +311,52 @@ This method is basically an alias of the [`.route`](#route) method, with the dif
 ```
 > Route one path through multiple verbs and handlers.
 
-A `bridge` instance exposes all of Rayo's routing methods ([.through](.through), [.route](.route), [.verb](.verb) and [.all](.all)). You may create any number of bridges and Rayo will automagically take care of mapping them.
+A `bridge` instance exposes all of Rayo's routing methods ([.through](#throughhandlers), [.route](#routeverb-path-handlers), [.verb](#verbpath-handlers) and [.all](#allpath-handlers)). You may create any number of bridges and Rayo will automagically take care of mapping them.
 
-`Example:` [examples/bridge.js](https://github.com/GetRayo/rayo.js/tree/master/examples/bridge.js)
+```js
+const rayo = require('rayo');
+
+const server = rayo({ port: 5050 });
+
+/**
+ * Bridge the `/home` path to the `GET` and `HEAD` verbs.
+ */
+server
+  .bridge('/home')
+  .get((req, res) => res.end('You are home, GET'))
+  .head((req, res) => res.end('You are home, HEAD'));
+
+/**
+ * Bridge the `/game` path to the `POST` and `PUT` verbs.
+ */
+server
+  .bridge('/game')
+  .post((req, res) => res.end('You are at the game, POST'))
+  .put((req, res) => res.end('You are at the game, PUT'));
+
+const auth = (req, res, step) => {
+  req.isAuthenticated = true;
+  step();
+};
+
+const session = (req, res, step) => {
+  req.hasSession = true;
+  step();
+};
+
+/**
+ * Bridge the `/account` path to the `GET`, `POST` and `PUT` verbs
+ * and through two handlers.
+ */
+server
+  .bridge('/account')
+  .through(auth, session)
+  .get((req, res) => res.end('You are at the account, GET'))
+  .post((req, res) => res.end('You are at the account, POST'))
+  .put((req, res) => res.end('You are at the account, PUT'));
+
+server.start();
+```
 
 #### .start(callback)
 ```
@@ -225,19 +367,28 @@ A `bridge` instance exposes all of Rayo's routing methods ([.through](.through),
 
 > `Rayo` will return the server address with the callback, if one was provided. Useful, for example, to get the server port in case no port was specified in the options.
 
+```js
+const rayo = require('rayo');
+
+rayo({ port: 5050 });
+  .get((req, res) => res.end('Thunderstruck'))
+  .start((address) => {
+    console.log(`Rayo is up on port ${address.port}`);
+  });
+```
 
 ## How does it compare?
 
 Here are some of the top contenders. Please note that these results are only meant as raw performance indicators. Your application's logic, which is what makes most applications slow, may not see great performance gains from using one framework over another.
 
 #### Node V.8.11.2
- &nbsp; | Requests/s | Latency | Throughput/Mb
-------- | ---------- | ------- | --------------
-Rayo    | 31958.4    | 3.05    | 3.54
-Polka   | 31913.6    | 3.06    | 3.54
-Fastify | 30196.8    | 3.23    | 4.54
-Express | 22872.8    | 4.28    | 2.54
-Hapi    | 18463.2    | 5.32    | 2.74
+ &nbsp; | Version | Requests/s | Latency | Throughput/Mb
+------- | ------: | ---------: | ------: | ------------:
+Rayo    | 0.5.10  | 36534.4    | 2.66    | 4.04
+Polka   | 0.4.0   | 35988.81   | 2.71    | 4.01
+Fastify | 1.5.0   | 31374.4    | 3.11    | 4.69
+Express | 4.16.3  | 29793.6    | 3.28    | 3.29
+Hapi    | 17.5.0  | 19944      | 4.93    | 2.99
 
 
 Run on your own hardware; clone this repository, install its dependencies and run `npm run bench`. Optionally, you may also define your test's parameters:
@@ -250,10 +401,6 @@ $> npm run bench -- -u http://localhost:5050 -c 1000 -p 25 -d 10
 * `-d` (_duration_) -Defaults to `5` (seconds)
 
 > Please note that these results ~~may~~ will vary on different hardware.
-
-
-## Examples
-May be found [here](https://github.com/GetRayo/rayo.js/tree/master/examples).
 
 
 ## Contribute
