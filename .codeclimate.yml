@@ -1,9 +1,0 @@
-version: "2"
-plugins:
-  eslint:
-    enabled: true
-    channel: "stable"
-exclude_patterns:
-  - "**.json"
-  - "**.md"
-  - "**.yml"

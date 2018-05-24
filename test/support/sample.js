@@ -1,6 +1,6 @@
 /* eslint no-console: 0 */
 
-const rayo = require('../bin/rayo');
+const rayo = require('../../bin/rayo');
 
 const middlewareOne = (req, res, step) => {
   req.age = req.params.age;

@@ -5,8 +5,8 @@ const chalk = require('chalk');
 const fs = require('fs');
 const minimist = require('minimist');
 const ora = require('ora');
-const { fork } = require('child_process');
 const Table = require('cli-table');
+const { fork } = require('child_process');
 
 const files = fs
   .readdirSync(`${__dirname}/compare`)
@@ -31,6 +31,7 @@ const cannon = (title = null) =>
         if (error) {
           return no(error);
         }
+
         return yes(result);
       }
     );
