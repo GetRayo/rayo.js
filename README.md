@@ -81,7 +81,7 @@ Each `handler` exposes Node's core ServerResponse (`res`) object and it's your r
 
 As a convenience, `Rayo` binds a smart `send()` function to the ServerResponse (`res`) each handler receives, therefore you may `res.send()` responses.
 
-`res.send()` will try to guess the content type and send the appropriate headers, status code and body, it will also end the response.
+`res.send()` will try to guess the content type and send the appropriate headers, status code and body, it will also end the response. See [examples/send.js](https://github.com/GetRayo/rayo.js/tree/master/examples/send.js)
 
 > **Note:** `res.send()` will incur a performance hit due to the headers being written with every response, regardless of them being intended or not.
 
@@ -139,7 +139,7 @@ Please keep in mind that:
   }
   ```
   `Default:` A "Page not found." message with a `404` status code.<br />
-  `Example:` [examples/notFound.js](examples/notFound.js)
+  `Example:` [examples/notFound.js](https://github.com/GetRayo/rayo.js/tree/master/examples/notFound.js)
 
 * `options.onError` _{function}_
   > Invoked when step() receives an argument.
@@ -155,7 +155,7 @@ Please keep in mind that:
   }
   ```
   `Default:` The error message (the argument) with a `400` status code.<br />
-  `Example:` [examples/onError.js](examples/onError.js)
+  `Example:` [examples/onError.js](https://github.com/GetRayo/rayo.js/tree/master/examples/onError.js)
 
 
 #### .verb(path, ...handlers)
@@ -171,7 +171,7 @@ Please keep in mind that:
 
 This method is basically an alias of the [`.route`](#route) method, with the difference that the `verb` is defined by the method name itself.
 
-`Example:` [examples/verbs.js](examples/verbs.js)
+`Example:` [examples/verbs.js](https://github.com/GetRayo/rayo.js/tree/master/examples/verbs.js)
 
 #### .all(path, ...handlers)
 ```
@@ -182,7 +182,7 @@ This method is basically an alias of the [`.route`](#route) method, with the dif
 
 > Requests which match any verb and the given path will be routed through the specified handlers.
 
-`Example:` [examples/allVerbs.js](examples/allVerbs.js)
+`Example:` [examples/allVerbs.js](https://github.com/GetRayo/rayo.js/tree/master/examples/allVerbs.js)
 
 #### .through(...handlers)
 ```
@@ -192,7 +192,7 @@ This method is basically an alias of the [`.route`](#route) method, with the dif
 
 > All requests, any verb and any path, will be routed through the specified handlers.
 
-`Example:` [examples/through.js](examples/through.js)
+`Example:` [examples/through.js](https://github.com/GetRayo/rayo.js/tree/master/examples/through.js)
 
 #### .route(verb, path, ...handlers)
 ```
@@ -203,7 +203,7 @@ This method is basically an alias of the [`.route`](#route) method, with the dif
 ```
 > Requests which match the given verb and path will be routed through the specified handlers.
 
-`Example:` [examples/route.js](examples/route.js)
+`Example:` [examples/route.js](https://github.com/GetRayo/rayo.js/tree/master/examples/route.js)
 
 #### .bridge(path)
 ```
@@ -214,7 +214,7 @@ This method is basically an alias of the [`.route`](#route) method, with the dif
 
 A `bridge` instance exposes all of Rayo's routing methods ([.through](.through), [.route](.route), [.verb](.verb) and [.all](.all)). You may create any number of bridges and Rayo will automagically take care of mapping them.
 
-`Example:` [examples/bridge.js](examples/bridge.js)
+`Example:` [examples/bridge.js](https://github.com/GetRayo/rayo.js/tree/master/examples/bridge.js)
 
 #### .start(callback)
 ```
@@ -240,7 +240,7 @@ Express | 22872.8    | 4.28    | 2.54
 Hapi    | 18463.2    | 5.32    | 2.74
 
 
-See for yourself; clone this repository, install its dependencies and run `npm run bench`. Optionally, you may also define your test's parameters:
+Run on your own hardware; clone this repository, install its dependencies and run `npm run bench`. Optionally, you may also define your test's parameters:
 ```
 $> npm run bench -- -u http://localhost:5050 -c 1000 -p 25 -d 10
 ```
@@ -252,9 +252,8 @@ $> npm run bench -- -u http://localhost:5050 -c 1000 -p 25 -d 10
 > Please note that these results ~~may~~ will vary on different hardware.
 
 
-
 ## Examples
-May be found [here](https://github.com/GetRayo/rayo.js/tree/master/test/examples).
+May be found [here](https://github.com/GetRayo/rayo.js/tree/master/examples).
 
 
 ## Contribute

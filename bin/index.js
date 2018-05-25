@@ -1,10 +1,10 @@
 const http = require('http');
 const parseurl = require('parseurl');
 const { parse } = require('querystring');
-const Bridge = require('./lib/bridge');
-const { send } = require('./lib/response');
+const Bridge = require('./bridge');
+const { send } = require('./response');
 
-class Rayo extends Bridge {
+class Index extends Bridge {
   constructor(options) {
     super();
     ({
@@ -59,4 +59,4 @@ class Rayo extends Bridge {
   }
 }
 
-module.exports = (options = {}) => new Rayo(options);
+module.exports = (options = {}) => new Index(options);

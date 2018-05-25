@@ -1,6 +1,6 @@
 /* eslint no-console: 0 */
 
-const rayo = require('../bin/rayo');
+const rayo = require('../../bin');
 
 const middlewareOne = (req, res, step) => {
   req.age = req.params.age;
@@ -28,7 +28,7 @@ const ray = rayo({
   port: 9000,
   notFound: (req, res) => res.end('NONO'),
   onError: (error, req, res) => res.end(error)
-}).through(middlewareOne, middlewareTwo);
+}).through(middlewareOne, middlewareTwo, middlewareThree, middlewareFour);
 
 ray
   .bridge('/err')
@@ -52,15 +52,15 @@ y
     res.end('LOL 1');
   });
 
-y.route('GET', '/pelo', (r, q, s) => {
+y.route('GET', '/pelo', (r, q) => {
   console.log('DXXXXX');
   q.send('PELO');
 });
 
 y.all((req, res) => {
-    console.log('TRES');
-    res.end('LOL 2');
-  });
+  console.log('TRES');
+  res.end('LOL 2');
+});
 
 // console.log(x.mw.GET['/err']);
 
