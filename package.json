@@ -1,10 +1,10 @@
 {
   "name": "rayo",
-  "version": "0.5.8",
+  "version": "0.5.10",
   "description": "⚡️⚡️ Rayo, an extremely fast micro-framework for Nodejs.",
-  "main": "bin/rayo.js",
+  "main": "bin/index.js",
   "engines": {
-    "node": ">=8.11.1"
+    "node": ">=8.11.2"
   },
   "repository": {
     "type": "git",
@@ -27,8 +27,8 @@
     "autocannon": "^2.4.1",
     "chalk": "^2.4.1",
     "cli-table": "^0.3.1",
-    "codecov": "^3.0.1",
-    "coveralls": "^3.0.0",
+    "codecov": "^3.0.2",
+    "coveralls": "^3.0.1",
     "dotenv": "^5.0.1",
     "eslint": "^4.19.0",
     "eslint-config-airbnb-base": "^12.1.0",
@@ -39,13 +39,13 @@
     "fastify": "^1.5.0",
     "hapi": "^17.5.0",
     "minimist": "^1.2.0",
-    "mocha": "^5.1.1",
+    "mocha": "^5.2.0",
     "nyc": "^11.8.0",
     "ora": "^2.1.0",
     "polka": "^0.4.0",
     "prettier": "^1.12.1",
     "should": "^13.2.1",
-    "sinon": "^5.0.9"
+    "sinon": "^5.0.10"
   },
   "directories": {
     "test": "test"

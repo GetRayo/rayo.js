@@ -11,6 +11,9 @@ const isJSON = (payload) => {
   return { valid, json };
 };
 
+/**
+ * @TODO Extend this to support more types.
+ */
 module.exports = {
   send(payload, statusCode) {
     const { valid, json } = isJSON(payload);

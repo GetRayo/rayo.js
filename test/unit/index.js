@@ -1,4 +1,4 @@
-const rayo = require('../../bin/rayo');
+const rayo = require('../../bin');
 const should = require('should');
 
 describe('Unit testing', () => {
