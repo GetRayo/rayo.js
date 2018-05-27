@@ -403,6 +403,11 @@ $> npm run bench -- -u http://localhost:5050 -c 1000 -p 25 -d 10
 > Please note that these results ~~may~~ will vary on different hardware.
 
 
+
+## Examples
+May be found [here](https://github.com/GetRayo/rayo.js/tree/master/test/examples).
+
+
 ## Contribute
 ```
 $> fork https://github.com/GetRayo/rayo.js
