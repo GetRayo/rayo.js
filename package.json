@@ -56,7 +56,7 @@
   "scripts": {
     "bench": "node test/benchmarks",
     "test": "npm run eslint && npm run unit && nyc report --reporter=text",
-    "unit": "nyc --reporter=lcov _mocha -R progress --timeout 100 test/unit",
+    "unit": "nyc --reporter=lcov _mocha -R spec --timeout 100 test/index.js",
     "eslint": "eslint --quiet .",
     "eslint:fix": "eslint --quiet --fix .",
     "report": "codecov && cat ./coverage/lcov.info | coveralls"
