@@ -22,6 +22,7 @@ module.exports = class Bridge {
     this.id = process.hrtime().join('');
     this.routes = {};
     this.h = {};
+    this.bridgedPath = path;
     METHODS.push('all');
     METHODS.forEach((verb) => {
       const bind = [verb];
@@ -33,7 +34,6 @@ module.exports = class Bridge {
 
     if (!path) {
       this.t = [];
-      this.bridgedPath = path;
       this.cache = { urls: {}, queries: {} };
       this.bridge = (bridgedPath) => {
         const bridge = new Bridge(bridgedPath);

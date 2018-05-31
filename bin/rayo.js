@@ -17,6 +17,17 @@ class Index extends Bridge {
     this.dispatch = this.dispatch.bind(this);
   }
 
+  start(callback = function cb() {}) {
+    this.server.listen(this.port, this.host);
+    this.server.on('request', this.dispatch);
+    this.server.on('listening', () => {
+      this.through();
+      callback(this.server.address());
+    });
+
+    return this.server;
+  }
+
   dispatch(req, res) {
     res.send = send.bind(res);
     const parsedUrl = parseurl(req);
@@ -30,17 +41,6 @@ class Index extends Bridge {
     req.query = this.cache.queries[parsedUrl.query] || parse(parsedUrl.query);
     this.cache.queries[parsedUrl.query] = req.query;
     return this.step(req, res, route.middleware.slice());
-  }
-
-  start(callback = function cb() {}) {
-    this.server.listen(this.port, this.host);
-    this.server.on('request', this.dispatch);
-    this.server.on('listening', () => {
-      this.through();
-      callback(this.server.address());
-    });
-
-    return this.server;
   }
 
   step(req, res, middleware, error = null, statusCode = null) {
