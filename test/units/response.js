@@ -1,10 +1,10 @@
-const response = require('../../bin/response');
 const should = require('should');
 const sinon = require('sinon');
+const response = require('../../bin/response');
 
 const fake = {
-  req: require.call(null, '../support/req'),
-  res: require.call(null, '../support/res')
+  req: require.call(null, '../utils/req'),
+  res: require.call(null, '../utils/res')
 };
 
 let sandbox;

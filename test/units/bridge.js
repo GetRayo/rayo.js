@@ -1,11 +1,18 @@
-const Bridge = require('../../bin/bridge');
 const should = require('should');
 const sinon = require('sinon');
 const { METHODS } = require('http');
+const Bridge = require('../../bin/bridge');
 
 const test = (bridge, path = null) => {
   should(bridge).be.an.Object();
-  should(bridge).have.properties('id', 'bridgedPath', 'routes', 'through', 'route', 'fetch');
+  should(bridge).have.properties(
+    'id',
+    'bridgedPath',
+    'routes',
+    'through',
+    'route',
+    'fetch'
+  );
   should(bridge.id).be.a.String();
   should(bridge.bridgedPath).be.equal(path);
   should(bridge.routes).be.an.Object();

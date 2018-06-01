@@ -33,7 +33,9 @@ class Index extends Bridge {
     const parsedUrl = parseurl(req);
     const route = this.fetch(req.method, parsedUrl.pathname);
     if (!route) {
-      return this.notFound ? this.notFound.call(null, req, res) : res.send('Page not found.', 404);
+      return this.notFound
+        ? this.notFound(req, res)
+        : res.send('Page not found.', 404);
     }
 
     req.params = route.params;
@@ -47,7 +49,7 @@ class Index extends Bridge {
     const fn = middleware.shift();
     if (error) {
       return this.onError
-        ? this.onError.call(null, error, req, res, fn)
+        ? this.onError(error, req, res, fn)
         : res.send(error, statusCode || 400);
     }
 
@@ -55,7 +57,7 @@ class Index extends Bridge {
       return fn(req, res, this.step.bind(this, req, res, middleware));
     }
 
-    throw new Error('No middleware to move to, there is nothing left in the stack.');
+    throw new Error('No handler to move to, the stack is empty.');
   }
 }
 
