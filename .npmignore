@@ -2,8 +2,10 @@
 assets/
 coverage/
 test/
+examples/
 
 README.md
+
 .editorconfig
 .eslintignore
 .eslintrc.json
