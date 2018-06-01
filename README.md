@@ -18,7 +18,10 @@ Period.
 
 ## In a nutshell
 
-- Really fast (yeah, like really fast).
+- Really fast (yeah, like really fast. Up to 50% faster than Express)
+- API similiar to Express.
+- Compatible with existing Express middlware.
+- Extensible & plugable.
 - Less than 150 lines of code, with routing and all.
 
 
