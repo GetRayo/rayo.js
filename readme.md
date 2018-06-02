@@ -407,13 +407,13 @@ rayo({ port: 5050 });
 Here are some of the top contenders. Please note that these results are only meant as raw performance indicators. Your application's logic, which is what makes most applications slow, may not see great performance gains from using one framework over another.
 
 #### Node V.8.11.2
- &nbsp; | Version | Requests/s | Latency | Throughput/Mb
-------- | ------: | ---------: | ------: | ------------:
-Rayo    | 1.0.2   | 32296      | 3.02    | 3.56
-Polka   | 0.4.0   | 30912      | 3.15    | 3.44
-Fastify | 1.5.0   | 27748.8    | 3.52    | 4.17
-Express | 4.16.3  | 26500.8    | 3.69    | 2.91
-Hapi    | 17.5.1  | 16545.6    | 5.95    | 2.46
+ &nbsp; | Router | Version | Requests/s | Latency | Throughput/Mb
+------- | :----: | ------: | ---------: | ------: | ------------:
+Rayo    |  ✔     | 1.0.2   | 32296      | 3.02    | 3.56
+Polka   |  ✔     | 0.4.0   | 30912      | 3.15    | 3.44
+Fastify |  ✔     | 1.5.0   | 27748.8    | 3.52    | 4.17
+Express |  ✔     | 4.16.3  | 26500.8    | 3.69    | 2.91
+Hapi    |  ✔     | 17.5.1  | 16545.6    | 5.95    | 2.46
 
 
 Run on your own hardware; clone this repository, install its dependencies and run `npm run bench`. Optionally, you may also define your test's parameters:
