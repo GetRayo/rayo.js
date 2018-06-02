@@ -17,10 +17,12 @@ const isJSON = (payload) => {
 module.exports = {
   send(payload, statusCode) {
     const { valid, json } = isJSON(payload);
+    const response = valid ? json : payload;
     this.writeHead(statusCode || 200, {
-      'Content-Type': valid ? 'application/json' : 'text/plain'
+      'Content-Type': valid ? 'application/json' : 'text/plain',
+      'Content-Length': (response || '').length
     });
-    this.write(valid ? json : payload);
+    this.write(response);
     this.end();
   }
 };

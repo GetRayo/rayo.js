@@ -1,11 +1,11 @@
-const rayo = require('../../bin/rayo');
 const should = require('should');
 const sinon = require('sinon');
 const { METHODS } = require('http');
+const rayo = require('../../bin/rayo');
 
 const fake = {
-  req: require.call(null, '../support/req'),
-  res: require.call(null, '../support/res')
+  req: require.call(null, '../utils/req'),
+  res: require.call(null, '../utils/res')
 };
 
 const test = (server) => {
@@ -125,7 +125,7 @@ module.exports = () => {
         should(error).be.an.Object();
         should(error.message).be.a.String();
         should(error.message).be.equal(
-          'No middleware to move to, there is nothing left in the stack.'
+          'No handler to move to, the stack is empty.'
         );
 
         done();
@@ -140,9 +140,11 @@ module.exports = () => {
 
     setTimeout(() => {
       test(server);
-      const nextStackFunction = server.step(fake.req, fake.res, [() => 'Retuned stack function.']);
+      const nextStackFunction = server.step(fake.req, fake.res, [
+        () => 'Returned stack function.'
+      ]);
       should(nextStackFunction).be.a.String();
-      should(nextStackFunction).be.equal('Retuned stack function.');
+      should(nextStackFunction).be.equal('Returned stack function.');
 
       done();
     }, 25);

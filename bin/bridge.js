@@ -48,7 +48,9 @@ module.exports = class Bridge {
       this.t = this.h['*'] && this.h['*']['*'] ? this.h['*']['*'] : [];
       bridgeThrough(this);
     } else {
-      const [verb, path] = this.bridgedPath ? ['all', this.bridgedPath] : ['*', '*'];
+      const [verb, path] = this.bridgedPath
+        ? ['all', this.bridgedPath]
+        : ['*', '*'];
       this.route(verb, path, ...handlers);
     }
 
@@ -61,7 +63,9 @@ module.exports = class Bridge {
       this.h[m] = this.h[m] || {};
       this.routes[m].push(parse(path));
       this.h[m][path] = this.h[m][path] || [];
-      this.h[m][path] = this.h[m][path].concat(handlers).map((fn) => (...args) => fn(...args));
+      this.h[m][path] = this.h[m][path]
+        .concat(handlers)
+        .map((fn) => (...args) => fn(...args));
     };
 
     if (verb === 'all') {
@@ -75,7 +79,8 @@ module.exports = class Bridge {
 
   fetch(verb, path) {
     this.cache.urls[verb] = this.cache.urls[verb] || {};
-    const url = this.cache.urls[verb][path] || match(path, this.routes[verb] || []);
+    const url =
+      this.cache.urls[verb][path] || match(path, this.routes[verb] || []);
     this.cache.urls[verb][path] = url;
     return !url.length
       ? null

@@ -11,18 +11,19 @@
 
 ```
 Everything in the -modern- web is arguable,
-however we are convinced that Rayo is the fastest framework.
-In the world.
+however we believe that Rayo is the fastest framework for Nodejs.
 Period.
 ```
 
 ## In a nutshell
 
-- Really fast (yeah, like really fast. Up to 50% faster than Express)
-- API similiar to Express.
-- Compatible with existing Express middlware.
-- Extensible & plugable.
-- Less than 150 lines of code, with routing and all.
+- Really fast (yeah, like really fast. See [how it compares](#how-does-it-compare)),
+- similar API to express¹,
+- compatible with express middleware,
+- extensible & plugable,
+- less than 150 lines of code, with routing and all.
+
+> ¹ `Rayo` is not intended to be an express replacement, thus the API is similar, inspired-by, and not identical.
 
 
 ## Install
@@ -75,7 +76,7 @@ rayo({ port: 5050 })
 
 `handler` functions accept an [IncomingMessage](https://nodejs.org/api/http.html#http_class_http_incomingmessage) (a.k.a `req`), a [ServerResponse](https://nodejs.org/dist/latest-v9.x/docs/api/http.html#http_class_http_serverresponse) (a.k.a `res`) and a `step through` (a.k.a `step`) function. `step()` is optional and it may be used to move the program's execution logic to the next handler in the stack.
 
-`step()` may also be used to invoke an error at any time. See [error handling](#error-handling).
+`step()` may also be used to return an error at any time. See [error handling](#error-handling).
 
 > **Note:** An error will be thrown if `step()` is called on an empty stack.
 
@@ -114,15 +115,35 @@ const fn = (req, res, step) => {
 
 #### Error handling
 
-## API
-
 ```
 Please keep in mind that:
 "Your code, your errors."¹
 - It's your responsibility to deal with them accordingly.
 ```
 
-> ¹ `Rayo` is WIP, so you may encounter actual errors that need to be dealt with. If so, please point them out to us via a `pull request`. 👍
+> ² `Rayo` is WIP, so you may encounter actual errors that need to be dealt with. If so, please point them out to us via a `pull request`. 👍
+
+If you have implemented a custom error function (see `onError` under [options](#rayooptions--)) you may invoke it at any time by calling the `step()` function with an argument.
+```js
+const rayo = require('rayo');
+
+const options = {
+  port: 5050,
+  onError: (error, req, res) => {
+    res.end(`Here's your error: ${error}`);
+  }
+};
+
+rayo(options)
+  .get('/', (req, res, step) => step('Thunderstruck!'))
+  .start();
+```
+In the above example, the error will be returned on the `/` path, since `step()` is being called with an argument. Run the example, open your browser and go to [http://localhost:5050](http://localhost:5050) and you will see "Here's your error: Thunderstruck!".
+
+If you don't have a custom error function, you may still call `step()` (with an argument), in which case the error will be returned using Rayo's standard function.
+
+
+## API
 
 #### rayo(options = {})
 ```
@@ -155,26 +176,7 @@ Please keep in mind that:
     // Your custom logic.
   }
   ```
-
-  `Default:` A "Page not found." message with a `404` status code.<br />
-
-  ```js
-  const rayo = require('rayo');
-
-  const options = {
-    port: 5050,
-    notFound: (req, res) => {
-      res.end('The requested page is magically gone.');
-    }
-  };
-
-  /**
-   * Visit `/hello` to trigger the `notFound` method.
-   */
-  rayo(options)
-    .get('/', (req, res) => res.end('Thunderstruck, GET'))
-    .start();
-  ```
+  `Default:` Rayo will send a "Page not found." message with a `404` status code.
 
 * `options.onError` _{function}_
 
@@ -190,26 +192,6 @@ Please keep in mind that:
   const fn = (error, req, res, step) => {
     // Your custom logic.
   }
-  ```
-
-  `Default:` The error message (the argument) with a `400` status code.<br />
-
-  ```js
-  const rayo = require('rayo');
-
-  const options = {
-    port: 5050,
-    onError: (error, req, res) => {
-      res.end(`Here's your error: ${error}`);
-    }
-  };
-
-  /**
-   * Visit `/` to trigger the `onError` method.
-   */
-  rayo(options)
-    .get('/', (req, res, step) => step('Thunderstruck, error'))
-    .start();
   ```
 
 
