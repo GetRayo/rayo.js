@@ -1,11 +1,9 @@
-.nyc_output/
+README.md
 assets/
 coverage/
+docs/
 test/
-examples/
-
-README.md
-
+.nyc_output/
 .editorconfig
 .eslintignore
 .eslintrc.json
