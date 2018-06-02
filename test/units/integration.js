@@ -1,6 +1,6 @@
 const http = require('http');
 const should = require('should');
-const rayo = require('../../bin/rayo');
+const rayo = require('../../packages/rayo/lib');
 
 const request = (resolver, options = {}) =>
   new Promise((yes) => {

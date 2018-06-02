@@ -1,0 +1,24 @@
+{
+  "name": "rayo",
+  "version": "1.0.4",
+  "description": "⚡️⚡️ Rayo, an extremely fast micro-framework for Nodejs.",
+  "main": "lib/index.js",
+  "engines": {
+    "node": ">=8.11.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GetRayo/rayo.js.git"
+  },
+  "homepage": "https://github.com/GetRayo/rayo.js",
+  "author": {
+    "name": "Stefan Aichholzer",
+    "email": "theaichholzer@gmail.com",
+    "url": "https://github.com/aichholzer"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "matchit": "1.x",
+    "parseurl": "1.x"
+  }
+}

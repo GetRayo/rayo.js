@@ -42,11 +42,11 @@ class Index extends Bridge {
     req.pathname = parsedUrl.pathname;
     req.query = this.cache.queries[parsedUrl.query] || parse(parsedUrl.query);
     this.cache.queries[parsedUrl.query] = req.query;
-    return this.step(req, res, route.middleware.slice());
+    return this.step(req, res, route.stack.slice());
   }
 
-  step(req, res, middleware, error = null, statusCode = null) {
-    const fn = middleware.shift();
+  step(req, res, stack, error = null, statusCode = null) {
+    const fn = stack.shift();
     if (error) {
       return this.onError
         ? this.onError(error, req, res, fn)
@@ -54,7 +54,7 @@ class Index extends Bridge {
     }
 
     if (fn) {
-      return fn(req, res, this.step.bind(this, req, res, middleware));
+      return fn(req, res, this.step.bind(this, req, res, stack));
     }
 
     throw new Error('No handler to move to, the stack is empty.');

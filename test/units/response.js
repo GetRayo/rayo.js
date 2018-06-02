@@ -1,6 +1,6 @@
 const should = require('should');
 const sinon = require('sinon');
-const response = require('../../bin/response');
+const response = require('../../packages/rayo/lib/response');
 
 const fake = {
   req: require.call(null, '../utils/req'),
