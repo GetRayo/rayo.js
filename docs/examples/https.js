@@ -1,6 +1,6 @@
 /* eslint no-console: 0 */
 
-const https = require('https');
+const https = require('docs/examples/https');
 const { readFileSync } = require('fs');
 const rayo = require('../../bin/rayo');
 

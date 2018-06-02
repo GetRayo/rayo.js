@@ -1,7 +1,6 @@
 README.md
 assets/
 coverage/
-docs/
 test/
 .nyc_output/
 .editorconfig
