@@ -1,8 +1,8 @@
 .nyc_output/
 assets/
 coverage/
+docs/
 test/
-examples/
 
 README.md
 
