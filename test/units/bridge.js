@@ -1,7 +1,7 @@
 const should = require('should');
 const sinon = require('sinon');
 const { METHODS } = require('http');
-const Bridge = require('../../bin/bridge');
+const Bridge = require('../../packages/rayo/lib/bridge');
 
 const test = (bridge, path = null) => {
   should(bridge).be.an.Object();

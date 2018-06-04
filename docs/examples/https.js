@@ -1,8 +1,8 @@
 /* eslint no-console: 0 */
 
-const https = require('docs/examples/https');
+const https = require('https');
 const { readFileSync } = require('fs');
-const rayo = require('../../bin/rayo');
+const rayo = require('../../packages/rayo/lib');
 
 const server = https.createServer({
   key: readFileSync(`${__dirname}/localhost.key`),

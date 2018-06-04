@@ -1,27 +1,24 @@
 {
-  "name": "rayo",
-  "version": "1.0.2",
-  "description": "⚡️⚡️ Rayo, an extremely fast micro-framework for Nodejs.",
-  "main": "bin/rayo.js",
-  "engines": {
-    "node": ">=8.11.2"
+  "private": true,
+  "author": {
+    "name": "Stefan Aichholzer",
+    "email": "theaichholzer@gmail.com",
+    "url": "https://github.com/aichholzer"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/GetRayo/rayo.js.git"
   },
-  "contributors": [],
-  "maintainers": [],
-  "author": {
-    "name": "Stefan Aichholzer",
-    "email": "play@analogbird.com",
-    "url": "https://github.com/aichholzer"
-  },
-  "license": "MIT",
   "homepage": "https://github.com/GetRayo/rayo.js",
-  "dependencies": {
-    "matchit": "1.x",
-    "parseurl": "1.x"
+  "scripts": {
+    "bench": "node test/benchmarks",
+    "prepublish": "cp LICENSE ./packages/rayo/",
+    "pretest": "lerna bootstrap",
+    "test": "npm run eslint && npm run unit && nyc report --reporter=text",
+    "unit": "nyc --reporter=lcov _mocha -R spec --timeout 100 test/index.js",
+    "eslint": "eslint --quiet .",
+    "eslint:fix": "eslint --quiet --fix .",
+    "report": "codecov && cat ./coverage/lcov.info | coveralls"
   },
   "devDependencies": {
     "autocannon": "2.x",
@@ -38,6 +35,7 @@
     "express": "4.x",
     "fastify": "1.x",
     "hapi": "17.x",
+    "lerna": "^2.11.0",
     "minimist": "1.x",
     "mocha": "5.x",
     "nyc": "12.x",
@@ -46,19 +44,5 @@
     "prettier": "1.x",
     "should": "13.x",
     "sinon": "5.x"
-  },
-  "directories": {
-    "test": "test"
-  },
-  "bugs": {
-    "url": "https://github.com/GetRayo/rayo.js/issues"
-  },
-  "scripts": {
-    "bench": "node test/benchmarks",
-    "test": "npm run eslint && npm run unit && nyc report --reporter=text",
-    "unit": "nyc --reporter=lcov _mocha -R spec --timeout 100 test/index.js",
-    "eslint": "eslint --quiet .",
-    "eslint:fix": "eslint --quiet --fix .",
-    "report": "codecov && cat ./coverage/lcov.info | coveralls"
   }
 }
