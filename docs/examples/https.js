@@ -2,7 +2,7 @@
 
 const https = require('https');
 const { readFileSync } = require('fs');
-const rayo = require('../bin/rayo');
+const rayo = require('../../bin/rayo');
 
 const server = https.createServer({
   key: readFileSync(`${__dirname}/localhost.key`),

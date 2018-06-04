@@ -25,6 +25,9 @@ Period.
 
 > ¹ `Rayo` is not intended to be an express replacement, thus the API is similar, inspired-by, and not identical.
 
+```
+There are examples 🔎 throughout the read.
+```
 
 ## Install
 
@@ -43,7 +46,8 @@ rayo({ port: 5050 })
   .start();
 ```
 
-#### With multiple handlers
+<details>
+<summary>🔎 (with multiple handlers)</summary>
 
 ```js
 const rayo = require('rayo');
@@ -71,6 +75,7 @@ rayo({ port: 5050 })
   })
   .start();
 ```
+</details>
 
 #### A note on handlers
 
@@ -86,6 +91,11 @@ As a convenience, `Rayo` binds a smart `send()` function to the ServerResponse (
 
 `res.send()` will try to guess the content type and send the appropriate headers, status code and body, it will also end the response.
 
+> **Note:** `res.send()` will incur a performance hit due to the headers being written with every response, regardless of them being intended or not.
+
+<details>
+<summary>🔎</summary>
+
 ```js
 const rayo = require('rayo');
 
@@ -98,8 +108,7 @@ rayo({ port: 5050 })
   })
   .start();
 ```
-
-> **Note:** `res.send()` will incur a performance hit due to the headers being written with every response, regardless of them being intended or not.
+</details>
 
 #### Handler signature
 ```js
@@ -124,6 +133,10 @@ Please keep in mind that:
 > ² `Rayo` is WIP, so you may encounter actual errors that need to be dealt with. If so, please point them out to us via a `pull request`. 👍
 
 If you have implemented a custom error function (see `onError` under [options](#rayooptions--)) you may invoke it at any time by calling the `step()` function with an argument.
+
+<details>
+<summary>🔎</summary>
+
 ```js
 const rayo = require('rayo');
 
@@ -138,6 +151,8 @@ rayo(options)
   .get('/', (req, res, step) => step('Thunderstruck!'))
   .start();
 ```
+</details><p></p>
+
 In the above example, the error will be returned on the `/` path, since `step()` is being called with an argument. Run the example, open your browser and go to [http://localhost:5050](http://localhost:5050) and you will see "Here's your error: Thunderstruck!".
 
 If you don't have a custom error function, you may still call `step()` (with an argument), in which case the error will be returned using Rayo's standard function.
@@ -208,6 +223,9 @@ If you don't have a custom error function, you may still call `step()` (with an 
 
 This method is basically an alias of the [`.route`](#routeverb-path-handlers) method, with the difference that the `verb` is defined by the method name itself.
 
+<details>
+<summary>🔎</summary>
+
 ```js
 const rayo = require('rayo');
 
@@ -219,6 +237,7 @@ rayo({ port: 5050 })
   .head('/', (req, res) => res.end('Thunderstruck, HEAD'))
   .start();
 ```
+</details>
 
 #### .all(path, ...handlers)
 ```
@@ -228,6 +247,9 @@ rayo({ port: 5050 })
 ```
 
 > Requests which match any verb and the given path will be routed through the specified handlers.
+
+<details>
+<summary>🔎</summary>
 
 ```js
 const rayo = require('rayo');
@@ -239,6 +261,7 @@ rayo({ port: 5050 })
   .all('/', (req, res) => res.end('Thunderstruck, all verbs.'))
   .start();
 ```
+</details>
 
 #### .through(...handlers)
 ```
@@ -247,6 +270,9 @@ rayo({ port: 5050 })
 ```
 
 > All requests, any verb and any path, will be routed through the specified handlers.
+
+<details>
+<summary>🔎</summary>
 
 ```js
 const rayo = require('rayo');
@@ -269,6 +295,7 @@ rayo({ port: 5050 })
   .start();
 
 ```
+</details>
 
 #### .route(verb, path, ...handlers)
 ```
@@ -280,6 +307,9 @@ rayo({ port: 5050 })
 
 > Requests which match the given verb and path will be routed through the specified handlers.
 
+<details>
+<summary>🔎</summary>
+
 ```js
 const rayo = require('rayo');
 
@@ -287,6 +317,7 @@ rayo({ port: 5050 })
   .route('GET', '/', (req, res) => res.end('Thunderstruck, GET'))
   .start();
 ```
+</details>
 
 #### .bridge(path)
 ```
@@ -296,6 +327,9 @@ rayo({ port: 5050 })
 > Route one path through multiple verbs and handlers.
 
 A `bridge` instance exposes all of Rayo's routing methods ([.through](#throughhandlers), [.route](#routeverb-path-handlers), [.verb](#verbpath-handlers) and [.all](#allpath-handlers)). You may create any number of bridges and Rayo will automagically take care of mapping them.
+
+<details>
+<summary>🔎</summary>
 
 ```js
 const rayo = require('rayo');
@@ -341,6 +375,7 @@ server
 
 server.start();
 ```
+</details>
 
 #### .start(callback)
 ```
@@ -351,6 +386,9 @@ server.start();
 
 > `Rayo` will return the server address with the callback, if one was provided. Useful, for example, to get the server port in case no port was specified in the options.
 
+<details>
+<summary>🔎</summary>
+
 ```js
 const rayo = require('rayo');
 
@@ -360,6 +398,7 @@ rayo({ port: 5050 });
     console.log(`Rayo is up on port ${address.port}`);
   });
 ```
+</details>
 
 ## How does it compare?
 
@@ -368,11 +407,11 @@ Here are some of the top contenders. Please note that these results are only mea
 #### Node V.8.11.2
  &nbsp; | Version | Requests/s | Latency | Throughput/Mb
 ------- | ------: | ---------: | ------: | ------------:
-Rayo    | 0.5.10  | 36534.4    | 2.66    | 4.04
-Polka   | 0.4.0   | 35988.81   | 2.71    | 4.01
-Fastify | 1.5.0   | 31374.4    | 3.11    | 4.69
-Express | 4.16.3  | 29793.6    | 3.28    | 3.29
-Hapi    | 17.5.0  | 19944      | 4.93    | 2.99
+Rayo    | 1.0.2   | 32296      | 3.02    | 3.56
+Polka   | 0.4.0   | 30912      | 3.15    | 3.44
+Fastify | 1.5.0   | 27748.8    | 3.52    | 4.17
+Express | 4.16.3  | 26500.8    | 3.69    | 2.91
+Hapi    | 17.5.1  | 16545.6    | 5.95    | 2.46
 
 
 Run on your own hardware; clone this repository, install its dependencies and run `npm run bench`. Optionally, you may also define your test's parameters:
@@ -387,9 +426,8 @@ $> npm run bench -- -u http://localhost:5050 -c 1000 -p 25 -d 10
 > Please note that these results ~~may~~ will vary on different hardware.
 
 
-
 ## Examples
-May be found [here](https://github.com/GetRayo/rayo.js/tree/master/test/examples).
+May be found [here](https://github.com/GetRayo/rayo.js/tree/master/docs/examples).
 
 
 ## Contribute
