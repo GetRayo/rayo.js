@@ -18,11 +18,9 @@ module.exports = {
   send(payload, statusCode) {
     const { valid, json } = isJSON(payload);
     const response = valid ? json : payload;
-    this.writeHead(statusCode || 200, {
-      'Content-Type': valid ? 'application/json' : 'text/plain',
-      'Content-Length': (response || '').length
-    });
-    this.write(response);
-    this.end();
+    this.statusCode = statusCode || 200;
+    this.setHeader('Content-Length', (response || '').length);
+    this.setHeader('Content-Type', valid ? 'application/json' : 'text/plain');
+    this.end(response);
   }
 };

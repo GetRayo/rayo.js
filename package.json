@@ -13,11 +13,12 @@
   "scripts": {
     "eslint:fix": "eslint --quiet --fix .",
     "bench": "node test/benchmarks",
-    "prepublishOnly": "npm test && cp LICENSE README.md ./packages/rayo/.",
+    "prepublishOnly": "npm test && cp LICENSE readme.md ./packages/rayo/.",
     "pretest": "lerna bootstrap && eslint --quiet .",
     "test": "nyc --reporter=lcov _mocha -R spec --timeout 100 test/index.js",
     "posttest": "nyc report --reporter=text",
-    "report": "codecov && cat ./coverage/lcov.info | coveralls && rm -rf ./coverage ./.nyc_output"
+    "report": "codecov && cat ./coverage/lcov.info | coveralls && rm -rf ./coverage ./.nyc_output",
+    "publish": "lerna publish"
   },
   "devDependencies": {
     "autocannon": "2.x",
