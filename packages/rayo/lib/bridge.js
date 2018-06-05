@@ -8,20 +8,22 @@ const bridgeThrough = (t) => {
       t.routes[v] = b.routes[v].concat(t.routes[v] || []);
     });
 
-    Object.keys(b.h).forEach((v) => {
-      t.h[v] = t.h[v] || {};
-      Object.keys(b.h[v]).forEach((p) => {
-        t.h[v][p] = b.h[v][p].concat(t.h[v][p] || []);
+    Object.keys(b.s).forEach((v) => {
+      t.s[v] = t.s[v] || {};
+      Object.keys(b.s[v]).forEach((p) => {
+        t.s[v][p] = b.s[v][p].concat(t.s[v][p] || []);
       });
     });
   });
+
+  return t;
 };
 
 module.exports = class Bridge {
   constructor(path = null) {
     this.id = process.hrtime().join('');
     this.routes = {};
-    this.h = {};
+    this.s = {};
     this.bridgedPath = path;
     METHODS.push('all');
     METHODS.forEach((verb) => {
@@ -45,27 +47,22 @@ module.exports = class Bridge {
 
   through(...handlers) {
     if (!handlers.length) {
-      this.t = this.h['*'] && this.h['*']['*'] ? this.h['*']['*'] : [];
-      bridgeThrough(this);
-    } else {
-      const [verb, path] = this.bridgedPath
-        ? ['all', this.bridgedPath]
-        : ['*', '*'];
-      this.route(verb, path, ...handlers);
+      this.t = this.s['*'] && this.s['*']['*'] ? this.s['*']['*'] : [];
+      return bridgeThrough(this);
     }
 
-    return this;
+    const [verb, path] = this.bridgedPath
+      ? ['all', this.bridgedPath]
+      : ['*', '*'];
+    return this.route(verb, path, ...handlers);
   }
 
   route(verb, path, ...handlers) {
     const set = (m) => {
       this.routes[m] = this.routes[m] || [];
-      this.h[m] = this.h[m] || {};
+      this.s[m] = this.s[m] || {};
       this.routes[m].push(parse(path));
-      this.h[m][path] = this.h[m][path] || [];
-      this.h[m][path] = this.h[m][path]
-        .concat(handlers)
-        .map((fn) => (...args) => fn(...args));
+      this.s[m][path] = (this.s[m][path] || []).concat(handlers);
     };
 
     if (verb === 'all') {
@@ -86,7 +83,7 @@ module.exports = class Bridge {
       ? null
       : {
           params: exec(path, url),
-          middleware: this.t.concat(this.h[verb][url[0].old])
+          stack: this.t.concat(this.s[verb][url[0].old])
         };
   }
 };
