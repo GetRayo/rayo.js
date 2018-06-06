@@ -24,9 +24,7 @@ const test = (options = {}, headers, status, body) => {
     should(headers['content-type']).be.equal(options.headers);
   }
 
-  should(parseInt(headers['content-length'], 10)).be.equal(
-    options.contentLength
-  );
+  should(parseInt(headers['content-length'], 10)).be.equal(options.contentLength);
   should(status).be.a.Number();
   should(status).be.equal(options.statusCode);
   should(body.toString()).be.equal(options.body);
@@ -38,9 +36,7 @@ module.exports = () => {
       .get('/', (req, res) => res.end('Thunderstruck!'))
       .start();
 
-    request(
-      test.bind(null, { contentLength: 14, body: 'Thunderstruck!' })
-    ).then(() => {
+    request(test.bind(null, { contentLength: 14, body: 'Thunderstruck!' })).then(() => {
       server.close();
       done();
     });
@@ -74,9 +70,7 @@ module.exports = () => {
       .get('/', (req, res) => res.send('Thunderstruck!'))
       .start();
 
-    request(
-      test.bind(null, { contentLength: 14, body: 'Thunderstruck!' })
-    ).then(() => {
+    request(test.bind(null, { contentLength: 14, body: 'Thunderstruck!' })).then(() => {
       server.close();
       done();
     });

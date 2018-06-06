@@ -124,9 +124,7 @@ module.exports = () => {
       } catch (error) {
         should(error).be.an.Object();
         should(error.message).be.a.String();
-        should(error.message).be.equal(
-          'No handler to move to, the stack is empty.'
-        );
+        should(error.message).be.equal('No handler to move to, the stack is empty.');
 
         done();
       }

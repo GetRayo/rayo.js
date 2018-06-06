@@ -33,9 +33,7 @@ class Index extends Bridge {
     const parsedUrl = parseurl(req);
     const route = this.fetch(req.method, parsedUrl.pathname);
     if (!route) {
-      return this.notFound
-        ? this.notFound(req, res)
-        : res.send('Page not found.', 404);
+      return this.notFound ? this.notFound(req, res) : res.send('Page not found.', 404);
     }
 
     req.params = route.params;

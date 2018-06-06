@@ -1,42 +1,43 @@
 const compressible = require('compressible');
-const { PassThrough } = require('stream');
 const { createGzip } = require('zlib');
 
-const canCompress = (req, res) => {
+const canPress = (req, res) => {
   const encoding = req.headers['accept-encoding'] || '';
-  const accepts = encoding.indexOf('gzip') >= 0;
-  return accepts && compressible(res.getHeader('content-type'));
+  return encoding.indexOf('gzip') >= 0 && compressible(res.getHeader('content-type'));
 };
 
 module.exports = (options = {}) => (req, res, step) => {
-  const buffers = [];
   const { write, end } = res;
+  const zip = createGzip(options);
+  zip.on('data', write.bind(res)).on('end', end.bind(res));
 
-  res.write = (data = null, encoding = 'utf8') => {
-    if (data && typeof data === 'string') {
-      buffers.push(Buffer.from(data, encoding));
+  const compress = (data, encoding) => {
+    if (!res.getHeader('content-encoding')) {
+      res.setHeader('content-encoding', 'gzip');
+      res.removeHeader('content-length');
     }
+
+    zip.write(Buffer.from(data, encoding));
   };
 
-  res.end = function resEnd(data = null, encoding = 'utf8') {
-    res.write(data, encoding);
-    if (!canCompress(req, res)) {
-      end.call(this, Buffer.concat(buffers).toString(), encoding);
-    } else {
-      res.removeHeader('Content-Length');
-      res.setHeader('Content-Encoding', 'gzip');
+  res.write = (data = null, encoding = 'utf8') =>
+    canPress(req, res) ? compress(data, encoding) : write.call(res, data, encoding);
 
-      const zip = createGzip(options);
-      const bufferStream = new PassThrough();
-      bufferStream.pipe(zip);
-      bufferStream.end(Buffer.concat(buffers));
-
-      zip.on('data', (chunk) => {
-        write.call(this, chunk, encoding);
-      });
-
-      zip.on('end', () => end.call(this));
+  res.end = (data = null, encoding = 'utf8') => {
+    if (!data) {
+      return zip.end();
     }
+
+    if (!res.getHeader('content-type')) {
+      res.setHeader('content-type', 'text/plain');
+    }
+
+    if (canPress(req, res)) {
+      compress(data, encoding);
+      return zip.end();
+    }
+
+    return end.call(res, data, encoding);
   };
 
   step();
