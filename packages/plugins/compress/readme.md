@@ -23,10 +23,23 @@ const rayo = require('rayo');
 const compress = require('@rayo/compress');
 
 rayo({ port: 5050 })
-  .through(compress)
-  .get('/hello/:user', (req, res) => res.send(`Hello ${req.params.user}`))
+  .through(compress())
+  .get('/hello/:user', (req, res) => res.send({
+    message: `Hello ${req.params.user}. I am compressed!`
+  }))
   .start();
 ```
+
+
+## API
+
+#### compress(options = {})
+```
+@param   {object} [options]
+@returns {function}
+```
+
+An object with key/value pairs as documented [here](https://nodejs.org/dist/latest-v8.x/docs/api/zlib.html#zlib_class_options).
 
 
 ## License

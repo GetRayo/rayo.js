@@ -8,7 +8,7 @@ const canCompress = (req, res) => {
   return accepts && compressible(res.getHeader('content-type'));
 };
 
-module.exports = (req, res, step) => {
+module.exports = (options = {}) => (req, res, step) => {
   const buffers = [];
   const { write, end } = res;
 
@@ -26,7 +26,7 @@ module.exports = (req, res, step) => {
       res.removeHeader('Content-Length');
       res.setHeader('Content-Encoding', 'gzip');
 
-      const zip = createGzip();
+      const zip = createGzip(options);
       const bufferStream = new PassThrough();
       bufferStream.pipe(zip);
       bufferStream.end(Buffer.concat(buffers));
