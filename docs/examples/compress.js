@@ -364,6 +364,19 @@ ray
   });
 
 /**
+ * Compression on this endpoint.
+ * "written" to -and "ended" with the response.
+ */
+ray
+  .bridge('/write-compress')
+  .through(compress())
+  .get((req, res) => {
+    res.setHeader('Content-Type', 'text/plain');
+    res.write('Hello!');
+    res.end('I am compressed!');
+  });
+
+/**
  * No compression (since there's no header) on this endpoint.
  * written to the response and "ended".
  */

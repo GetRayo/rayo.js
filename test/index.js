@@ -6,4 +6,8 @@ describe('Unit tests', () => {
   describe('Response', loadUnit('units/response'));
 
   describe('Integration tests', loadUnit('units/integration'));
+
+  describe('Plugins', () => {
+    describe('Compress', loadUnit('units/plugins/compress'));
+  });
 });
