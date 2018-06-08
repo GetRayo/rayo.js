@@ -51,9 +51,7 @@ module.exports = class Bridge {
       return bridgeThrough(this);
     }
 
-    const [verb, path] = this.bridgedPath
-      ? ['all', this.bridgedPath]
-      : ['*', '*'];
+    const [verb, path] = this.bridgedPath ? ['all', this.bridgedPath] : ['*', '*'];
     return this.route(verb, path, ...handlers);
   }
 
@@ -76,8 +74,7 @@ module.exports = class Bridge {
 
   fetch(verb, path) {
     this.cache.urls[verb] = this.cache.urls[verb] || {};
-    const url =
-      this.cache.urls[verb][path] || match(path, this.routes[verb] || []);
+    const url = this.cache.urls[verb][path] || match(path, this.routes[verb] || []);
     this.cache.urls[verb][path] = url;
     return !url.length
       ? null

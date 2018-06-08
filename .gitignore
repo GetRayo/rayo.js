@@ -41,3 +41,4 @@ jspm_packages/
 *.tgz
 
 package-lock.json
+/**/package-lock.json

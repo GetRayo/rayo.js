@@ -2,7 +2,8 @@
   "lerna": "2.11.0",
   "npmClient": "npm",
   "packages": [
-    "packages/*"
+    "packages/*",
+    "packages/plugins/*"
   ],
-  "version": "1.0.4"
+  "version": "independent"
 }

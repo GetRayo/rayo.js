@@ -13,11 +13,12 @@
   "scripts": {
     "eslint:fix": "eslint --quiet --fix .",
     "bench": "node test/benchmarks",
-    "prepublishOnly": "npm test && cp LICENSE README.md ./packages/rayo/.",
+    "prepublishOnly": "npm test && cp LICENSE readme.md ./packages/rayo/.",
     "pretest": "lerna bootstrap && eslint --quiet .",
-    "test": "nyc --reporter=lcov _mocha -R spec --timeout 100 test/index.js",
+    "test": "nyc --reporter=lcov _mocha -R spec --timeout 500 test/index.js",
     "posttest": "nyc report --reporter=text",
-    "report": "codecov && cat ./coverage/lcov.info | coveralls && rm -rf ./coverage ./.nyc_output"
+    "report": "codecov && cat ./coverage/lcov.info | coveralls && rm -rf ./coverage ./.nyc_output",
+    "publish": "lerna publish"
   },
   "devDependencies": {
     "autocannon": "2.x",
@@ -42,6 +43,7 @@
     "polka": "0.x",
     "prettier": "1.x",
     "should": "13.x",
-    "sinon": "5.x"
+    "sinon": "5.x",
+    "supertest": "^3.1.0"
   }
 }

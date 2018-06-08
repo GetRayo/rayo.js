@@ -15,6 +15,4 @@ const schema = {
   }
 };
 
-fastify
-  .get('/', schema, (req, reply) => reply.send('Thunderstruck...'))
-  .listen(5050);
+fastify.get('/', schema, (req, reply) => reply.send('Thunderstruck...')).listen(5050);
