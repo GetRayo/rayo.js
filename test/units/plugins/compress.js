@@ -1,5 +1,4 @@
 const should = require('should');
-const sinon = require('sinon');
 const request = require('supertest');
 const { createServer } = require('http');
 const { PassThrough } = require('stream');
@@ -32,14 +31,7 @@ const matchSize = (size) => (res) => {
     .and.equal(size);
 };
 
-let sandbox;
 module.exports = () => {
-  beforeEach(() => {
-    sandbox = sinon.createSandbox();
-  });
-
-  afterEach(() => sandbox.restore());
-
   it('no gzip content-encoding', (done) => {
     request(press((req, res) => res.end('Thunderstruck!')))
       .get('/')
@@ -185,14 +177,57 @@ module.exports = () => {
       .expect(200, done);
   });
 
+  it('10 Mb body, with 1 Kb compression chunks', (done) => {
+    const body = Buffer.alloc(1e7, '.');
+    const step = press(
+      (req, res) => {
+        res.setHeader('Content-Type', 'text/plain');
+        res.end(body);
+      },
+      { chunkSize: 1024 }
+    );
+
+    request(step)
+      .get('/')
+      .set('accept-encoding', 'gzip')
+      .expect(header('content-encoding', 'gzip'))
+      .expect(header('transfer-encoding', 'chunked'))
+      .expect(matchSize(body.length))
+      .expect(200, done);
+  });
+
   it('pipe, 1 Mb body', (done) => {
     const body = Buffer.alloc(1000000, '.');
-    const step = press((req, res) => {
-      res.setHeader('Content-Type', 'text/plain');
-      const bufferStream = new PassThrough();
-      bufferStream.pipe(res);
-      bufferStream.end(body);
-    });
+    const step = press(
+      (req, res) => {
+        res.setHeader('Content-Type', 'text/plain');
+        const bufferStream = new PassThrough();
+        bufferStream.pipe(res);
+        bufferStream.end(body);
+      },
+      { chunkSize: 1024 }
+    );
+
+    request(step)
+      .get('/')
+      .set('accept-encoding', 'gzip')
+      .expect(header('content-encoding', 'gzip'))
+      .expect(header('transfer-encoding', 'chunked'))
+      .expect(matchSize(body.length))
+      .expect(200, done);
+  });
+
+  it('pipe, 10 Mb body, with 1 Kb compression chunks', (done) => {
+    const body = Buffer.alloc(1e7, '.');
+    const step = press(
+      (req, res) => {
+        res.setHeader('Content-Type', 'text/plain');
+        const bufferStream = new PassThrough();
+        bufferStream.pipe(res);
+        bufferStream.end(body);
+      },
+      { chunkSize: 1024 }
+    );
 
     request(step)
       .get('/')
