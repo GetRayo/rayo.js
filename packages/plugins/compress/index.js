@@ -1,7 +1,7 @@
 const compressible = require('compressible');
 const { createGzip } = require('zlib');
 
-const canPress = (req, res) => {
+const doable = (req, res) => {
   if (!res.compressPass && res.getHeader('content-encoding')) {
     return false;
   }
@@ -10,31 +10,49 @@ const canPress = (req, res) => {
   return encoding.indexOf('gzip') >= 0 && compressible(res.getHeader('content-type'));
 };
 
+/**
+ * https://developer.mozilla.org/en-US/docs/Web/HTTP/Content_negotiation
+ * https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Vary
+ */
+const vary = (res, key) => {
+  let header = res.getHeader('vary');
+  if (!header) {
+    res.setHeader('vary', key);
+  } else {
+    header = header.split(',').map((h) => h.trim());
+    if (!header.includes(key)) {
+      header.push(key);
+      res.setHeader('vary', header.join(', '));
+    }
+  }
+};
+
 module.exports = (options = {}) => (req, res, step) => {
   const { write, end } = res;
   const zip = createGzip(options);
   zip.on('data', write.bind(res)).on('end', end.bind(res));
 
-  const compress = (data, encoding) => {
+  const press = (data, encoding) => {
     if (!res.getHeader('content-encoding')) {
       res.compressPass = true;
       res.setHeader('content-encoding', 'gzip');
       res.removeHeader('content-length');
+      vary(res, 'content-encoding');
     }
 
     zip.write(Buffer.from(data, encoding));
   };
 
   res.write = (data, encoding = 'utf8') =>
-    canPress(req, res) ? compress(data, encoding) : write.call(res, data, encoding);
+    doable(req, res) ? press(data, encoding) : write.call(res, data, encoding);
 
   res.end = (data = null, encoding = 'utf8') => {
     if (!data) {
       return zip.end();
     }
 
-    if (canPress(req, res)) {
-      compress(data, encoding);
+    if (doable(req, res)) {
+      press(data, encoding);
       return zip.end();
     }
 
