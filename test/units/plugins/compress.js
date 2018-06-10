@@ -206,15 +206,12 @@ module.exports = () => {
 
   it('pipe, 1 Mb body', (done) => {
     const body = Buffer.alloc(1000000, '.');
-    const step = press(
-      (req, res) => {
-        res.setHeader('Content-Type', 'text/plain');
-        const bufferStream = new PassThrough();
-        bufferStream.pipe(res);
-        bufferStream.end(body);
-      },
-      { chunkSize: 1024 }
-    );
+    const step = press((req, res) => {
+      res.setHeader('content-type', 'text/plain');
+      const bufferStream = new PassThrough();
+      bufferStream.pipe(res);
+      bufferStream.end(body);
+    });
 
     request(step)
       .get('/')
@@ -225,11 +222,29 @@ module.exports = () => {
       .expect(200, done);
   });
 
-  it('pipe, 10 Mb body, with 1 Kb compression chunks', (done) => {
+  it('pipe, 10 Mb body', (done) => {
+    const body = Buffer.alloc(1e7, '.');
+    const step = press((req, res) => {
+      res.setHeader('content-type', 'text/plain');
+      const bufferStream = new PassThrough();
+      bufferStream.pipe(res);
+      bufferStream.end(body);
+    });
+
+    request(step)
+      .get('/')
+      .set('accept-encoding', 'gzip')
+      .expect(header('content-encoding', 'gzip'))
+      .expect(header('transfer-encoding', 'chunked'))
+      .expect(matchSize(body.length))
+      .expect(200, done);
+  });
+
+  it('pipe, 10 Mb body with 1 Kb compression chunks', (done) => {
     const body = Buffer.alloc(1e7, '.');
     const step = press(
       (req, res) => {
-        res.setHeader('Content-Type', 'text/plain');
+        res.setHeader('content-type', 'text/plain');
         const bufferStream = new PassThrough();
         bufferStream.pipe(res);
         bufferStream.end(body);

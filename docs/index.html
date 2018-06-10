@@ -266,7 +266,7 @@ rayo({ port: 5050 })
       </blockquote>
       <p>A <code>bridge</code> instance exposes all of Rayo's routing methods (<a href="#throughhandlers">.through</a>, <a href="#routeverb-path-handlers">.route</a>, <a href="#verbpath-handlers">.verb</a> and <a href="#allpath-handlers">.all</a>). You may create any
         number of bridges and Rayo will automagically take care of mapping them.</p>
-      <p>What makes <code>bridges</code> really awesome is the fact that allow very granular control over what your application exposes. For example, enable <a href="https://github.com/GetRayo/rayo.js/tree/master/packages/plugings/compress">content compression</a> only on certain paths.</p>
+      <p>What makes <code>bridges</code> really awesome is the fact that allow very granular control over what your application exposes. For example, enable <a href="https://github.com/GetRayo/rayo.js/tree/master/packages/plugins/compress">content compression</a> only on certain paths.</p>
       <pre>const rayo = require('rayo');
 
 const server = rayo({ port: 5050 });
@@ -332,8 +332,8 @@ rayo({ port: 5050 });
         <thead>
         <tr>
           <th>&nbsp;</th>
-          <th style="text-align:right;">Router</th>
           <th style="text-align:right;">Version</th>
+          <th style="text-align:right;">Router</th>
           <th style="text-align:right;">Requests/s</th>
           <th style="text-align:right;">Latency</th>
           <th style="text-align:right;">Throughput/Mb</th>
@@ -342,40 +342,40 @@ rayo({ port: 5050 });
         <tbody>
         <tr>
           <td>Rayo</td>
-          <td style="text-align:center;">✔</td>
           <td style="text-align:right;">1.0.2</td>
+          <td style="text-align:center;">✔</td>
           <td style="text-align:right;">36534.4</td>
           <td style="text-align:right;">2.66</td>
           <td style="text-align:right;">4.04</td>
         </tr>
         <tr>
           <td>Polka</td>
-          <td style="text-align:center;">✔</td>
           <td style="text-align:right;">0.4.0</td>
+          <td style="text-align:center;">✔</td>
           <td style="text-align:right;">35988.81</td>
           <td style="text-align:right;">2.71</td>
           <td style="text-align:right;">4.01</td>
         </tr>
         <tr>
           <td>Fastify</td>
-          <td style="text-align:center;">✔</td>
           <td style="text-align:right;">1.5.0</td>
+          <td style="text-align:center;">✔</td>
           <td style="text-align:right;">31374.4</td>
           <td style="text-align:right;">3.11</td>
           <td style="text-align:right;">4.69</td>
         </tr>
         <tr>
           <td>Express</td>
-          <td style="text-align:center;">✔</td>
           <td style="text-align:right;">4.16.3</td>
+          <td style="text-align:center;">✔</td>
           <td style="text-align:right;">29793.6</td>
           <td style="text-align:right;">3.28</td>
           <td style="text-align:right;">3.29</td>
         </tr>
         <tr>
           <td>Hapi</td>
-          <td style="text-align:center;">✔</td>
           <td style="text-align:right;">17.5.0</td>
+          <td style="text-align:center;">✔</td>
           <td style="text-align:right;">19944</td>
           <td style="text-align:right;">4.93</td>
           <td style="text-align:right;">2.99</td>
@@ -403,6 +403,11 @@ $&gt; Submit a PR.</pre>
       <p>👏🏼 Thank you to <a href="https://github.com/nodejs/node/graphs/contributors">everyone</a> who has made Nodejs possible and to all community members actively contributing to it.</p>
       <h3 id="license">License</h3>
       <p><a href="https://github.com/GetRayo/rayo.js/blob/master/LICENSE">MIT</a></p>
+    </div>
+  </div>
+  <div class="row footer">
+    <div class="col-md-12" style="text-align: center;">
+      <a href="https://github.com/aichholzer"><i class="fa fa-heart fa-1x" aria-hidden="true"></i></a>
     </div>
   </div>
 </div>
