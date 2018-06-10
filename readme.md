@@ -328,7 +328,7 @@ rayo({ port: 5050 })
 
 A `bridge` instance exposes all of Rayo's routing methods ([.through](#throughhandlers), [.route](#routeverb-path-handlers), [.verb](#verbpath-handlers) and [.all](#allpath-handlers)). You may create any number of bridges and Rayo will automagically take care of mapping them.
 
-What makes `bridges` really awesome is the fact that allow very granular control over what your application exposes. For example, enable [content compression](https://github.com/GetRayo/rayo.js/tree/master/packages/plugings/compress) only on certain paths.
+What makes `bridges` really awesome is the fact that allow very granular control over what your application exposes. For example, enable [content compression](https://github.com/GetRayo/rayo.js/tree/master/packages/plugins/compress) only on certain paths.
 
 <details>
 <summary>🔎</summary>
@@ -407,14 +407,13 @@ rayo({ port: 5050 });
 Here are some of the top contenders. Please note that these results are only meant as raw performance indicators. Your application's logic, which is what makes most applications slow, may not see great performance gains from using one framework over another.
 
 #### Node V.8.11.2
- &nbsp; | Router | Version | Requests/s | Latency | Throughput/Mb
-------- | :----: | ------: | ---------: | ------: | ------------:
-Rayo    |  ✔     | 1.0.2   | 32296      | 3.02    | 3.56
-Polka   |  ✔     | 0.4.0   | 30912      | 3.15    | 3.44
-Fastify |  ✔     | 1.5.0   | 27748.8    | 3.52    | 4.17
-Express |  ✔     | 4.16.3  | 26500.8    | 3.69    | 2.91
-Hapi    |  ✔     | 17.5.1  | 16545.6    | 5.95    | 2.46
-
+&nbsp;  | Version | Router | Requests/s | Latency | Throughput/Mb
+------- | ------: | :----: | ---------: | ------: | ------------:
+Rayo    | 1.0.2   | ✔      | 32878.4    | 2.97    | 3.66
+Polka   | 0.4.0   | ✔      | 31915.2    | 3.06    | 3.54
+Fastify | 1.5.0   | ✔      | 29688      | 3.29    | 4.44
+Express | 4.16.3  | ✔      | 25595.2    | 3.82    | 2.84
+Hapi    | 17.5.1  | ✔      | 18560.8    | 5.3     | 2.76
 
 Run on your own hardware; clone this repository, install its dependencies and run `npm run bench`. Optionally, you may also define your test's parameters:
 ```

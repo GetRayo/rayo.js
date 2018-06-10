@@ -1,5 +1,4 @@
 const should = require('should');
-const sinon = require('sinon');
 const { METHODS } = require('http');
 const Bridge = require('../../packages/rayo/lib/bridge');
 
@@ -28,14 +27,7 @@ const test = (bridge, path = null) => {
   }
 };
 
-let sandbox;
 module.exports = () => {
-  beforeEach(() => {
-    sandbox = sinon.createSandbox();
-  });
-
-  afterEach(() => sandbox.restore());
-
   it('Without path', (done) => {
     test(new Bridge());
     done();
