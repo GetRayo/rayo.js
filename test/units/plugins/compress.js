@@ -372,4 +372,27 @@ module.exports = () => {
       .expect(header('vary', 'content-type, transfer-encoding, content-encoding'))
       .expect(200, json, done);
   });
+
+  it('vary header, *', (done) => {
+    const json = JSON.stringify({
+      message: 'Thunderstruck',
+      age: 20,
+      name: 'Rayo',
+      power: 'reduction'
+    });
+    const step = press((req, res) => {
+      res.setHeader('vary', '*');
+      res.setHeader('content-type', 'application/json');
+      res.end(json);
+    });
+
+    request(step)
+      .get('/')
+      .set('accept-encoding', 'gzip')
+      .expect(header('content-type', 'application/json'))
+      .expect(header('content-encoding', 'gzip'))
+      .expect(header('transfer-encoding', 'chunked'))
+      .expect(header('vary', '*'))
+      .expect(200, json, done);
+  });
 };

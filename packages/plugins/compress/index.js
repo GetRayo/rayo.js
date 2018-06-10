@@ -18,7 +18,7 @@ const vary = (res, key) => {
   let header = res.getHeader('vary');
   if (!header) {
     res.setHeader('vary', key);
-  } else {
+  } else if (header.trim() !== '*') {
     header = header.split(',').map((h) => h.trim());
     if (!header.includes(key)) {
       header.push(key);
