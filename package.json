@@ -43,7 +43,7 @@
     "polka": "0.x",
     "prettier": "1.x",
     "should": "13.x",
-    "sinon": "5.x",
+    "sinon": "^6.0.0",
     "supertest": "^3.1.0"
   }
 }
