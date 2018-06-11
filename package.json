@@ -33,17 +33,18 @@
     "eslint-plugin-import": "2.x",
     "eslint-plugin-prettier": "2.x",
     "express": "4.x",
-    "fastify": "1.x",
+    "fastify": "^1.6.0",
     "hapi": "17.x",
     "lerna": "2.x",
     "minimist": "1.x",
     "mocha": "5.x",
     "nyc": "12.x",
     "ora": "2.x",
-    "polka": "0.x",
-    "prettier": "1.x",
+    "pancho": "^0.1.1",
+    "polka": "^0.4.0",
+    "prettier": "^1.13.5",
     "should": "13.x",
-    "sinon": "5.x",
+    "sinon": "^6.0.0",
     "supertest": "^3.1.0"
   }
 }

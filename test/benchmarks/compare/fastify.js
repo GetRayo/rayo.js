@@ -14,5 +14,8 @@ const schema = {
     }
   }
 };
+const handler = (req, reply) => {
+  reply.send(`Thunderstruck... ${req.params.alias}`);
+};
 
-fastify.get('/', schema, (req, reply) => reply.send('Thunderstruck...')).listen(5050);
+fastify.get('/users/:alias', schema, handler).listen(5050);

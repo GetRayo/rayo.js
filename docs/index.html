@@ -325,70 +325,15 @@ rayo({ port: 5050 });
     console.log(`Rayo is up on port ${address.port}`);
   });</pre>
       <h3 id="how-does-it-compare">How does it compare?</h3>
-      <p>Here are some of the top contenders. Please note that these results are only meant as raw performance indicators. Your application's logic, which is what makes most applications slow, may not see great performance gains from using one framework
-        over another.</p>
-      <h4 id="node-v8112">Node V.8.11.2</h4>
-      <table>
-        <thead>
-        <tr>
-          <th>&nbsp;</th>
-          <th style="text-align:right;">Version</th>
-          <th style="text-align:right;">Router</th>
-          <th style="text-align:right;">Requests/s</th>
-          <th style="text-align:right;">Latency</th>
-          <th style="text-align:right;">Throughput/Mb</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-          <td>Rayo</td>
-          <td style="text-align:right;">1.0.2</td>
-          <td style="text-align:center;">✔</td>
-          <td style="text-align:right;">36534.4</td>
-          <td style="text-align:right;">2.66</td>
-          <td style="text-align:right;">4.04</td>
-        </tr>
-        <tr>
-          <td>Polka</td>
-          <td style="text-align:right;">0.4.0</td>
-          <td style="text-align:center;">✔</td>
-          <td style="text-align:right;">35988.81</td>
-          <td style="text-align:right;">2.71</td>
-          <td style="text-align:right;">4.01</td>
-        </tr>
-        <tr>
-          <td>Fastify</td>
-          <td style="text-align:right;">1.5.0</td>
-          <td style="text-align:center;">✔</td>
-          <td style="text-align:right;">31374.4</td>
-          <td style="text-align:right;">3.11</td>
-          <td style="text-align:right;">4.69</td>
-        </tr>
-        <tr>
-          <td>Express</td>
-          <td style="text-align:right;">4.16.3</td>
-          <td style="text-align:center;">✔</td>
-          <td style="text-align:right;">29793.6</td>
-          <td style="text-align:right;">3.28</td>
-          <td style="text-align:right;">3.29</td>
-        </tr>
-        <tr>
-          <td>Hapi</td>
-          <td style="text-align:right;">17.5.0</td>
-          <td style="text-align:center;">✔</td>
-          <td style="text-align:right;">19944</td>
-          <td style="text-align:right;">4.93</td>
-          <td style="text-align:right;">2.99</td>
-        </tr>
-        </tbody>
-      </table>
-      <p>Run on your own hardware; clone this repository, install its dependencies and run npm run bench. Optionally, you may also define your test's parameters:</p>
+      <p></p>Visit the <a href="https://github.com/GetRayo/rayo.js#how-does-it-compare">repository</a> for the latest results.
+      <p>Run on your own hardware; clone this repository, install the dependencies and run npm run bench. Optionally, you may also define your test's parameters:</p>
       <pre>$&gt; npm run bench -- -u http://localhost:5050 -c 1000 -p 25 -d 10</pre>
       <ul>
         <li><code>-u</code> <em>url</em> -Default: http://localhost:5050</li>
         <li><code>-c</code> <em>connections</em> -Default: 100</li>
         <li><code>-p</code> <em>pipelines</em> -Default: 10</li>
-        <li><code>-d</code> <em>duration</em> -Default: 5 (seconds)</li>
+        <li><code>-d</code> <em>duration</em> -Default: 10 (seconds)</li>
+        <li><code>-o</code> <em>only</em> Run only one particular benchmark. -Defaults to null.</li>
       </ul>
       <blockquote>
         Please note that these results <del>may</del> will vary on different hardware.

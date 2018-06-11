@@ -5,13 +5,14 @@ const chalk = require('chalk');
 const fs = require('fs');
 const minimist = require('minimist');
 const ora = require('ora');
+const nap = require('pancho');
 const Table = require('cli-table');
 const { fork } = require('child_process');
 
 const files = fs
   .readdirSync(`${__dirname}/compare`)
   .filter((file) => file.match(/(.+)\.js$/))
-  .sort();
+  .sort((a, b) => a < b);
 
 const argv = minimist(process.argv.slice(2));
 const cannon = (title = null) =>
@@ -20,20 +21,14 @@ const cannon = (title = null) =>
       Object.assign(
         {},
         {
-          url: argv.u || 'http://localhost:5050',
+          url: argv.u || 'http://localhost:5050/users/rayo',
           connections: argv.c || 100,
           pipelining: argv.p || 10,
           duration: argv.d || 5
         },
         { title }
       ),
-      (error, result) => {
-        if (error) {
-          return no(error);
-        }
-
-        return yes(result);
-      }
+      (error, result) => (error ? no(error) : yes(result))
     );
   });
 
@@ -42,9 +37,15 @@ const benchmark = async (results) => {
   results.push(
     await new Promise(async (yes, no) => {
       const file = files[index];
+      if (argv.o && argv.o !== file) {
+        return yes();
+      }
+
       const forked = fork(`${__dirname}/compare/${file}`);
+      await nap(0.25);
+
       try {
-        // Warm-up & test
+        // 1 warm-up round, 1 to measure.
         const spin = ora(`Warming up ${chalk.blue(file)}`).start();
         spin.color = 'yellow';
         await cannon();
@@ -54,6 +55,7 @@ const benchmark = async (results) => {
         spin.text = `${chalk.blue(file)}`;
         spin.succeed();
         forked.kill('SIGINT');
+        await nap(0.25);
         return yes(result);
       } catch (error) {
         return no(error);
@@ -81,12 +83,14 @@ benchmark([]).then((results) => {
   });
 
   results.forEach((result) => {
-    table.push([
-      chalk.blue(result.title),
-      result.requests.average,
-      result.latency.average,
-      (result.throughput.average / 1024 / 1024).toFixed(2)
-    ]);
+    if (result) {
+      table.push([
+        chalk.blue(result.title),
+        result.requests.average,
+        result.latency.average,
+        (result.throughput.average / 1024 / 1024).toFixed(2)
+      ]);
+    }
   });
 
   console.log(table.toString());
