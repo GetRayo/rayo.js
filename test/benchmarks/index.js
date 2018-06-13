@@ -11,9 +11,8 @@ const { fork } = require('child_process');
 
 const shuffle = (array) => {
   let index = array.length;
-  while (index !== 0) {
-    const rand = Math.floor(Math.random() * index);
-    index -= 1;
+  while (index) {
+    const rand = Math.floor(Math.random() * (index -= 1));
     const temp = array[index];
     array[index] = array[rand];
     array[rand] = temp;
