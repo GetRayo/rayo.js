@@ -404,25 +404,42 @@ rayo({ port: 5050 });
 
 ## How does it compare?
 
-Here are some of the top contenders. Please note that these results are only meant as raw performance indicators. Your application's logic, which is what makes most applications slow, may not see great performance gains from using one framework over another.
+Here are some of the top contenders. Please note that these results are only meant as raw performance indicators. Your application's logic, which is what makes most applications slow, may not see great performance gains from using one framework over another.<br />
+All tests were conducted on a CPU optimized server (DigitalOcean, 32 GB RAM, 16 vCPUs, Ubuntu 16.04.4 x64).
 
-#### Node V.8.11.2
+<details>
+<summary>🔎 -Node V.8.11.3</summary>
+
 &nbsp;  | Version | Router | Requests/s | Latency | Throughput/Mb
 ------- | ------: | :----: | ---------: | ------: | ------------:
-Rayo    | 1.0.2   | ✔      | 32878.4    | 2.97    | 3.66
-Polka   | 0.4.0   | ✔      | 31915.2    | 3.06    | 3.54
-Fastify | 1.5.0   | ✔      | 29688      | 3.29    | 4.44
-Express | 4.16.3  | ✔      | 25595.2    | 3.82    | 2.84
-Hapi    | 17.5.1  | ✔      | 18560.8    | 5.3     | 2.76
+Polka   | 0.4.0   | ✔      | 62410      | 1.52    | 7.28
+Rayo    | 1.0.4   | ✔      | 62174.4    | 1.54    | 7.08
+Fastify | 1.6.0   | ✔      | 56784      | 1.69    | 8.75
+Express | 4.16.3  | ✔      | 50665.6    | 1.9     | 5.88
+</details>
+<p></p>
 
-Run on your own hardware; clone this repository, install its dependencies and run `npm run bench`. Optionally, you may also define your test's parameters:
+<details>
+<summary>🔎 -Node V.10.4.1</summary>
+
+&nbsp;  | Version | Router | Requests/s | Latency | Throughput/Mb
+------- | ------: | :----: | ---------: | ------: | ------------:
+Rayo    | 1.0.4   | ✔      | 71612.8    | 1.33    | 8.28
+Polka   | 0.4.0   | ✔      | 71094.4    | 1.33    | 8.18
+Fastify | 1.6.0   | ✔      | 67740.8    | 1.4     | 10.55
+Express | 4.16.3  | ✔      | 62108.8    | 1.53    | 7.17
+</details>
+<p></p>
+
+Run on your own hardware; clone this repository, install the dependencies and run `npm run bench`. Optionally, you may also define your test's parameters:
 ```
 $> npm run bench -- -u http://localhost:5050 -c 1000 -p 25 -d 10
 ```
 * `-u` (_url_) -Defaults to `http://localhost:5050`
 * `-c` (_connections_) -Defaults to `100`
 * `-p` (_pipelines_) -Defaults to `10`
-* `-d` (_duration_) -Defaults to `5` (seconds)
+* `-d` (_duration_) -Defaults to `10` (seconds)
+* `-o` (_only_) Run only one particular benchmark. -Defaults to `null`
 
 > Please note that these results ~~may~~ will vary on different hardware.
 

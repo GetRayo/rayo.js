@@ -1,5 +1,8 @@
 const rayo = require('../../../packages/rayo/lib');
 
-rayo({ port: 5050 })
-  .get('/', (req, res) => res.end('Thunderstruck...'))
-  .start();
+const app = rayo({ port: 5050 });
+const handler = (req, res) => {
+  res.end(`Thunderstruck... ${req.params.alias}`);
+};
+
+app.get('/users/:alias', handler).start();

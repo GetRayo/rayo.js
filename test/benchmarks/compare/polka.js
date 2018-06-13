@@ -1,5 +1,8 @@
 const polka = require('polka');
 
-polka()
-  .get('/', (req, res) => res.end('Thunderstruck...'))
-  .listen(5050);
+const app = polka();
+const handler = (req, res) => {
+  res.end(`Thunderstruck... ${req.params.alias}`);
+};
+
+app.get('/users/:alias', handler).listen(5050);
