@@ -9,10 +9,21 @@ const nap = require('pancho');
 const Table = require('cli-table');
 const { fork } = require('child_process');
 
-const files = fs
-  .readdirSync(`${__dirname}/compare`)
-  .filter((file) => file.match(/(.+)\.js$/))
-  .sort((a, b) => a < b);
+const shuffle = (array) => {
+  let index = array.length;
+  while (index) {
+    const rand = Math.floor(Math.random() * (index -= 1));
+    const temp = array[index];
+    array[index] = array[rand];
+    array[rand] = temp;
+  }
+
+  return array;
+};
+
+const files = shuffle(
+  fs.readdirSync(`${__dirname}/compare`).filter((file) => file.match(/(.+)\.js$/))
+);
 
 const argv = minimist(process.argv.slice(2));
 const cannon = (title = null) =>
