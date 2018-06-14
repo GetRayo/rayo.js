@@ -90,7 +90,7 @@ rayo({ port: 5050 })
 
 Each `handler` exposes Node's native ServerResponse (`res`) object and it's your responsibility to deal with it accordingly, e.g. end the response (`res.end()`) where expected.
 
-If you need an easier and more convenient way to deal with your responses, take a look at [@rayo/send](https://github.com/GetRayo/rayo.js/tree/master/packages/plugins/send).
+If you need an easier and more convenient way to deal with your responses, take a look at [@rayo/send](https://github.com/GetRayo/rayo.js/tree/master/packages/send).
 
 #### Handler signature
 
@@ -150,17 +150,22 @@ If you don't have an error function, you may still call `step()` (with an argume
 @returns {Rayo}
 ```
 
-- `options.port` _{number}_
-  _ Listen on this port for incoming connections.
-  _ If port is omitted or is 0, the operating system will assign an arbitrary, unused port.
-
 - `options.host` _{string}_
-  _ Listen on this host for incoming connections.
-  _ If host is omitted, the server will accept connections on the unspecified IPv6 address (::) when IPv6 is available, or the unspecified IPv4 address (0.0.0.0) otherwise.
+  - Listen on this host for incoming connections.
+  - If host is omitted, the server will accept connections on the unspecified IPv6 address (::) when IPv6 is available, or the unspecified IPv4 address (0.0.0.0) otherwise.
+
+- `options.port` _{number}_
+  - Listen on this port for incoming connections.
+  - If port is omitted or is 0, the operating system will assign an arbitrary, unused port.
+
+- `options.storm` _{object}_
+  - Harness the full power of multi-core CPUs. `Rayo` will spawn an instance across each core.
+  - Accepts the same options object as `@rayo/storm`. See for [@rayo/storm](https://github.com/GetRayo/rayo.js/tree/master/packages/storm) for details.
+  - `Default:` null (no clustering)
 
 - `options.server` _{http.Server}_
-  _ An instance [http.Server](https://nodejs.org/api/http.html#http_class_http_server). `Rayo` will attach to this.
-  _ `Default:` A new instance of [http.Server](https://nodejs.org/api/http.html#http_class_http_server).
+  - An instance [http.Server](https://nodejs.org/api/http.html#http_class_http_server). `Rayo` will attach to this.
+  - `Default:` A new instance of [http.Server](https://nodejs.org/api/http.html#http_class_http_server).
 
 - `options.notFound` _{function}_
 
@@ -321,7 +326,7 @@ rayo({ port: 5050 })
 
 A `bridge` instance exposes all of Rayo's routing methods ([.through](#throughhandlers), [.route](#routeverb-path-handlers), [.verb](#verbpath-handlers) and [.all](#allpath-handlers)). You may create any number of bridges and Rayo will automagically take care of mapping them.
 
-What makes `bridges` really awesome is the fact that they allow very granular control over what your application exposes. For example, enabling [content compression](https://github.com/GetRayo/rayo.js/tree/master/packages/plugins/compress) only on certain paths.
+What makes `bridges` really awesome is the fact that they allow very granular control over what your application exposes. For example, enabling [content compression](https://github.com/GetRayo/rayo.js/tree/master/packages/compress) only on certain paths.
 
 <details>
 <summary>🔎</summary>
@@ -406,12 +411,13 @@ Please note that these results are only meant as raw performance indicators. You
 > These tests were conducted on a CPU-optimized server (DigitalOcean, 32 GB RAM, 16 vCPUs, Ubuntu 16.04.4 x64) and Node.js v10.5.0.
 > Measured after one warm-up run.
 
-| &nbsp;  | Version | Router | Requests/s | Latency | Throughput/Mb |
-| ------- | ------: | :----: | ---------: | ------: | ------------: |
-| Rayo    |   1.1.3 |   ✔    |    71612.8 |    1.33 |          8.28 |
-| Polka   |   0.4.0 |   ✔    |    71094.4 |    1.33 |          8.18 |
-| Fastify |   1.6.0 |   ✔    |    67740.8 |     1.4 |         10.55 |
-| Express |  4.16.3 |   ✔    |    62108.8 |    1.53 |          7.17 |
+| &nbsp;     | Version | Router | Requests/s | Latency | Throughput/Mb |
+| ---------- | ------: | :----: | ---------: | ------: | ------------: |
+| Rayo/storm |   1.0.1 |   ✔    |     111264 |    0.83 |         12.95 |
+| Rayo       |   1.2.1 |   ✔    |    71491.2 |    1.32 |          8.07 |
+| Polka      |   0.4.0 |   ✔    |    70083.2 |    1.36 |          8.03 |
+| Fastify    |   1.6.0 |   ✔    |    69049.6 |    1.37 |         10.65 |
+| Express    |  4.16.3 |   ✔    |    60867.2 |    1.57 |          7.08 |
 
 Run on your own hardware; clone this repository, install the dependencies and run `npm run bench`. Optionally, you may also define your test's parameters:
 
@@ -433,7 +439,7 @@ Can be found [here](https://github.com/GetRayo/rayo.js/tree/master/docs/examples
 
 ## Contribute
 
-See our [contributing](CONTRIBUTING.md) notes.
+See our [contributing](https://github.com/GetRayo/rayo.js/blob/master/CONTRIBUTING.md) notes.
 
 ## Acknowledgements
 

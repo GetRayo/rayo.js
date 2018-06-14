@@ -90,7 +90,7 @@ rayo({ port: 5050 })
 
 Each `handler` exposes Node's native ServerResponse (`res`) object and it's your responsibility to deal with it accordingly; e.g. end the response (`res.end()`) where expected.
 
-If you need an easier and more convenient way to deal with your responses, take a look at [@rayo/send](https://github.com/GetRayo/rayo.js/tree/master/packages/plugins/send).
+If you need an easier and more convenient way to deal with your responses, take a look at [@rayo/send](https://github.com/GetRayo/rayo.js/tree/master/packages/send).
 
 #### Handler signature
 
@@ -321,7 +321,7 @@ rayo({ port: 5050 })
 
 A `bridge` instance exposes all of Rayo's routing methods ([.through](#throughhandlers), [.route](#routeverb-path-handlers), [.verb](#verbpath-handlers) and [.all](#allpath-handlers)). You may create any number of bridges and Rayo will automagically take care of mapping them.
 
-What makes `bridges` really awesome is the fact that allow very granular control over what your application exposes. For example, enable [content compression](https://github.com/GetRayo/rayo.js/tree/master/packages/plugins/compress) only on certain paths.
+What makes `bridges` really awesome is the fact that allow very granular control over what your application exposes. For example, enable [content compression](https://github.com/GetRayo/rayo.js/tree/master/packages/compress) only on certain paths.
 
 <details>
 <summary>🔎</summary>

@@ -1,13 +1,15 @@
 const loadUnit = (unit) => require.call(null, `./${unit}`);
 
 describe('Unit tests', () => {
-  describe('Rayo', loadUnit('units/rayo'));
-  describe('Bridge', loadUnit('units/bridge'));
-
-  describe('Integration tests', loadUnit('units/integration'));
-
-  describe('Plugins', () => {
-    describe('Compress', loadUnit('units/plugins/compress'));
-    describe('Send', loadUnit('units/plugins/send'));
+  describe('Packages', () => {
+    describe('Rayo', () => {
+      describe('rayo', loadUnit('packages/rayo'));
+      describe('bridge', loadUnit('packages/rayo/bridge'));
+    });
+    describe('Compress', loadUnit('packages/compress'));
+    describe('Send', loadUnit('packages/send'));
+    describe('Storm', loadUnit('packages/storm'));
   });
+
+  describe('Integration tests', loadUnit('integration'));
 });

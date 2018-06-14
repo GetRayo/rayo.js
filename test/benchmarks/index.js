@@ -52,6 +52,7 @@ const benchmark = async (results) => {
         return yes();
       }
 
+      process.env.STORM_LOG_LEVEL = 'silent';
       const forked = fork(`${__dirname}/compare/${file}`);
       await nap(0.25);
 

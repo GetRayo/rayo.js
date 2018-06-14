@@ -1,7 +1,7 @@
 const http = require('http');
 const should = require('should');
-const rayo = require('../../packages/rayo');
-const send = require('../../packages/plugins/send');
+const rayo = require('../packages/rayo');
+const send = require('../packages/send');
 
 const request = (resolver, options = {}) =>
   new Promise((yes) => {
@@ -31,12 +31,17 @@ const test = (options = {}, headers, status, body) => {
   should(body.toString()).be.equal(options.body);
 };
 
+let server = null;
 module.exports = () => {
-  it('GET request', (done) => {
-    const server = rayo({ port: 5050 })
-      .get('/', (req, res) => res.end('Thunderstruck!'))
-      .start();
+  beforeEach(() => {
+    server = rayo({ port: 5050, cluster: false });
+  });
+  afterEach(() => {
+    server = null;
+  });
 
+  it('GET request', (done) => {
+    server = server.get('/', (req, res) => res.end('Thunderstruck!')).start();
     request(test.bind(null, { contentLength: 14, body: 'Thunderstruck!' })).then(() => {
       server.close();
       done();
@@ -44,7 +49,7 @@ module.exports = () => {
   });
 
   it('GET request, with middleware', (done) => {
-    const server = rayo({ port: 5050 })
+    server = server
       .get(
         '/',
         (req, res, step) => {
@@ -67,7 +72,7 @@ module.exports = () => {
   });
 
   it('GET request, send(text/plain)', (done) => {
-    const server = rayo({ port: 5050 })
+    server = server
       .through(send())
       .get('/', (req, res) => res.send('Thunderstruck!'))
       .start();
@@ -79,7 +84,7 @@ module.exports = () => {
   });
 
   it('GET request, send(text/plain), status code', (done) => {
-    const server = rayo({ port: 5050 })
+    server = server
       .through(send())
       .get('/', (req, res) => res.send('Thunderstruck!', 204))
       .start();
@@ -97,7 +102,7 @@ module.exports = () => {
   });
 
   it('GET request, send(application/json)', (done) => {
-    const server = rayo({ port: 5050 })
+    server = server
       .through(send())
       .get('/', (req, res) => res.send({ message: 'Thunderstruck!' }))
       .start();
@@ -115,7 +120,7 @@ module.exports = () => {
   });
 
   it('GET request, send(application/json), status code', (done) => {
-    const server = rayo({ port: 5050 })
+    server = server
       .through(send())
       .get('/', (req, res) => res.send({ message: 'Thunderstruck!' }, 204))
       .start();
@@ -134,14 +139,12 @@ module.exports = () => {
   });
 
   it('Bridged GET, POST request', (done) => {
-    const ray = rayo({ port: 5050 });
-    ray
+    server
       .bridge('/')
       .get((req, res) => res.end('GET'))
       .post((req, res) => res.end('POST'));
 
-    const server = ray.start();
-
+    server = server.start();
     request(
       test.bind(null, {
         contentLength: 3,
@@ -164,8 +167,7 @@ module.exports = () => {
   });
 
   it('Bridged GET, POST request, with middleware', (done) => {
-    const ray = rayo({ port: 5050 });
-    ray
+    server
       .bridge('/')
       .get(
         (req, res, step) => {
@@ -182,8 +184,7 @@ module.exports = () => {
         (req, res) => res.end(`${req.middlware} POST`)
       );
 
-    const server = ray.start();
-
+    server = server.start();
     request(
       test.bind(null, {
         contentLength: 9,

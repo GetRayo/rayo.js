@@ -1,7 +1,7 @@
 {
-  "name": "@rayo/send",
-  "version": "1.0.2",
-  "description": "✈️ Rayo's response sender",
+  "name": "@rayo/compress",
+  "version": "1.1.6",
+  "description": "🗜 Rayo's compression",
   "main": "index.js",
   "engines": {
     "node": ">=8.11.2"
@@ -18,5 +18,8 @@
   "license": "MIT",
   "publishConfig": {
     "access": "public"
+  },
+  "dependencies": {
+    "compressible": "2.0.x"
   }
 }
