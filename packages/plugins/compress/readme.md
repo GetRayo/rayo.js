@@ -34,6 +34,8 @@ rayo({ port: 5050 })
   .start();
 ```
 
+**Note:** You need to set the right header, e.g. _application/json_ for `compress` to be able to determine whether the payload can be compressed or not. Also keep in mind that not all types of content can be compressed.
+
 
 ## API
 
