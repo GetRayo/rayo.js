@@ -10,7 +10,7 @@ const end = (req, res, status, error) => {
   return res.end(error);
 };
 
-class Index extends Bridge {
+class Rayo extends Bridge {
   constructor(options) {
     super();
     ({
@@ -66,4 +66,4 @@ class Index extends Bridge {
   }
 }
 
-module.exports = (options = {}) => new Index(options);
+module.exports = (options = {}) => new Rayo(options);

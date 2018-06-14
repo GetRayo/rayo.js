@@ -26,17 +26,17 @@ rayo({ port: 5050 })
   .through(send())
   .get('/hello/:user', (req, res) => {
     res.send({
-      message: `Hello ${req.params.user}. I was magically sent!`
+      message: `Hello ${req.params.user}. I was sent with headers!`
     });
   })
   .start();
 ```
 
-`send` will attach itself to the [ServerResponse](https://nodejs.org/dist/latest-v9.x/docs/api/http.html#http_class_http_serverresponse) (a.k.a `res`), callable as `res.send()`.
+`send` will attach itself to the [ServerResponse](https://nodejs.org/dist/latest-v9.x/docs/api/http.html#http_class_http_serverresponse) (a.k.a `res`) and be callable as `res.send()`.
 
-`res.send()` will try to guess the content type and send the appropriate headers, status code and body, it will also end the response.
+`res.send()` will try to guess the _content-type_ based on the payload and send the appropriate headers. It will also send a status code and end the response.
 
-> **Note:** `res.send()` will incur a performance hit due to the headers being written with every response, regardless of them being intended or not.
+> **Note:** `res.send()` will incur a performance hit due to the guess work and the headers being written with every response.
 
 
 ## API

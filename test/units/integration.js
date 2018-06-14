@@ -1,6 +1,6 @@
 const http = require('http');
 const should = require('should');
-const rayo = require('../../packages/rayo/lib');
+const rayo = require('../../packages/rayo');
 const send = require('../../packages/plugins/send');
 
 const request = (resolver, options = {}) =>
