@@ -12,7 +12,7 @@
 ## Install
 
 ```
-$> npm i @rayo/compress
+$> npm i @rayo/send
 ```
 
 
@@ -20,30 +20,30 @@ $> npm i @rayo/compress
 
 ```js
 const rayo = require('rayo');
-const compress = require('@rayo/compress');
+const send = require('@rayo/send');
 
 rayo({ port: 5050 })
-  .through(compress())
+  .through(send())
   .get('/hello/:user', (req, res) => {
-    res.setHeader('content-type', 'application/json');
-    res.end(JSON.stringify({
-      message: `Hello ${req.params.user}.
-      I am compressed!`
-    }));
+    res.send({
+      message: `Hello ${req.params.user}. I was magically sent!`
+    });
   })
   .start();
 ```
 
+`send` will attach itself to the [ServerResponse](https://nodejs.org/dist/latest-v9.x/docs/api/http.html#http_class_http_serverresponse) (a.k.a `res`), callable as `res.send()`.
+
+`res.send()` will try to guess the content type and send the appropriate headers, status code and body, it will also end the response.
+
+> **Note:** `res.send()` will incur a performance hit due to the headers being written with every response, regardless of them being intended or not.
+
 
 ## API
 
-#### compress(options = {})
-```
-@param   {object} [options]
-@returns {function}
-```
+#### send()
 
-An object with key/value pairs as documented [here](https://nodejs.org/dist/latest-v8.x/docs/api/zlib.html#zlib_class_options).
+Currently, it does not take any arguments.
 
 
 ## License

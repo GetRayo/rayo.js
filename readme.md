@@ -9,6 +9,10 @@
 [![Known Vulnerabilities](https://snyk.io/test/github/GetRayo/rayo.js/badge.svg?targetFile=package.json)](https://snyk.io/test/github/GetRayo/rayo.js?targetFile=package.json)
 </div>
 
+This is a __framework__ for the __modern__ web; small, slick, elegant and fast.
+We built `Rayo` after spending too much time thinking how to fix the problems we encountered with other frameworks.
+We needed something that could be an "almost" out-of-the-box replacement for what most of our systems were built upon, without sacrificing productivity or performance.<br />
+
 ```
 Your server will feel like it got hit by a lightning...
 ```
@@ -83,30 +87,10 @@ rayo({ port: 5050 })
 
 > **Note:** An error will be thrown if `step()` is called on an empty stack.
 
-Each `handler` exposes Node's core ServerResponse (`res`) object and it's your responsibility to deal with it accordingly.
+Each `handler` exposes Node's native ServerResponse (`res`) object and it's your responsibility to deal with it accordingly; e.g. end the response (`res.end()`) where expected.
 
-As a convenience, `Rayo` binds a smart `send()` function to the ServerResponse (`res`) each handler receives, therefore you may `res.send()` responses.
+If you need an easier and more convenient way to deal with your responses, take a look at [@rayo/send](https://github.com/GetRayo/rayo.js/tree/master/packages/plugins/send).
 
-`res.send()` will try to guess the content type and send the appropriate headers, status code and body, it will also end the response.
-
-> **Note:** `res.send()` will incur a performance hit due to the headers being written with every response, regardless of them being intended or not.
-
-<details>
-<summary>🔎</summary>
-
-```js
-const rayo = require('rayo');
-
-rayo({ port: 5050 })
-  .get('/', (req, res) => {
-    res.send({
-      message: 'I am .json reply.',
-      timestamp: +new Date()
-    });
-  })
-  .start();
-```
-</details>
 
 #### Handler signature
 ```js
@@ -116,7 +100,7 @@ rayo({ port: 5050 })
  * @param {function} [step]
  */
 const fn = (req, res, step) => {
-  // Your custom logic.
+  // Your logic.
 }
 ```
 
@@ -130,7 +114,7 @@ Please keep in mind that:
 
 > ² `Rayo` is WIP, so you may encounter actual errors that need to be dealt with. If so, please point them out to us via a `pull request`. 👍
 
-If you have implemented a custom error function (see `onError` under [options](#rayooptions--)) you may invoke it at any time by calling the `step()` function with an argument.
+If you have implemented your own error function (see `onError` under [options](#rayooptions--)) you may invoke it at any time by calling `step()` with an argument.
 
 <details>
 <summary>🔎</summary>
@@ -153,7 +137,7 @@ rayo(options)
 
 In the above example, the error will be returned on the `/` path, since `step()` is being called with an argument. Run the example, open your browser and go to [http://localhost:5050](http://localhost:5050) and you will see "Here's your error: Thunderstruck!".
 
-If you don't have a custom error function, you may still call `step()` (with an argument), in which case the error will be returned using Rayo's standard function.
+If you don't have an error function, you may still call `step()` (with an argument), which will use Rayo's own error function.
 
 
 ## API
@@ -186,10 +170,10 @@ If you don't have a custom error function, you may still call `step()` (with an 
    * @param {object} res
    */
   const fn = (req, res) => {
-    // Your custom logic.
+    // Your logic.
   }
   ```
-  `Default:` Rayo will send a "Page not found." message with a `404` status code.
+  `Default:` Rayo will end the response with a "Page not found." message and a `404` status code.
 
 * `options.onError` _{function}_
 
@@ -203,7 +187,7 @@ If you don't have a custom error function, you may still call `step()` (with an 
    * @param {function} [step]
    */
   const fn = (error, req, res, step) => {
-    // Your custom logic.
+    // Your logic.
   }
   ```
 
@@ -447,17 +431,18 @@ May be found [here](https://github.com/GetRayo/rayo.js/tree/master/docs/examples
 
 
 ## Contribute
-```
-$> fork https://github.com/GetRayo/rayo.js
-$> Do your thing.
-$> Submit a PR.
-```
+
+1. :fork_and_knife: fork it,
+2. :palm_tree: branch it,
+3. :construction_worker_man: do your thing,
+4. :floppy_disk: commit it,
+5. :rocket: submit a PR.
 
 
 ## Acknowledgements
 
-:clap: `Thank you` to [everyone](https://github.com/nodejs/node/graphs/contributors) who has made Nodejs possible and to all community members actively contributing to it.
-
+:clap: `Thank you` to [everyone](https://github.com/nodejs/node/graphs/contributors) who has made Nodejs possible and to all community members actively contributing to it.<br />
+:steam_locomotive: Most of `Rayo` was written in chunks of 90 minutes per day and on the train, while commuting to work.
 
 ## License
 

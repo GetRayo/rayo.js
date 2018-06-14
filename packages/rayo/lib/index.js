@@ -2,7 +2,13 @@ const http = require('http');
 const parseurl = require('parseurl');
 const { parse } = require('querystring');
 const Bridge = require('./bridge');
-const { send } = require('./response');
+
+const end = (req, res, status, error) => {
+  res.statusCode = status;
+  res.setHeader('Content-Length', error.length);
+  res.setHeader('Content-Type', 'text/plain');
+  return res.end(error);
+};
 
 class Index extends Bridge {
   constructor(options) {
@@ -29,13 +35,12 @@ class Index extends Bridge {
   }
 
   dispatch(req, res) {
-    res.send = send.bind(res);
     const parsedUrl = parseurl(req);
     const route = this.fetch(req.method, parsedUrl.pathname);
     if (!route) {
       return this.notFound
         ? this.notFound(req, res)
-        : res.send(`${req.method} ${parsedUrl.pathname} is undefined.`, 404);
+        : end(req, res, 404, `${req.method} ${parsedUrl.pathname} is undefined.`);
     }
 
     req.params = route.params;
@@ -45,12 +50,12 @@ class Index extends Bridge {
     return this.step(req, res, route.stack.slice());
   }
 
-  step(req, res, stack, error = null, statusCode = null) {
+  step(req, res, stack, error = null, statusCode = 400) {
     const fn = stack.shift();
     if (error) {
       return this.onError
         ? this.onError(error, req, res, fn)
-        : res.send(error, statusCode || 400);
+        : end(req, res, statusCode, error);
     }
 
     if (fn) {
