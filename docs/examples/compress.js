@@ -4,7 +4,7 @@ const http = require('http');
 const { createReadStream } = require('fs');
 const { PassThrough } = require('stream');
 const rayo = require('../../packages/rayo');
-const compress = require('../../packages/plugins/compress');
+const compress = require('../../packages/compress');
 
 const payload = [
   {

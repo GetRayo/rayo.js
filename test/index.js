@@ -9,5 +9,6 @@ describe('Unit tests', () => {
   describe('Plugins', () => {
     describe('Compress', loadUnit('units/plugins/compress'));
     describe('Send', loadUnit('units/plugins/send'));
+    describe('Storm', loadUnit('units/plugins/storm'));
   });
 });

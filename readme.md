@@ -150,17 +150,22 @@ If you don't have an error function, you may still call `step()` (with an argume
 @returns {Rayo}
 ```
 
-- `options.port` _{number}_
-  _ Listen on this port for incoming connections.
-  _ If port is omitted or is 0, the operating system will assign an arbitrary, unused port.
-
 - `options.host` _{string}_
-  _ Listen on this host for incoming connections.
-  _ If host is omitted, the server will accept connections on the unspecified IPv6 address (::) when IPv6 is available, or the unspecified IPv4 address (0.0.0.0) otherwise.
+  - Listen on this host for incoming connections.
+  - If host is omitted, the server will accept connections on the unspecified IPv6 address (::) when IPv6 is available, or the unspecified IPv4 address (0.0.0.0) otherwise.
+
+- `options.port` _{number}_
+  - Listen on this port for incoming connections.
+  - If port is omitted or is 0, the operating system will assign an arbitrary, unused port.
+
+- `options.storm` _{object}_
+  - Harness the full power of multi-core CPUs. `Rayo` will spawn an instance across each core.
+  - Accepts the same options object as `@rayo/storm`. See for [@rayo/storm](https://github.com/GetRayo/rayo.js/tree/master/packages/plugins/storm) for details.
+  - `Default:` null (no clustering)
 
 - `options.server` _{http.Server}_
-  _ An instance [http.Server](https://nodejs.org/api/http.html#http_class_http_server). `Rayo` will attach to this.
-  _ `Default:` A new instance of [http.Server](https://nodejs.org/api/http.html#http_class_http_server).
+  - An instance [http.Server](https://nodejs.org/api/http.html#http_class_http_server). `Rayo` will attach to this.
+  - `Default:` A new instance of [http.Server](https://nodejs.org/api/http.html#http_class_http_server).
 
 - `options.notFound` _{function}_
 
@@ -433,7 +438,7 @@ Can be found [here](https://github.com/GetRayo/rayo.js/tree/master/docs/examples
 
 ## Contribute
 
-See our [contributing](CONTRIBUTING.md) notes.
+See our [contributing](https://github.com/GetRayo/rayo.js/blob/master/CONTRIBUTING.md) notes.
 
 ## Acknowledgements
 

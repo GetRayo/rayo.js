@@ -2,6 +2,7 @@ const http = require('http');
 const parseurl = require('parseurl');
 const { parse } = require('querystring');
 const Bridge = require('./bridge');
+const storm = require('../storm'); // @rayo/storm
 
 const end = (req, res, status, error) => {
   res.statusCode = status;
@@ -14,22 +15,34 @@ class Rayo extends Bridge {
   constructor(options) {
     super();
     ({
-      port: this.port,
       host: this.host,
+      port: this.port,
+      storm: this.stormOptions = null,
       onError: this.onError = null,
       notFound: this.notFound = null,
-      server: this.server = http.createServer()
+      server: this.server = null
     } = options);
     this.dispatch = this.dispatch.bind(this);
   }
 
   start(callback = function cb() {}) {
-    this.server.listen(this.port, this.host);
-    this.server.on('request', this.dispatch);
-    this.server.on('listening', () => {
-      this.through();
-      callback(this.server.address());
-    });
+    const work = (workerPid = null) => {
+      this.server = this.server || http.createServer();
+      this.server.listen(this.port, this.host);
+      this.server.on('request', this.dispatch);
+      this.server.once('listening', () => {
+        this.through();
+        const address = this.server.address();
+        address.workerPid = workerPid || undefined;
+        callback(address);
+      });
+    };
+
+    if (this.stormOptions) {
+      storm.storm(work, this.stormOptions);
+    } else {
+      work();
+    }
 
     return this.server;
   }
