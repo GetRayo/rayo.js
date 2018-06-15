@@ -1,6 +1,7 @@
 const http = require('http');
 const should = require('should');
-const rayo = require('../../packages/rayo/lib');
+const rayo = require('../../packages/rayo');
+const send = require('../../packages/plugins/send');
 
 const request = (resolver, options = {}) =>
   new Promise((yes) => {
@@ -67,6 +68,7 @@ module.exports = () => {
 
   it('GET request, send(text/plain)', (done) => {
     const server = rayo({ port: 5050 })
+      .through(send())
       .get('/', (req, res) => res.send('Thunderstruck!'))
       .start();
 
@@ -78,6 +80,7 @@ module.exports = () => {
 
   it('GET request, send(text/plain), status code', (done) => {
     const server = rayo({ port: 5050 })
+      .through(send())
       .get('/', (req, res) => res.send('Thunderstruck!', 204))
       .start();
 
@@ -95,6 +98,7 @@ module.exports = () => {
 
   it('GET request, send(application/json)', (done) => {
     const server = rayo({ port: 5050 })
+      .through(send())
       .get('/', (req, res) => res.send({ message: 'Thunderstruck!' }))
       .start();
 
@@ -112,6 +116,7 @@ module.exports = () => {
 
   it('GET request, send(application/json), status code', (done) => {
     const server = rayo({ port: 5050 })
+      .through(send())
       .get('/', (req, res) => res.send({ message: 'Thunderstruck!' }, 204))
       .start();
 

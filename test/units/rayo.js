@@ -1,7 +1,7 @@
 const should = require('should');
 const sinon = require('sinon');
 const { METHODS } = require('http');
-const rayo = require('../../packages/rayo/lib');
+const rayo = require('../../packages/rayo');
 
 const fake = {
   req: require.call(null, '../utils/req'),

@@ -1,6 +1,6 @@
 const should = require('should');
 const { METHODS } = require('http');
-const Bridge = require('../../packages/rayo/lib/bridge');
+const Bridge = require('../../packages/rayo/bridge');
 
 const test = (bridge, path = null) => {
   should(bridge).be.an.Object();

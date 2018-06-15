@@ -1,4 +1,4 @@
-const rayo = require('../../../packages/rayo/lib');
+const rayo = require('../../../packages/rayo');
 
 const app = rayo({ port: 5050 });
 const handler = (req, res) => {
