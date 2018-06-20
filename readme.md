@@ -451,11 +451,7 @@ May be found [here](https://github.com/GetRayo/rayo.js/tree/master/docs/examples
 
 ## Contribute
 
-1.  :fork_and_knife: fork it,
-2.  :palm_tree: branch it,
-3.  :construction_worker_man: do your thing,
-4.  :floppy_disk: commit it,
-5.  :rocket: submit a PR.
+See our [contributing](CONTRIBUTING.md) notes.
 
 ## Acknowledgements
 
@@ -465,3 +461,7 @@ May be found [here](https://github.com/GetRayo/rayo.js/tree/master/docs/examples
 ## License
 
 [MIT](https://github.com/GetRayo/rayo.js/blob/master/LICENSE)
+
+<p align="center" style="margin:25px 0 10px">
+  :zap:
+</p>
