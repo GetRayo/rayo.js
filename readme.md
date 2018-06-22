@@ -10,7 +10,7 @@
 
 </div>
 
-Este es un **framework** para la web **moderna**; pequeño, sagaz, elegante y rápido. Construimos 'Rayo' luego de pasar muchísimo tiempo pensando en cómo solucionar los problemas a los que nos enfrentamos con otros frameworks. Necesitábamos algo que "pudiese ser" un reemplazo creativo a aquello sobre lo cual la mayoría de nuestros sistemas eran construidos, sin sacrificar productividad ni performance.  <br />
+Este es un **framework** para la web **moderna**; pequeño, sagaz, elegante y rápido. Construimos 'Rayo' luego de pasar muchísimo tiempo pensando en cómo solucionar los problemas a los que nos enfrentamos con otros frameworks. Necesitábamos algo que "pudiese ser" un reemplazo creativo a aquello sobre lo cual, la mayoría de nuestros sistemas eran construidos, sin sacrificar productividad ni performance.  <br />
 
 ```
 Tu servidor sentirá que fue golpeado por un rayo...
@@ -18,13 +18,13 @@ Tu servidor sentirá que fue golpeado por un rayo...
 
 ## En resumidas cuentas
 
-- Realmente rápido (De veras, en serio muy rápido. Dirígete a [cómo se compara](#como-se-compara)),
-- API similar a express¹,
-- Compatible con el middleware express ,
+- Realmente rápido (En serio, en serio muy rápido. Dirígete a [cómo se compara](#cómo-se-compara)) para saber más,
+- API similar a 'express'¹,
+- Compatible con el middleware 'express' ,
 - Extensible y conectable,
 - < 85 LOC (sin ruteo en lo absoluto)
 
-> ¹ `Rayo` no tiene la intención de ser un reemplazo de express, la API es similar, inspirada en, pero no identica.
+> ¹ `Rayo` no tiene la intención de ser un reemplazo de express, la API es similar, inspirada en, pero no idéntica.
 
 ```
 Se incluyen ejemplos 🔎 a lo largo de la lectura.
