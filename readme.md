@@ -18,7 +18,7 @@ Tu servidor sentirá que fue golpeado por un rayo...
 
 ## En resumidas cuentas
 
-- Realmente rápido (De veras, en serio muy rápido. Dirígete a [cómo se compara](#how-does-it-compare)),
+- Realmente rápido (De veras, en serio muy rápido. Dirígete a [cómo se compara](#como-se-compara)),
 - API similar a express¹,
 - Compatible con el middleware express ,
 - Extensible y conectable,
