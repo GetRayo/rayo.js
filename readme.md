@@ -114,7 +114,7 @@ Por favor, ten presente que:
 
 > ² `Rayo` se encuentra en estado WIP (Work in Progress - En desarrollo), por lo tanto es posible que te topes con errores reales, con los que deberás lidiar para resolverlos. De ser asi, por favor haznoslo saber y apuntalos mediante una `pull request`. 👍
 
-Si estás implementando tu propia función error (Ver `onError` debajo de [opciones](#opcionesRayo--)) deberías invocarla, en cualquier momento, llamando a la función `step()` con un argumento.
+Si estás implementando tu propia función error (Ver `onError` debajo de [opciones](#rayooptions--)) deberías invocarla, en cualquier momento, llamando a la función `step()` con un argumento.
 
 <details>
 <summary>🔎</summary>
