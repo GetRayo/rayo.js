@@ -1,10 +1,10 @@
 /* eslint no-console: 0 */
 
 const http = require('http');
-const rayo = require('../../packages/rayo');
-const compress = require('../../packages/plugins/compress');
 const { createReadStream } = require('fs');
 const { PassThrough } = require('stream');
+const rayo = require('../../packages/rayo');
+const compress = require('../../packages/plugins/compress');
 
 const payload = [
   {
