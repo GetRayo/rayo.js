@@ -171,7 +171,7 @@ Si no tienes una función de error, de igual manera deberás llamar a la funció
    * @param {object} res
    */
   const fn = (req, res) => {
-    // Your logic.
+    // Tu lógica.
   };
   ```
 
@@ -189,7 +189,7 @@ Si no tienes una función de error, de igual manera deberás llamar a la funció
    * @param {function} [step]
    */
   const fn = (error, req, res, step) => {
-    // Tu logica.
+    // Tu lógica.
   };
   ```
 
