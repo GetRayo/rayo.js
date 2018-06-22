@@ -88,7 +88,7 @@ rayo({ port: 5050 })
 
 > **Note:** An error will be thrown if `step()` is called on an empty stack.
 
-Each `handler` exposes Node's native ServerResponse (`res`) object and it's your responsibility to deal with it accordingly e.g. end the response (`res.end()`) where expected.
+Each `handler` exposes Node's native ServerResponse (`res`) object and it's your responsibility to deal with it accordingly, e.g. end the response (`res.end()`) where expected.
 
 If you need an easier and more convenient way to deal with your responses, take a look at [@rayo/send](https://github.com/GetRayo/rayo.js/tree/master/packages/plugins/send).
 
@@ -319,7 +319,7 @@ rayo({ port: 5050 })
 
 > Route one path through multiple verbs and handlers.
 
-A `bridge` instance exposes all of Rayo's routing methods: ([.through](#throughhandlers), [.route](#routeverb-path-handlers), [.verb](#verbpath-handlers) and [.all](#allpath-handlers)). You may create any number of bridges and Rayo will automagically take care of mapping them.
+A `bridge` instance exposes all of Rayo's routing methods ([.through](#throughhandlers), [.route](#routeverb-path-handlers), [.verb](#verbpath-handlers) and [.all](#allpath-handlers)). You may create any number of bridges and Rayo will automagically take care of mapping them.
 
 What makes `bridges` really awesome is the fact that they allow very granular control over what your application exposes. For example, enabling [content compression](https://github.com/GetRayo/rayo.js/tree/master/packages/plugins/compress) only on certain paths.
 
