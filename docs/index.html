@@ -1,360 +1,388 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Rayo; micro-framework for Nodejs.">
-  <meta name="author" content="https://github.com/aichholzer">
-  <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/GetRayo/Assets/master/Images/rayo_sm.png">
-  <title>rayo.js</title>
-
-  <link href="https://fonts.googleapis.com/css?family=Muli|Source+Code+Pro" rel="stylesheet">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
-  <link href="./css/rayo.css" rel="stylesheet">
-
-  <!--[if lt IE 9]>
-  <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-  <![endif]-->
+ <meta charset="utf-8">
+ <meta http-equiv="X-UA-Compatible" content="IE=edge">
+ <meta name="viewport" content="width=device-width, initial-scale=1">
+ <meta name="description" content="Rayo; micro-framework for Nodejs.">
+ <meta name="author" content="https://github.com/aichholzer">
+ <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/GetRayo/Assets/master/Images/rayo_sm.png">
+ <title>rayo.js</title>
+ <link href="https://fonts.googleapis.com/css?family=Muli|Source+Code+Pro" rel="stylesheet">
+ <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+ <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
+ <link href="./css/rayo.css" rel="stylesheet">
+ <!--[if lt IE 9]>
+ <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+ <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+ <![endif]-->
 </head>
-
 <body>
 <div class="container">
-  <div class="row">
-    <div class="col-md-12" style="text-align: center;">
-      <img src="https://raw.githubusercontent.com/GetRayo/Assets/master/Images/Cover.png" alt="Rayo" />
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-md-12">
-      <h3 id="in-a-nutshell">In a nutshell</h3>
-      <ul>
-        <li>Really fast (yeah, like really fast. See <a href="#how-does-it-compare">how it compares</a>),</li>
-        <li>similar API to express¹,</li>
-        <li>compatible with express middleware,</li>
-        <li>extensible &amp; plugable,</li>
-        <li>less than 150 lines of code, with routing and all.</li>
-      </ul>
-      <blockquote>
-        ¹ Rayo is not intended to be an express replacement, thus the API is similar, inspired-by, and not identical.
-      </blockquote>
-      <h3 id="install">Install</h3>
-      <pre>$&gt; npm i rayo</pre>
-      <h3 id="use">Use</h3>
-      <pre>const rayo = require('rayo');
-
+ <div class="row">
+   <div class="col-md-12" style="text-align: center;">
+     <img src="https://raw.githubusercontent.com/GetRayo/Assets/master/Images/Cover.png" alt="Rayo" />
+   </div>
+ </div>
+ <div class="row">
+   <div class="col-md-12">
+     <h3 id="in-a-nutshell">En resumidas cuentas</h3>
+     <ul>
+       <li>Realmente rápido (En serio, muy rápido. Dirígete a<a href="#cómo-se-compara)">cómo se compara</a>)  para saber más,</li>
+       <li>API similar a 'express'¹,</li>
+       <li>Compatible con el middleware 'express' </li>
+       <li>Extensible &amp; conectable,</li>
+       <li>Menos de 150 líneas de código, con redireccionamiento y todo!.</li>
+     </ul>
+     <blockquote>
+       ¹ `Rayo` no tiene la intención de ser un reemplazo de express, la API es similar, inspirada en, pero no idéntica.
+     </blockquote>
+     <h3 id="install">Instalación</h3>
+     <pre>$&gt; npm i rayo</pre>
+     <h3 id="use">Modo de Uso</h3>
+     <pre>const rayo = require('rayo');
 rayo({ port: 5050 })
-  .get('/hello/:user', (req, res) =&gt; res.end(`Hello ${req.params.user}`))
-  .start();</pre>
-      <h4>With multiple handlers</h4>
-      <pre>const rayo = require('rayo');
+ .get('/hello/:user', (req, res) =&gt; res.end(`Hello ${req.params.user}`))
+ .start();</pre>
 
+     <h4>Con múltiples manejadores(handlers)</h4>
+     <pre>const rayo = require('rayo');
 // "age" handler
 const age = (req, res, step) =&gt; {
-  req.age = 21;
-  step();
+ req.age = 21;
+ step();
 };
-
 // "name" handler
 const name = (req, res, step) =&gt; {
-  req.name = `Super ${req.params.user}`;
-  step();
+ req.name = `Super ${req.params.user}`;
+ step();
 };
-
 rayo({ port: 5050 })
-  .get('/hello/:user', age, name, (req, res) =&gt; {
-    res.end(
-      JSON.stringify({
-        age: req.age,
-        name: req.name
-      })
-    );
-  })
-  .start();</pre>
-      <h4>A note on handlers</h4>
-      <p><code>handler functions</code> accept an <a href="https://nodejs.org/api/http.html#http_class_http_incomingmessage">IncomingMessage</a> (a.k.a req), a <a href="https://nodejs.org/dist/latest-v9.x/docs/api/http.html#http_class_http_serverresponse">ServerResponse</a>          (a.k.a res) and a step through (a.k.a step) function. step() is optional and it may be used to move the program's execution logic to the next handler in the stack.</p>
-      <p>step() may also be used to return an error at any time. See <a href="#error-handling">error handling</a>.</p>
-      <blockquote>An error will be thrown if step() is called on an empty stack.</blockquote>
-      <p>Each handler exposes Node's core ServerResponse (res) object and it's your responsibility to deal with it accordingly.</p>
-      <p>As a convenience, Rayo binds a smart <code>send()</code> function to the ServerResponse (res) each handler receives, therefore you may <code>res.send()</code> responses.</p>
-      <p><code>res.send()</code> will try to guess the content type and send the appropriate headers, status code and body, it will also end the response.</p>
-      <pre>const rayo = require('rayo');
-
+ .get('/hello/:user', age, name, (req, res) =&gt; {
+   res.end(
+     JSON.stringify({
+       age: req.age,
+       name: req.name
+     })
+   );
+ })
+ .start();</pre>
+     <h4>Nota sobre los Handlers</h4>
+     <p><code>Las funciones `Handlers`</code> aceptan un <a href="https://nodejs.org/api/http.html#http_class_http_incomingmessage">IncomingMessage</a> (a su vez denominados `req`), un <a href="https://nodejs.org/dist/latest-v9.x/docs/api/http.html#http_class_http_serverresponse">ServerResponse</a>          (denominados `res`) y una función `step through` (denominados `step`). `step()` es opcional, sería  usado para mover la lógica de ejecución del programa al siguiente Handler de la pila.</p>
+     <p>step()` también puede ser utilizado para retornar un error en cualquier momento. See <a href="#manejo-de-errores">manejo de errores</a>.</p>
+     <blockquote>Se generará un error si `step()` es llamada desde una pila vacía.</blockquote>
+     <p>Cada `handler` expone el objeto ServerResponse(`res`) nativo de Node y es tu responsabilidad manejarlo adecuadamente; Ej: terminar la respuesta (`res.end()`) donde es debido.</p>
+     <p>Para su comodidad, Rayo enlaza una función <code>send()</code> inteligente a cada ServerResponse (res) que recibe el handler, de otra manera deberás enviar respuestas <code>res.send()</code>.</p>
+     <p><code>res.send()</code> intentará adivinar el tipo de contenido y enviar los headers (encabezados) apropiados, códigos de estado (status code) y el cuerpo del mensaje, a su vez enviando la finalización de la respuesta (end).</p>
+     <pre>const rayo = require('rayo');
 rayo({ port: 5050 })
-  .get('/', (req, res) =&gt; {
-    res.send({
-      message: 'I am .json reply.',
-      timestamp: +new Date()
-    });
-  })
-  .start();</pre>
-      <blockquote>
-        <code>res.send()</code> will incur a performance hit due to the headers being written with every response, regardless of them being intended or not.
-      </blockquote>
-      <h4>Handler signature</h4>
-      <pre>/**
- * @param {object}   req
- * @param {object}   res
- * @param {function} [step]
- */
+ .get('/', (req, res) =&gt; {
+   res.send({
+     message: 'I am .json reply.',
+     timestamp: +new Date()
+   });
+ })
+ .start();</pre>
+     <blockquote>
+       <code>res.send()</code> afectará la performance debido a que los headers serán definidos con cada respuesta, sin importar la intención de los mismos. 
+     </blockquote>
+     <h4>Firma de un Handler</h4>
+     <pre>/**
+* @param {object}   req
+* @param {object}   res
+* @param {function} [step]
+*/
 const fn = (req, res, step) =&gt; {
-  // Your custom logic.
+ // Tu lógica.
 }</pre>
-      <h3 id="error-handling">Error handling</h3>
-      <pre>Please keep in mind that:
-"Your code, your errors."¹
-- It's your responsibility to deal with them accordingly.</pre>
-      <blockquote>
-        <p>² Rayo is WIP, so you may encounter actual errors that need to be dealt with. If so, please point them out to us via a pull request. 👍</p>
-      </blockquote>
-      <p>If you have implemented a custom error function (see onError under <a href="#rayooptions--">options</a>) you may invoke it at any time by calling the <code>step()</code> function with an argument.</p>
-      <pre>const rayo = require('rayo');
+     <h3 id="error-handling">Error handling</h3>
+     <pre>Por favor, ten presente que:
+"Tu código, Tus errores."²
+- Es tu responsabilidad tratar con ellos adecuadamente.</pre>
+     <blockquote>
+       <p>² `Rayo` se encuentra en estado WIP (Work in Progress - En desarrollo), por lo tanto es posible que te topes con errores reales, con los que deberás lidiar para resolverlos. De ser asi, por favor haznoslo saber y apuntalos mediante una `pull request`. 👍</p>
+     </blockquote>
+     <p>Si estás implementando tu propia función error (Ver `onError` debajo de  <a href="#rayooptions--">opciones</a>) deberías invocarla, en cualquier momento, llamando a la función <code>step()</code> con un argumento.</p>
+     <pre>const rayo = require('rayo');
+
+
+
+
 
 const options = {
-  port: 5050,
-  onError: (error, req, res) =&gt; {
-    res.end(`Here's your error: ${error}`);
-  }
+ port: 5050,
+ onError: (error, req, res) =&gt; {
+   res.end(`Here's your error: ${error}`);
+ }
 };
 
+
+
+
+
 rayo(options)
-  .get('/', (req, res, step) =&gt; step('Thunderstruck!'))
-  .start();</pre>
-      <p>In the above example, the error will be returned on the / path, since step() is being called with an argument. Run the example, open your browser and go to <a href="http://localhost:5050">http://localhost:5050</a> and you will see "Here's your
-        error: Thunderstruck!".</p>
-      <p>If you don't have a custom error function, you may still call step() (with an argument), in which case the error will be returned using Rayo's standard function.</p>
-      <h3 id="api">API</h3>
-      <h4 id="rayooptions--" class="no-top-border">rayo(options = {})</h4>
-      <pre>@param   {object} [options]
+ .get('/', (req, res, step) =&gt; step('Thunderstruck!'))
+ .start();</pre>
+     <p>En el ejemplo anterior, el error será retornado en la ruta `/`, dado que `step()` es llamada con un argumento. Ejecuta el ejemplo, abre tu explorador y ve a [http://localhost:5050](http://localhost:5050) y verás lo siguiente: "Here's your error: Thunderstruck!".
+</p>
+     <p>Si no tienes una función de error, de igual manera deberás llamar a la función `step()` (con un argumento), que usará función de error propia de Rayo.</p>
+     <h3 id="api">API</h3>
+     <h4 id="rayooptions--" class="no-top-border">rayo(options = {})</h4>
+     <pre>@param   {object} [options]
 @returns {Rayo}</pre>
-      <ul class="sub-u">
-        <li>
-          <p>options.port <em>{number}</em></p>
-          <ul>
-            <li>Listen on this port for incoming connections.</li>
-            <li>If port is omitted or is 0, the operating system will assign an arbitrary, unused, port.</li>
-          </ul>
-        </li>
-        <li>
-          <p>options.host <em>{string}</em></p>
-          <ul>
-            <li>Listen on this host for incoming connections.</li>
-            <li>If host is omitted, the server will accept connections on the unspecified IPv6 address (::) when IPv6 is available, or the unspecified IPv4 address (0.0.0.0) otherwise.</li>
-          </ul>
-        </li>
-        <li>
-          <p>options.server <em>{http.Server}</em></p>
-          <ul>
-            <li>An instance <a href="https://nodejs.org/api/http.html#http_class_http_server">http.Server</a>. Rayo will attach to this.</li>
-            <li>Default: A new instance of <a href="https://nodejs.org/api/http.html#http_class_http_server">http.Server</a>.</li>
-          </ul>
-        </li>
-        <li>
-          <p>options.notFound <em>{function}</em></p>
-          <blockquote>
-            Invoked when undefined paths are requested.
-          </blockquote>
-          <pre>
+     <ul class="sub-u">
+       <li>
+         <p>options.port <em>{number}</em></p>
+         <ul>
+           <li>Escucha en el puerto indicado posibles conexiones.</li>
+           <li>Si se omite el puerto o es 0 (cero), el sistema operativo asignará un puerto, libre, arbitrariamente.</li>
+         </ul>
+       </li>
+       <li>
+         <p>options.host <em>{string}</em></p>
+         <ul>
+           <li>Escucha el host esperando conexiones entrantes.</li>
+           <li>Si se omite el host, el servidor aceptará conecciones sobre la dirección ip sin especificar (::) cuando IPv6 esté disponible, o sobre la dirección IPv4 sin especificar (0.0.0.0) en todo caso.</li>
+         </ul>
+       </li>
+       <li>
+         <p>options.server <em>{http.Server}</em></p>
+         <ul>
+           <li>Una instancia <a href="https://nodejs.org/api/http.html#http_class_http_server">http.Server</a>. `Rayo` se adjunta a este</li>
+           <li>`Default:` Una nueva instancia  <a href="https://nodejs.org/api/http.html#http_class_http_server">http.Server</a>.</li>
+         </ul>
+       </li>
+       <li>
+         <p>options.notFound <em>{function}</em></p>
+         <blockquote>
+          Invocada cuando campos indefinidos son requeridos.
+         </blockquote>
+         <pre>
 /**
- * @param {object} req
- * @param {object} res
- */
+* @param {object} req
+* @param {object} res
+*/
 const fn = (req, res) => {
-  // Your custom logic.
+ // Tu lógica..
 }</pre>
-          <blockquote>
-            By default, Rayo will send a "Page not found." message with a 404` status code.
-          </blockquote>
-        </li>
-      </ul>
-      <ul>
-        <li>
-          <p>options.onError <em>{function}</em></p>
-          <blockquote>
-            Invoked when step() is called with an argument.
-          </blockquote>
-        </li>
-        <pre>
+         <blockquote>
+          `Default:` Rayo finalizara la respuesta con un mensaje de "Page not found." y un código de estado `404`.
+         </blockquote>
+       </li>
+     </ul>
+     <ul>
+       <li>
+         <p>options.onError <em>{function}</em></p>
+         <blockquote>
+           Invocada cuando `step()` es llamada con un argumento.
+         </blockquote>
+       </li>
+       <pre>
 /**
- * @param {*}        error
- * @param {object}   req
- * @param {object}   res
- * @param {function} [step]
- */
+* @param {*}        error
+* @param {object}   req
+* @param {object}   res
+* @param {function} [step]
+*/
 const fn = (error, req, res, step) => {
-  // Your custom logic.
+ // Tu lógica..
 }</pre>
-      </ul>
-      <h4 id="verbpath-handlers">.verb(path, …handlers)</h4>
-      <pre>@param   {string}   path
+     </ul>
+     <h4 id="verbpath-handlers">.verb(path, …handlers)</h4>
+     <pre>@param   {string}   path
 @param   {function} handlers - Any number, comma separated.
 @returns {rayo}</pre>
-      <blockquote>
-        Rayo exposes all HTTP verbs as instance methods.
-        <br />Requests which match the given verb and path will be routed through the specified handlers.
-      </blockquote>
-      <p>This method is basically an alias of the <a href="#routeverb-path-handlers">.route</a> method, with the difference that the verb is defined by the method name itself.</p>
-      <pre>const rayo = require('rayo');
+     <blockquote>
+       `Rayo` expone todos los verbos HTTP como métodos de instancia.
+       <br />Peticiones que se correspondan con el verbo propuesto y la ruta, serán redireccionadas a través de handlers específicos.
+     </blockquote>
+     <p>Este método es básicamente un alias del método <a href="#routeverb-path-handlers">.route</a> con la diferencia de que el `verbo` es definido nombre del método en sí mismo.</p>
+     <pre>const rayo = require('rayo');
+
 
 /**
- * Setup a path ('/') on the specified HTTP verbs.
- */
+* Asigna una ruta ('/') en los verbos HTTP especificados.
+*/
 rayo({ port: 5050 })
-  .get('/', (req, res) =&gt; res.end('Thunderstruck, GET'))
-  .head('/', (req, res) =&gt; res.end('Thunderstruck, HEAD'))
-  .start();</pre>
-      <h4 id="allpath-handlers">.all(path, …handlers)</h4>
-      <pre>@param   {string}   path
-@param   {function} handlers - Any number, comma separated.
+ .get('/', (req, res) =&gt; res.end('Thunderstruck, GET'))
+ .head('/', (req, res) =&gt; res.end('Thunderstruck, HEAD'))
+ .start();</pre>
+     <h4 id="allpath-handlers">.all(path, …handlers)</h4>
+     <pre>@param   {string}   path
+@param   {function} handlers - Cualquier número, separados por coma.
 @returns {rayo}</pre>
-      <blockquote>
-        Requests which match any verb and the given path will be routed through the specified handlers.
-      </blockquote>
-      <pre>const rayo = require('rayo');
-
+     <blockquote>
+       Peticiones que se correspondan con algún verbo y la ruta especificada, serán redireccionadas a través de handlers específicos.
+     </blockquote>
+     <pre>const rayo = require('rayo');
 /**
- * Setup a path ('/') on all HTTP verbs.
- */
+* Asigna una ruta ('/') en todos los verbos HTTP especificados.
+*/
 rayo({ port: 5050 })
-  .all('/', (req, res) =&gt; res.end('Thunderstruck, all verbs.'))
-  .start();</pre>
-      <h4 id="throughhandlers">.through(…handlers)</h4>
-      <pre>@param   {function} handlers - Any number, comma separated.
+ .all('/', (req, res) =&gt; res.end('Thunderstruck, all verbs.'))
+ .start();</pre>
+     <h4 id="throughhandlers">.through(…handlers)</h4>
+     <pre>@param   {function} handlers - Cualquier número, separados por coma.
 @returns {rayo}</pre>
-      <blockquote>
-        All requests, any verb and any path, will be routed through the specified handlers.
-      </blockquote>
-      <pre>const rayo = require('rayo');
+     <blockquote>
+       Todas las peticiones, cualquier verbo y cualquier ruta, serán redireccionadas a través de los handlers específicos.
+     </blockquote>
+     <pre>const rayo = require('rayo');
+
 
 // "age" handler
 const age = (req, res, step) =&gt; {
-  req.age = 21;
-  step();
+ req.age = 21;
+ step();
 };
+
 
 // "name" handler
 const name = (req, res, step) =&gt; {
-  req.name = 'Rayo';
-  step();
+ req.name = 'Rayo';
+ step();
 };
 
+
+
+
+
 rayo({ port: 5050 })
-  .through(age, name)
-  .get('/', (req, res) =&gt; res.end(`${req.age} | ${req.name}`))
-  .start();</pre>
-      <h4 id="routeverb-path-handlers">.route(verb, path, …handlers)</h4>
-      <pre>@param   {string}   verb
+ .through(age, name)
+ .get('/', (req, res) =&gt; res.end(`${req.age} | ${req.name}`))
+ .start();</pre>
+     <h4 id="routeverb-path-handlers">.route(verb, path, …handlers)</h4>
+     <pre>@param   {string}   verb
 @param   {string}   path
-@param   {function} handlers - Any number, comma separated.
+@param   {function} handlers - Cualquier número, separados por coma.
 @returns {rayo}</pre>
-      <blockquote>
-        Requests which match the given verb and path will be routed through the specified handlers.
-      </blockquote>
-      <pre>const rayo = require('rayo');
+     <blockquote>
+      Las peticiones que se correspondan con el verbo provisto y la ruta, serán redireccionadas a través de los handlers específicos. 
+     </blockquote>
+     <pre>const rayo = require('rayo');
+
+
 
 rayo({ port: 5050 })
-  .route('GET', '/', (req, res) =&gt; res.end('Thunderstruck, GET'))
-  .start();</pre>
-      <h4 id="bridgepath">.bridge(path)</h4>
-      <pre>@param   {string} path - The URL path to which verbs should be mapped.
+ .route('GET', '/', (req, res) =&gt; res.end('Thunderstruck, GET'))
+ .start();</pre>
+     <h4 id="bridgepath">.bridge(path)</h4>
+     <pre>@param   {string} path - La ruta URL a la cual los verbos deben ser mapeados.
 @returns {bridge}</pre>
-      <blockquote>
-        Route one path through multiple verbs and handlers.
-      </blockquote>
-      <p>A <code>bridge</code> instance exposes all of Rayo's routing methods (<a href="#throughhandlers">.through</a>, <a href="#routeverb-path-handlers">.route</a>, <a href="#verbpath-handlers">.verb</a> and <a href="#allpath-handlers">.all</a>). You may create any
-        number of bridges and Rayo will automagically take care of mapping them.</p>
-      <p>What makes <code>bridges</code> really awesome is the fact that allow very granular control over what your application exposes. For example, enable <a href="https://github.com/GetRayo/rayo.js/tree/master/packages/plugins/compress">content compression</a> only on certain paths.</p>
-      <pre>const rayo = require('rayo');
-
+     <blockquote>
+       Redirecciona una ruta Route one path through multiple verbs and handlers.
+     </blockquote>
+     <p>Una instancia <code>bridge</code> expone todos los métodos de redireccionamiento de Rayo (<a href="#throughhandlers">.through</a>, <a href="#routeverb-path-handlers">.route</a>, <a href="#verbpath-handlers">.verb</a> y <a href="#allpath-handlers">.all</a>). Tu crearas cualquier número de `bridges` y Rayo automágicamente se ocupará de mapearlos. 
+</p>
+     <p>Lo que hace de los <code>bridges</code> algo realmente genial es el hecho que permiten un control muy granular sobre lo que tu aplicación expone. Por ejemplo, habilitar <a href="https://github.com/GetRayo/rayo.js/tree/master/packages/plugins/compress">compresion de contenido</a> solo en ciertas rutas..</p>
+     <pre>const rayo = require('rayo');
 const server = rayo({ port: 5050 });
 
-/**
- * Bridge the `/home` path to the `GET` and `HEAD` verbs.
- */
-server
-  .bridge('/home')
-  .get((req, res) =&gt; res.end('You are home, GET'))
-  .head((req, res) =&gt; res.end('You are home, HEAD'));
+
 
 /**
- * Bridge the `/game` path to the `POST` and `PUT` verbs.
- */
+* ‘Bridge’ (puentea) la ruta `/home` a los verbos `GET` y `HEAD`.
+*/
 server
-  .bridge('/game')
-  .post((req, res) =&gt; res.end('You are at the game, POST'))
-  .put((req, res) =&gt; res.end('You are at the game, PUT'));
+ .bridge('/home')
+ .get((req, res) =&gt; res.end('You are home, GET'))
+ .head((req, res) =&gt; res.end('You are home, HEAD'));
+
+
+
+
+/**
+* ‘Bridge’ (puentea) la ruta `/game` a los verbos `POST` y `PUT`.
+*/
+server
+ .bridge('/game')
+ .post((req, res) =&gt; res.end('You are at the game, POST'))
+ .put((req, res) =&gt; res.end('You are at the game, PUT'));
+
+
+
 
 const auth = (req, res, step) =&gt; {
-  req.isAuthenticated = true;
-  step();
+ req.isAuthenticated = true;
+ step();
 };
+
 
 const session = (req, res, step) =&gt; {
-  req.hasSession = true;
-  step();
+ req.hasSession = true;
+ step();
 };
 
+
+
+
 /**
- * Bridge the `/account` path to the `GET`, `POST` and `PUT` verbs
- * and through two handlers.
- */
+*‘Bridge’ (puentea) la ruta `/account` a los verbos `GET`, `POST`  y `PUT`.
+* y a través de dos handlers.
+*/
 server
-  .bridge('/account')
-  .through(auth, session)
-  .get((req, res) =&gt; res.end('You are at the account, GET'))
-  .post((req, res) =&gt; res.end('You are at the account, POST'))
-  .put((req, res) =&gt; res.end('You are at the account, PUT'));
+ .bridge('/account')
+ .through(auth, session)
+ .get((req, res) =&gt; res.end('You are at the account, GET'))
+ .post((req, res) =&gt; res.end('You are at the account, POST'))
+ .put((req, res) =&gt; res.end('You are at the account, PUT'));
+
+
+
 
 server.start();</pre>
-      <h4 id="startcallback">.start(callback)</h4>
-      <pre>@param   {function} [callback] - Invoked on the server's `listening` event.
+     <h4 id="startcallback">.start(callback)</h4>
+     <pre>@param   {function} [callback] - Invocada en el evento `listening` del servidor.
 @returns {http.Server}</pre>
-      <blockquote>
-        <p>Rayo will return the server address with the callback, if one was provided. Useful, for example, to get the server port in case no port was specified in the options.</p>
-        <p>Starts Rayo -Your server is now listening for incoming requests.</p>
-      </blockquote>
+     <blockquote>
+       <p> `Rayo` retornará la dirección del server con el callback (devolución de llamada), si fue provisto de una. Muy útil, por ejemplo, para obtener el puerto del servidor en caso que no se haya especificado un puerto en las opciones.</p>
+       <p>Inicia `Rayo` -Tu servidor ahora está escuchando peticiones entrantes.</p>
+     </blockquote>
 
-      <pre>const rayo = require('rayo');
+
+
+
+
+     <pre>const rayo = require('rayo');
+
+
 
 rayo({ port: 5050 });
-  .get((req, res) =&gt; res.end('Thunderstruck'))
-  .start((address) =&gt; {
-    console.log(`Rayo is up on port ${address.port}`);
-  });</pre>
-      <h3 id="how-does-it-compare">How does it compare?</h3>
-      <p></p>Visit the <a href="https://github.com/GetRayo/rayo.js#how-does-it-compare">repository</a> for the latest results.
-      <p>Run on your own hardware; clone this repository, install the dependencies and run npm run bench. Optionally, you may also define your test's parameters:</p>
-      <pre>$&gt; npm run bench -- -u http://localhost:5050 -c 1000 -p 25 -d 10</pre>
-      <ul>
-        <li><code>-u</code> <em>url</em> -Default: http://localhost:5050</li>
-        <li><code>-c</code> <em>connections</em> -Default: 100</li>
-        <li><code>-p</code> <em>pipelines</em> -Default: 10</li>
-        <li><code>-d</code> <em>duration</em> -Default: 10 (seconds)</li>
-        <li><code>-o</code> <em>only</em> Run only one particular benchmark. -Defaults to null.</li>
-      </ul>
-      <blockquote>
-        Please note that these results <del>may</del> will vary on different hardware.
-      </blockquote>
-      <h3 id="examples">Examples</h3>
-      <p>May be found <a href="https://github.com/GetRayo/rayo.js/tree/master/docs/examples">here</a>.</p>
-      <h3 id="contribute">Contribute</h3>
-      <pre>$&gt; fork https://github.com/GetRayo/rayo.js
-$&gt; Do your thing.
-$&gt; Submit a PR.</pre>
-      <h3 id="acknowledgements">Acknowledgements</h3>
-      <p>👏🏼 Thank you to <a href="https://github.com/nodejs/node/graphs/contributors">everyone</a> who has made Nodejs possible and to all community members actively contributing to it.</p>
-      <h3 id="license">License</h3>
-      <p><a href="https://github.com/GetRayo/rayo.js/blob/master/LICENSE">MIT</a></p>
-    </div>
-  </div>
-  <div class="row footer">
-    <div class="col-md-12" style="text-align: center;">
-      <a href="https://github.com/aichholzer"><i class="fa fa-heart fa-1x" aria-hidden="true"></i></a>
-    </div>
-  </div>
+ .get((req, res) =&gt; res.end('Thunderstruck'))
+ .start((address) =&gt; {
+   console.log(`Rayo is up on port ${address.port}`);
+ });</pre>
+     <h3 id="how-does-it-compare">Cómo se compara?</h3>
+     <p></p>Visita el<a href="https://github.com/GetRayo/rayo.js#how-does-it-compare">repositorio</a> Para los últimos resultados..
+     <p>Correlos en tu propio hardware; Clona este repositorio; Instala las dependencias y corre npm run bench`. Opcional: podrías definir los parámetros de los test:</p>
+     <pre>$&gt; npm run bench -- -u http://localhost:5050 -c 1000 -p 25 -d 10</pre>
+     <ul>
+       <li><code>-u</code> <em>url</em> -Default: http://localhost:5050</li>
+       <li><code>-c</code> <em>conecciones</em> -Default: 100</li>
+       <li><code>-p</code> <em>pipelines</em> -Default: 10</li>
+       <li><code>-d</code> <em>duración</em> -Default: 10 (segundos)</li>
+       <li><code>-o</code> <em>only</em> Corre solo un benchmark en particular. -Por defecto en `null`</li>
+     </ul>
+     <blockquote>
+        Por favor tener en cuenta que estos resultados  <del>pueden</del> variarán en diferentes configuraciones de hardware.
+     </blockquote>
+     <h3 id="examples">Ejemplos</h3>
+     <p>Podrán encontrarlos <a href="https://github.com/GetRayo/rayo.js/tree/master/docs/examples">aqui</a>.</p>
+     <h3 id="contribute">Contribuye</h3>
+     <pre>$&gt; fork https://github.com/GetRayo/rayo.js
+$&gt; Piensas
+$&gt; enviar un PR</pre>
+     <h3 id="acknowledgements">Agradecimientos</h3>
+     <p>👏🏼 `Gracias` a <a href="https://github.com/nodejs/node/graphs/contributors">todos</a> quienes hicieron Nodejs posible y a todos los miembros de la comunidad que activamente contribuyen a este.</p>
+     <h3 id="license">Licencia</h3>
+     <p><a href="https://github.com/GetRayo/rayo.js/blob/master/LICENSE">MIT</a></p>
+   </div>
+ </div>
+ <div class="row footer">
+   <div class="col-md-12" style="text-align: center;">
+     <a href="https://github.com/aichholzer"><i class="fa fa-heart fa-1x" aria-hidden="true"></i></a>
+   </div>
+ </div>
 </div>
 </body>
 </html>
