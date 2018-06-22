@@ -440,9 +440,9 @@ $> npm run bench -- -u http://localhost:5050 -c 1000 -p 25 -d 10
 ```
 
 - `-u` (_url_) -Por defecto a `http://localhost:5050`
-- `-c` (_connections_) -Por defecto en `100`
+- `-c` (_conecciones_) -Por defecto en `100`
 - `-p` (_pipelines_) -Por defecto en `10`
-- `-d` (_duration_) -Por defecto en `10` (seconds)
+- `-d` (_duración_) -Por defecto en `10` (segundos)
 - `-o` (_only_) Corre solo un benchmark en particular. -Por defecto en `null`
 
 > Por favor tener en cuenta que estos resultados ~~pueden~~ variarán en diferentes configuraciones de hardware.
