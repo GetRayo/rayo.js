@@ -82,7 +82,7 @@ rayo({ port: 5050 })
 
 Las funciones `Handlers` aceptan un [IncomingMessage](https://nodejs.org/api/http.html#http_class_http_incomingmessage) (a su vez denominados `req`), un [ServerResponse](https://nodejs.org/dist/latest-v9.x/docs/api/http.html#http_class_http_serverresponse) (denominados `res`) y una función `step through` (denominados `step`). `step()` es opcional, sería  usado para mover la lógica de ejecución del programa al siguiente Handler de la pila.
 
-`step()` también puede ser utilizado para retornar un error en cualquier momento. Ver [error handling](#error-handling).
+`step()` también puede ser utilizado para retornar un error en cualquier momento. Ver [manejo de errores](#manejo-de-errores).
 
 > **Nota:** Se generará un error si `step()` es llamada desde una pila vacía.
 
