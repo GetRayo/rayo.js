@@ -453,7 +453,7 @@ Podrán encontrarlos [aqui](https://github.com/GetRayo/rayo.js/tree/master/docs/
 
 ## Contribuye
 
-Mirá nuestras notas sobre [contribuciones](CONTRIBUTING.md) notes.
+Mirá nuestras notas para [contribuciones](CONTRIBUTING.md).
 
 ## Agradecimientos
 
