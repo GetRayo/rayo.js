@@ -458,7 +458,7 @@ Mirá nuestras notas sobre [contribuciones](CONTRIBUTING.md) notes.
 ## Agradecimientos
 
 :clap: `Gracias` a [todos](https://github.com/nodejs/node/graphs/contributors) quienes hicieron Nodejs posible y a todos los miembros de la comunidad que activamente contribuyen a este.<br />
-:steam_locomotive: La mayor parte de `Rayo` fue escrita en tramos de 90 minutos por dia y durante el viaje en tren, mientras viajaba al trabajo.
+:steam_locomotive: La mayor parte de `Rayo` fue escrita en tramos de 90 minutos por dia mientras viajaba en tren, hacia mi trabajo.
 
 ## Licencia
 
