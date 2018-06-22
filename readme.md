@@ -22,7 +22,7 @@ Tu servidor sentirá que fue golpeado por un rayo...
 - API similar a 'express'¹,
 - Compatible con el middleware 'express' ,
 - Extensible y conectable,
-- < 85 LOC (sin ruteo en lo absoluto)
+- Menos de 150 líneas de código, con redireccionamiento y todo!.
 
 > ¹ `Rayo` no tiene la intención de ser un reemplazo de express, la API es similar, inspirada en, pero no idéntica.
 
