@@ -29,7 +29,7 @@
     "coveralls": "3.x",
     "dotenv": "6.x",
     "eslint": "4.x",
-    "eslint-config-airbnb-base": "12.x",
+    "eslint-config-airbnb-base": "^13.0.0",
     "eslint-config-prettier": "2.x",
     "eslint-plugin-import": "2.x",
     "eslint-plugin-prettier": "2.x",
