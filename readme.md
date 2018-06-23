@@ -11,22 +11,22 @@
 </div>
 
 This is a **framework** for the **modern** web; small, slick, elegant and fast.
-We built `Rayo` after spending too much time thinking how to fix the problems we encountered with other frameworks.
-We needed something that could be an "almost" out-of-the-box replacement for what most of our systems were built upon, without sacrificing productivity or performance.<br />
+We built `Rayo` after spending too much time trying to fix the problems we encountered with other frameworks.
+We needed something that could be an _almost_ out-of-the-box replacement for what most of our systems were built upon, without sacrificing productivity or performance.<br />
 
 ```
-Your server will feel like it got hit by a lightning...
+Your server will feel like it got hit by a lightning bolt...
 ```
 
 ## In a nutshell
 
-- Really fast (yeah, like really fast. See [how it compares](#how-does-it-compare)),
-- similar API to express¹,
-- compatible with express middleware,
-- extensible & plugable,
-- < 85 LOC (with routing and all)
+- Really fast (Like, _really_ fast. See [how it compares](#how-does-it-compare))
+- similar API to Express¹
+- compatible with Express middleware
+- extensible & plugable
+- <85 LOC (with routing and all)
 
-> ¹ `Rayo` is not intended to be an express replacement, thus the API is similar, inspired-by, and not identical.
+> ¹ `Rayo` is not intended to be an Express replacement, thus the API is similar, inspired-by, but not identical.
 
 ```
 There are examples 🔎 throughout the read.
@@ -82,13 +82,13 @@ rayo({ port: 5050 })
 
 #### A note on handlers
 
-`handler` functions accept an [IncomingMessage](https://nodejs.org/api/http.html#http_class_http_incomingmessage) (a.k.a `req`), a [ServerResponse](https://nodejs.org/dist/latest-v9.x/docs/api/http.html#http_class_http_serverresponse) (a.k.a `res`) and a `step through` (a.k.a `step`) function. `step()` is optional and it may be used to move the program's execution logic to the next handler in the stack.
+`handler` functions accept an [IncomingMessage](https://nodejs.org/api/http.html#http_class_http_incomingmessage) (a.k.a `req`), a [ServerResponse](https://nodejs.org/dist/latest-v9.x/docs/api/http.html#http_class_http_serverresponse) (a.k.a `res`) and a `step through` (a.k.a `step`) function. `step()` is optional and may be used to move the program's execution logic to the next handler in the stack.
 
 `step()` may also be used to return an error at any time. See [error handling](#error-handling).
 
 > **Note:** An error will be thrown if `step()` is called on an empty stack.
 
-Each `handler` exposes Node's native ServerResponse (`res`) object and it's your responsibility to deal with it accordingly; e.g. end the response (`res.end()`) where expected.
+Each `handler` exposes Node's native ServerResponse (`res`) object and it's your responsibility to deal with it accordingly, e.g. end the response (`res.end()`) where expected.
 
 If you need an easier and more convenient way to deal with your responses, take a look at [@rayo/send](https://github.com/GetRayo/rayo.js/tree/master/packages/plugins/send).
 
@@ -113,7 +113,7 @@ Please keep in mind that:
 - It's your responsibility to deal with them accordingly.
 ```
 
-> ² `Rayo` is WIP, so you may encounter actual errors that need to be dealt with. If so, please point them out to us via a `pull request`. 👍
+> ² `Rayo` is a WIP, so you may encounter actual errors that need to be dealt with. If so, please point them out to us via a `pull request`. 👍
 
 If you have implemented your own error function (see `onError` under [options](#rayooptions--)) you may invoke it at any time by calling `step()` with an argument.
 
@@ -152,7 +152,7 @@ If you don't have an error function, you may still call `step()` (with an argume
 
 - `options.port` _{number}_
   _ Listen on this port for incoming connections.
-  _ If port is omitted or is 0, the operating system will assign an arbitrary, unused, port.
+  _ If port is omitted or is 0, the operating system will assign an arbitrary, unused port.
 
 - `options.host` _{string}_
   _ Listen on this host for incoming connections.
@@ -180,7 +180,7 @@ If you don't have an error function, you may still call `step()` (with an argume
 
 - `options.onError` _{function}_
 
-  > Invoked when step() is called with an argument.
+  > Invoked when `step()` is called with an argument.
 
   ```js
   /**
@@ -198,7 +198,7 @@ If you don't have an error function, you may still call `step()` (with an argume
 
 ```
 @param   {string}   path
-@param   {function} handlers - Any number, comma separated.
+@param   {function} handlers - Any number, separated by a comma.
 @returns {rayo}
 ```
 
@@ -233,7 +233,7 @@ rayo({ port: 5050 })
 @returns {rayo}
 ```
 
-> Requests which match any verb and the given path will be routed through the specified handlers.
+> Requests that match any verb and the given path will be routed through the specified handlers.
 
 <details>
 <summary>🔎</summary>
@@ -321,7 +321,7 @@ rayo({ port: 5050 })
 
 A `bridge` instance exposes all of Rayo's routing methods ([.through](#throughhandlers), [.route](#routeverb-path-handlers), [.verb](#verbpath-handlers) and [.all](#allpath-handlers)). You may create any number of bridges and Rayo will automagically take care of mapping them.
 
-What makes `bridges` really awesome is the fact that allow very granular control over what your application exposes. For example, enable [content compression](https://github.com/GetRayo/rayo.js/tree/master/packages/plugins/compress) only on certain paths.
+What makes `bridges` really awesome is the fact that they allow very granular control over what your application exposes. For example, enabling [content compression](https://github.com/GetRayo/rayo.js/tree/master/packages/plugins/compress) only on certain paths.
 
 <details>
 <summary>🔎</summary>
@@ -382,7 +382,7 @@ server.start();
 
 > Starts `Rayo` -Your server is now listening for incoming requests.
 
-> `Rayo` will return the server address with the callback, if one was provided. Useful, for example, to get the server port in case no port was specified in the options.
+> `Rayo` will return the server address with the callback, if one was provided. This is useful, for example, to get the server port in case no port was specified in the options.
 
 <details>
 <summary>🔎</summary>
@@ -401,9 +401,9 @@ rayo({ port: 5050 });
 
 ## How does it compare?
 
-Here are some of the top contenders. Please note that these results are only meant as raw performance indicators. Your application's logic, which is what makes most applications slow, may not see great performance gains from using one framework over another.<br />
+Here are some of the top contenders. Please note that these results are only meant as raw performance indicators. Your application's logic, which is what makes most applications slow, may not see great performance gains between frameworks.<br />
 
-> All tests were conducted on a CPU optimized server (DigitalOcean, 32 GB RAM, 16 vCPUs, Ubuntu 16.04.4 x64).
+> All tests were conducted on a CPU-optimized server (DigitalOcean, 32 GB RAM, 16 vCPUs, Ubuntu 16.04.4 x64).
 
 <details>
 <summary>🔎 -Node V.8.11.3</summary>
@@ -447,7 +447,7 @@ $> npm run bench -- -u http://localhost:5050 -c 1000 -p 25 -d 10
 
 ## Examples
 
-May be found [here](https://github.com/GetRayo/rayo.js/tree/master/docs/examples).
+Can be found [here](https://github.com/GetRayo/rayo.js/tree/master/docs/examples).
 
 ## Contribute
 
@@ -455,8 +455,8 @@ See our [contributing](CONTRIBUTING.md) notes.
 
 ## Acknowledgements
 
-:clap: `Thank you` to [everyone](https://github.com/nodejs/node/graphs/contributors) who has made Nodejs possible and to all community members actively contributing to it.<br />
-:steam_locomotive: Most of `Rayo` was written in chunks of 90 minutes per day and on the train, while commuting to work.
+:clap: `Thank you` to [everyone](https://github.com/nodejs/node/graphs/contributors) who has made Node.js possible and to all community members actively contributing to it.<br />
+:steam_locomotive: Most of `Rayo` was written in chunks of 90 minutes per day and on the train while commuting to work.
 
 ## License
 
