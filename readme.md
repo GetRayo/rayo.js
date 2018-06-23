@@ -401,35 +401,17 @@ rayo({ port: 5050 });
 
 ## How does it compare?
 
-Here are some of the top contenders. Please note that these results are only meant as raw performance indicators. Your application's logic, which is what makes most applications slow, may not see great performance gains from using one framework over another.<br />
+Please note that these results are only meant as raw performance indicators. Your application's logic, which is what makes most applications slow, may not see great performance gains from using one framework over another.
 
-> All tests were conducted on a CPU optimized server (DigitalOcean, 32 GB RAM, 16 vCPUs, Ubuntu 16.04.4 x64).
-
-<details>
-<summary>🔎 -Node V.8.11.3</summary>
+> These tests were conducted on a CPU-optimized server (DigitalOcean, 32 GB RAM, 16 vCPUs, Ubuntu 16.04.4 x64) and Node.js v10.5.0.
+> Measured after one warm-up run.
 
 | &nbsp;  | Version | Router | Requests/s | Latency | Throughput/Mb |
 | ------- | ------: | :----: | ---------: | ------: | ------------: |
-| Polka   |   0.4.0 |   ✔    |      62410 |    1.52 |          7.28 |
-| Rayo    |   1.0.4 |   ✔    |    62174.4 |    1.54 |          7.08 |
-| Fastify |   1.6.0 |   ✔    |      56784 |    1.69 |          8.75 |
-| Express |  4.16.3 |   ✔    |    50665.6 |     1.9 |          5.88 |
-
-</details>
-<p></p>
-
-<details>
-<summary>🔎 -Node V.10.4.1</summary>
-
-| &nbsp;  | Version | Router | Requests/s | Latency | Throughput/Mb |
-| ------- | ------: | :----: | ---------: | ------: | ------------: |
-| Rayo    |   1.0.4 |   ✔    |    71612.8 |    1.33 |          8.28 |
+| Rayo    |   1.1.3 |   ✔    |    71612.8 |    1.33 |          8.28 |
 | Polka   |   0.4.0 |   ✔    |    71094.4 |    1.33 |          8.18 |
 | Fastify |   1.6.0 |   ✔    |    67740.8 |     1.4 |         10.55 |
 | Express |  4.16.3 |   ✔    |    62108.8 |    1.53 |          7.17 |
-
-</details>
-<p></p>
 
 Run on your own hardware; clone this repository, install the dependencies and run `npm run bench`. Optionally, you may also define your test's parameters:
 
@@ -443,7 +425,7 @@ $> npm run bench -- -u http://localhost:5050 -c 1000 -p 25 -d 10
 - `-d` (_duration_) -Defaults to `10` (seconds)
 - `-o` (_only_) Run only one particular benchmark. -Defaults to `null`
 
-> Please note that these results ~~may~~ will vary on different hardware.
+> These results ~~may~~ will vary on different hardware.
 
 ## Examples
 
