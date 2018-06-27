@@ -36,7 +36,6 @@ module.exports = class Bridge {
 
     if (!path) {
       this.t = [];
-      this.cache = { urls: {}, queries: {} };
       this.bridge = (bridgedPath) => {
         const bridge = new Bridge(bridgedPath);
         bridges.push(bridge);
@@ -73,14 +72,16 @@ module.exports = class Bridge {
   }
 
   fetch(verb, path) {
-    this.cache.urls[verb] = this.cache.urls[verb] || {};
-    const url = this.cache.urls[verb][path] || match(path, this.routes[verb] || []);
-    this.cache.urls[verb][path] = url;
-    return !url.length
-      ? null
-      : {
-          params: exec(path, url),
-          stack: this.t.concat(this.s[verb][url[0].old])
-        };
+    return new Promise((yes) => {
+      const url = match(path, this.routes[verb] || []);
+      return yes(
+        !url.length
+          ? null
+          : {
+              params: exec(path, url),
+              stack: this.t.concat(this.s[verb][url[0].old])
+            }
+      );
+    });
   }
 };

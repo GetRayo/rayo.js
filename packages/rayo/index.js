@@ -7,7 +7,7 @@ const end = (req, res, status, error) => {
   res.statusCode = status;
   res.setHeader('Content-Length', error.length);
   res.setHeader('Content-Type', 'text/plain');
-  return res.end(error);
+  res.end(error);
 };
 
 class Rayo extends Bridge {
@@ -34,9 +34,9 @@ class Rayo extends Bridge {
     return this.server;
   }
 
-  dispatch(req, res) {
+  async dispatch(req, res) {
     const parsedUrl = parseurl(req);
-    const route = this.fetch(req.method, parsedUrl.pathname);
+    const route = await this.fetch(req.method, parsedUrl.pathname);
     if (!route) {
       return this.notFound
         ? this.notFound(req, res)
@@ -45,9 +45,8 @@ class Rayo extends Bridge {
 
     req.params = route.params;
     req.pathname = parsedUrl.pathname;
-    req.query = this.cache.queries[parsedUrl.query] || parse(parsedUrl.query);
-    this.cache.queries[parsedUrl.query] = req.query;
-    return this.step(req, res, route.stack.slice());
+    req.query = parse(parsedUrl.query);
+    return this.step(req, res, route.stack);
   }
 
   step(req, res, stack, error = null, statusCode = 400) {
