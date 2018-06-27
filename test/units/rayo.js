@@ -63,13 +63,13 @@ module.exports = () => {
 
   it('Dispatch (defined verb)', (done) => {
     const server = rayo({ port: 5050 }).get('/', () => {});
-    const stack = server.dispatch(fake.req, fake.res);
-
-    setTimeout(() => {
-      test(server);
-      should(stack).equal(undefined);
-      done();
-    }, 25);
+    server.dispatch(fake.req, fake.res).then((stack) => {
+      setTimeout(() => {
+        test(server);
+        should(stack).equal(undefined);
+        done();
+      }, 25);
+    });
   });
 
   it('Dispatch (undefined verb)', (done) => {
@@ -87,13 +87,13 @@ module.exports = () => {
     });
 
     const server = rayo({ port: 5050 }).post('/', () => {});
-    const stack = server.dispatch(fake.req, fake.res);
-
-    setTimeout(() => {
-      test(server);
-      should(stack).equal(undefined);
-      done();
-    }, 25);
+    server.dispatch(fake.req, fake.res).then((stack) => {
+      setTimeout(() => {
+        test(server);
+        should(stack).equal(undefined);
+        done();
+      }, 25);
+    });
   });
 
   it('Dispatch (custom notFound function)', (done) => {
