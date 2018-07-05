@@ -1,8 +1,8 @@
 const http = require('http');
 const parseurl = require('parseurl');
 const { parse } = require('querystring');
+const storm = require('@rayo/storm');
 const Bridge = require('./bridge');
-const storm = require('../storm'); // @rayo/storm
 
 const end = (req, res, status, error) => {
   res.statusCode = status;

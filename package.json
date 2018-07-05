@@ -17,7 +17,7 @@
     "test": "nyc --reporter=lcov _mocha -R spec --timeout 30000 test/index.js",
     "posttest": "nyc report --reporter=text",
     "report": "codecov && cat ./coverage/lcov.info | coveralls && rm -rf ./coverage ./.nyc_output",
-    "copies": "cp readme.md ./packages/rayo/. && echo rayo/ plugins/compress/ plugins/send/ | xargs -n 1 -I flr cp LICENSE ./packages/flr",
+    "copies": "cp readme.md ./packages/rayo/. && echo rayo/ compress/ send/ storm/ | xargs -n 1 -I flr cp LICENSE ./packages/flr",
     "prerelease": "npm test && npm run copies",
     "release": "lerna publish"
   },
