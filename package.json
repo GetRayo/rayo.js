@@ -46,6 +46,5 @@
     "should": "13.x",
     "sinon": "^6.1.0",
     "supertest": "^3.1.0"
-  },
-  "dependencies": {}
+  }
 }

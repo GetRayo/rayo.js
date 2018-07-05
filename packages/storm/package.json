@@ -1,6 +1,6 @@
 {
   "name": "@rayo/storm",
-  "version": "0.2.2",
+  "version": "1.0.0",
   "description": "🌩️ Run clustered applications.",
   "main": "index.js",
   "engines": {
@@ -20,8 +20,8 @@
     "access": "public"
   },
   "dependencies": {
-    "@rayo/send": "^1.0.2",
+    "@rayo/send": "^1.0.3",
     "pino": "^4.17.3",
-    "rayo": "^1.1.4"
+    "rayo": "^1.2.0"
   }
 }
