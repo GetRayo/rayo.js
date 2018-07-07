@@ -1,9 +1,8 @@
-/* eslint no-console: 0 */
 const { storm } = require('../../../../packages/storm');
 
 storm(
   () => {
-    console.log('Worker!');
+    process.stdout.write('Worker!');
     process.exit();
   },
   {

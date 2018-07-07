@@ -1,11 +1,10 @@
-/* eslint no-console: 0 */
 const { storm } = require('../../../../packages/storm');
 
 storm(
   () => {
-    console.log('Worker!');
+    process.stdout.write('Worker!');
     process.send('Hello from the worker!');
-    process.on('message', (message) => console.log(message));
+    process.on('message', (message) => process.stdout.write(message));
     setTimeout(process.exit, 500);
   },
   {
@@ -13,10 +12,12 @@ storm(
     monitor: false,
     workers: parseInt(process.argv[2], 10),
     master(cluster) {
-      console.log('Master!');
+      process.stdout.write('Master!');
       const worker = cluster.workers[1];
       worker.on('message', (message) =>
-        console.log(typeof message === 'object' ? JSON.stringify(message) : message)
+        process.stdout.write(
+          typeof message === 'object' ? JSON.stringify(message) : message
+        )
       );
 
       worker.send(process.argv[4]);

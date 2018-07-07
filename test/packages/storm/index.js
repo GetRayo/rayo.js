@@ -5,7 +5,7 @@ const { spawn } = require('child_process');
 const exec = (file, options = {}) =>
   new Promise((yes) => {
     const res = [];
-    const input = (buffer) => res.push(buffer.toString().replace('\n', ''));
+    const input = (buffer) => res.push(buffer.toString());
     const path = `./test/packages/storm/${file}`;
 
     if (options.workers === 'auto') {
