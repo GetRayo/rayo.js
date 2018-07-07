@@ -1,7 +1,7 @@
 const should = require('should');
 const sinon = require('sinon');
 const request = require('supertest');
-const send = require('../../../packages/plugins/send');
+const send = require('../../../packages/send');
 const { header, wrap } = require('../../utils/helpers');
 
 let sandbox;

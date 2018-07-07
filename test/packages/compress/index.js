@@ -1,7 +1,7 @@
 const sinon = require('sinon');
 const request = require('supertest');
 const { PassThrough } = require('stream');
-const compress = require('../../../packages/plugins/compress');
+const compress = require('../../../packages/compress');
 const { header, wrap, size } = require('../../utils/helpers');
 
 let sandbox;

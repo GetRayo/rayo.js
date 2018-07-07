@@ -20,6 +20,7 @@ const send = function send(payload, statusCode) {
   this.statusCode = statusCode || 200;
   this.setHeader('Content-Length', (response || '').length);
   this.setHeader('Content-Type', valid ? 'application/json' : 'text/plain');
+  this.setHeader('X-Powered-by', '@rayo/send');
   this.end(response);
 };
 

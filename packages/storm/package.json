@@ -1,7 +1,7 @@
 {
-  "name": "@rayo/compress",
-  "version": "1.1.5",
-  "description": "🗜 Rayo's compression",
+  "name": "@rayo/storm",
+  "version": "1.0.1",
+  "description": "🌩️ Run clustered applications.",
   "main": "index.js",
   "engines": {
     "node": ">=8.11.2"
@@ -20,6 +20,8 @@
     "access": "public"
   },
   "dependencies": {
-    "compressible": "2.0.x"
+    "@rayo/send": "^1.0.3",
+    "pino": "^4.17.3",
+    "rayo": "^1.2.1"
   }
 }

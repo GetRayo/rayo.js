@@ -79,7 +79,7 @@ rayo({ port: 5050 })
       <p><code>step()</code> may also be used to return an error at any time. See <a href="#error-handling">error handling</a>.</p>
       <blockquote>An error will be thrown if <code>step()</code> is called on an empty stack.</blockquote>
       <p>Each <code>handler</code> exposes Node's native ServerResponse (<code>res</code>) object and it's your responsibility to deal with it accordingly, e.g. end the response (<code>res.end()</code>) where expected.</p>
-      <p>If you need an easier and more convenient way to deal with your responses, take a look at <a href="https://github.com/GetRayo/rayo.js/tree/master/packages/plugins/send">@rayo/send</a>.</p>
+      <p>If you need an easier and more convenient way to deal with your responses, take a look at <a href="https://github.com/GetRayo/rayo.js/tree/master/packages/send">@rayo/send</a>.</p>
       <h3 id="error-handling">Error handling</h3>
       <pre>Please keep in mind that:
 "Your code, your errors."¹
@@ -243,7 +243,7 @@ rayo({ port: 5050 })
       </blockquote>
       <p>A <code>bridge</code> instance exposes all of Rayo's routing methods (<a href="#throughhandlers">.through</a>, <a href="#routeverb-path-handlers">.route</a>, <a href="#verbpath-handlers">.verb</a> and <a href="#allpath-handlers">.all</a>). You may create any
         number of bridges and Rayo will automagically take care of mapping them.</p>
-      <p>What makes <code>bridges</code> really awesome is the fact that they allow very granular control over what your application exposes. For example, enabling <a href="https://github.com/GetRayo/rayo.js/tree/master/packages/plugins/compress">content compression</a> only on certain paths.</p>
+      <p>What makes <code>bridges</code> really awesome is the fact that they allow very granular control over what your application exposes. For example, enabling <a href="https://github.com/GetRayo/rayo.js/tree/master/packages/compress">content compression</a> only on certain paths.</p>
       <pre>const rayo = require('rayo');
 
 const server = rayo({ port: 5050 });
