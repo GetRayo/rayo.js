@@ -1,5 +1,3 @@
-/* eslint no-console: 0 */
-
 const http = require('http');
 const { createReadStream } = require('fs');
 const { PassThrough } = require('stream');

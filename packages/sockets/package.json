@@ -1,0 +1,25 @@
+{
+  "name": "@rayo/sockets",
+  "version": "0.0.1",
+  "description": "🔌 Websockets",
+  "main": "index.js",
+  "engines": {
+    "node": ">=8.11.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GetRayo/rayo.js.git"
+  },
+  "author": {
+    "name": "Stefan Aichholzer",
+    "email": "theaichholzer@gmail.com",
+    "url": "https://github.com/aichholzer"
+  },
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "uws": "^10.148.1"
+  }
+}
