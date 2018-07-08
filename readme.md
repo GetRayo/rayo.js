@@ -28,6 +28,7 @@ Your server will feel like it got hit by a lightning bolt...
 
 > ¹ `Rayo` is not intended to be an Express replacement, thus the API is similar, inspired-by, but not identical.
 
+
 ```
 There are examples 🔎 throughout the read.
 ```
@@ -90,7 +91,7 @@ rayo({ port: 5050 })
 
 Each `handler` exposes Node's native ServerResponse (`res`) object and it's your responsibility to deal with it accordingly, e.g. end the response (`res.end()`) where expected.
 
-If you need an easier and more convenient way to deal with your responses, take a look at [@rayo/send](https://github.com/GetRayo/rayo.js/tree/master/packages/send).
+If you need an easier and more convenient way to deal with your responses, take a look at [@rayo/send].
 
 #### Handler signature
 
@@ -160,12 +161,12 @@ If you don't have an error function, you may still call `step()` (with an argume
 
 - `options.storm` _{object}_
   - Harness the full power of multi-core CPUs. `Rayo` will spawn an instance across each core.
-  - Accepts the same options object as `@rayo/storm`. See for [@rayo/storm](https://github.com/GetRayo/rayo.js/tree/master/packages/storm) for details.
+  - Accepts the same options object as `@rayo/storm`. See for [@rayo/storm] for details.
   - `Default:` null (no clustering)
 
 - `options.server` _{http.Server}_
-  - An instance [http.Server](https://nodejs.org/api/http.html#http_class_http_server). `Rayo` will attach to this.
-  - `Default:` A new instance of [http.Server](https://nodejs.org/api/http.html#http_class_http_server).
+  - An instance [http.Server]. `Rayo` will attach to this.
+  - `Default:` A new instance of [http.Server].
 
 - `options.notFound` _{function}_
 
@@ -326,7 +327,7 @@ rayo({ port: 5050 })
 
 A `bridge` instance exposes all of Rayo's routing methods ([.through](#throughhandlers), [.route](#routeverb-path-handlers), [.verb](#verbpath-handlers) and [.all](#allpath-handlers)). You may create any number of bridges and Rayo will automagically take care of mapping them.
 
-What makes `bridges` really awesome is the fact that they allow very granular control over what your application exposes. For example, enabling [content compression](https://github.com/GetRayo/rayo.js/tree/master/packages/compress) only on certain paths.
+What makes `bridges` really awesome is the fact that they allow very granular control over what your application exposes. For example, enabling [@rayo/compression] only on certain paths.
 
 <details>
 <summary>🔎</summary>
@@ -404,6 +405,13 @@ rayo({ port: 5050 });
 
 </details>
 
+
+## Available modules
+
+- [@rayo/compress]
+- [@rayo/send]
+- [@rayo/storm]
+
 ## How does it compare?
 
 Please note that these results are only meant as raw performance indicators. Your application's logic, which is what makes most applications slow, may not see great performance gains between frameworks.
@@ -453,3 +461,9 @@ See our [contributing](https://github.com/GetRayo/rayo.js/blob/master/CONTRIBUTI
 <p align="center" style="margin:25px 0 10px">
   :zap:
 </p>
+
+
+[@rayo/compress]: https://github.com/GetRayo/rayo.js/tree/master/packages/compress
+[@rayo/send]: https://github.com/GetRayo/rayo.js/tree/master/packages/send
+[@rayo/storm]: https://github.com/GetRayo/rayo.js/tree/master/packages/storm
+[http.Server]: ttps://nodejs.org/api/http.html#http_class_http_server
