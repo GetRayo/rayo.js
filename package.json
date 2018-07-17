@@ -39,7 +39,7 @@
     "minimist": "1.x",
     "mocha": "5.x",
     "nyc": "12.x",
-    "ora": "2.x",
+    "ora": "^3.0.0",
     "pancho": "^1.0.1",
     "polka": "^0.4.0",
     "prettier": "^1.13.7",
