@@ -449,6 +449,12 @@ Can be found [here](https://github.com/GetRayo/rayo.js/tree/master/docs/examples
 
 See our [contributing](https://github.com/GetRayo/rayo.js/blob/master/CONTRIBUTING.md) notes.
 
+## Kindly sponsored by
+
+<a href="https://digitalocean.com">
+ <img src="https://raw.githubusercontent.com/GetRayo/Assets/master/Sponsors/DigitalOcean.png" height="100" alt="DigitalOcean" />
+</a>
+
 ## Acknowledgements
 
 :clap: `Thank you` to [everyone](https://github.com/nodejs/node/graphs/contributors) who has made Node.js possible and to all community members actively contributing to it.<br />
