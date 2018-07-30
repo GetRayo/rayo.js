@@ -452,7 +452,10 @@ See our [contributing](https://github.com/GetRayo/rayo.js/blob/master/CONTRIBUTI
 ## Kindly sponsored by
 
 <a href="https://digitalocean.com">
- <img src="https://raw.githubusercontent.com/GetRayo/Assets/master/Sponsors/DigitalOcean.png" height="100" alt="DigitalOcean" />
+ <img src="https://raw.githubusercontent.com/GetRayo/Assets/master/Sponsors/DigitalOcean.png" height="80" alt="DigitalOcean.com" />
+</a>
+<a href="https://doshii.io">
+ <img src="https://raw.githubusercontent.com/GetRayo/Assets/master/Sponsors/Doshii.png" height="80" alt="Doshii.io" />
 </a>
 
 ## Acknowledgements
