@@ -28,7 +28,7 @@
     "codecov": "^3.0.3",
     "coveralls": "^3.0.2",
     "dotenv": "6.x",
-    "eslint": "^5.0.0",
+    "eslint": "^4.19.1",
     "eslint-config-airbnb-base": "^13.0.0",
     "eslint-config-prettier": "2.x",
     "eslint-plugin-import": "2.x",
@@ -42,8 +42,8 @@
     "ora": "^3.0.0",
     "pancho": "^1.0.1",
     "polka": "^0.4.0",
-    "prettier": "^1.13.7",
-    "should": "13.x",
+    "prettier": "^1.14.0",
+    "should": "^13.2.3",
     "sinon": "^6.1.0",
     "supertest": "^3.1.0"
   }
