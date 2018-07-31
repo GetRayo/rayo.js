@@ -10,7 +10,7 @@ storm(
     workers: parseInt(process.argv[2], 10),
     master() {
       process.stdout.write('Master!');
-      setTimeout(this.stop, 500);
+      setTimeout(this.stop, 1000);
     }
   }
 );
