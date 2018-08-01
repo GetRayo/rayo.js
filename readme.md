@@ -18,6 +18,7 @@ We needed something that could be an _almost_ out-of-the-box replacement for wha
 Your server will feel like it got hit by a lightning bolt...
 ```
 
+
 ## In a nutshell
 
 - Really fast (Like, _really_ fast. See [how it compares](#how-does-it-compare)),
@@ -33,11 +34,13 @@ Your server will feel like it got hit by a lightning bolt...
 There are examples 🔎 throughout the read.
 ```
 
+
 ## Install
 
 ```
 $> npm i rayo
 ```
+
 
 ## Use
 
@@ -141,6 +144,7 @@ rayo(options)
 In the above example, the error will be returned on the `/` path, since `step()` is being called with an argument. Run the example, open your browser and go to [http://localhost:5050](http://localhost:5050) and you will see "Here's your error: Thunderstruck!".
 
 If you don't have an error function, you may still call `step()` (with an argument), which will use Rayo's own error function.
+
 
 ## API
 
@@ -409,8 +413,10 @@ rayo({ port: 5050 });
 ## Available modules
 
 - [@rayo/compress]
+- [@rayo/peruse]
 - [@rayo/send]
 - [@rayo/storm]
+
 
 ## How does it compare?
 
@@ -441,13 +447,16 @@ $> npm run bench -- -u http://localhost:5050 -c 1000 -p 25 -d 10
 
 > These results ~~may~~ will vary on different hardware.
 
+
 ## Examples
 
 Can be found [here](https://github.com/GetRayo/rayo.js/tree/master/docs/examples).
 
+
 ## Contribute
 
 See our [contributing](https://github.com/GetRayo/rayo.js/blob/master/CONTRIBUTING.md) notes.
+
 
 ## Kindly sponsored by
 
@@ -458,10 +467,12 @@ See our [contributing](https://github.com/GetRayo/rayo.js/blob/master/CONTRIBUTI
  <img src="https://raw.githubusercontent.com/GetRayo/Assets/master/Sponsors/Doshii.png" height="80" alt="Doshii.io" />
 </a>
 
+
 ## Acknowledgements
 
 :clap: `Thank you` to [everyone](https://github.com/nodejs/node/graphs/contributors) who has made Node.js possible and to all community members actively contributing to it.<br />
 :steam_locomotive: Most of `Rayo` was written in chunks of 90 minutes per day and on the train while commuting to work.
+
 
 ## License
 
@@ -473,6 +484,7 @@ See our [contributing](https://github.com/GetRayo/rayo.js/blob/master/CONTRIBUTI
 
 
 [@rayo/compress]: https://github.com/GetRayo/rayo.js/tree/master/packages/compress
+[@rayo/peruse]: https://github.com/GetRayo/rayo.js/tree/master/packages/peruse
 [@rayo/send]: https://github.com/GetRayo/rayo.js/tree/master/packages/send
 [@rayo/storm]: https://github.com/GetRayo/rayo.js/tree/master/packages/storm
 [http.Server]: ttps://nodejs.org/api/http.html#http_class_http_server
