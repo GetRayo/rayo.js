@@ -34,7 +34,7 @@
     "eslint-plugin-prettier": "^2.6.2",
     "express": "^4.16.3",
     "fastify": "^1.6.0",
-    "lerna": "^2.11.0",
+    "lerna": "^3.0.0",
     "minimist": "^1.2.0",
     "mocha": "^5.2.0",
     "nyc": "^12.0.2",
