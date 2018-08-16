@@ -40,7 +40,7 @@ class Storm {
     }
 
     if (this.monitor) {
-      monitor.start(cluster, options.monitorPort);
+      monitor.start(cluster, options);
     }
   }
 
@@ -74,5 +74,5 @@ class Storm {
   }
 }
 
-exports.Storm = Storm;
-exports.storm = (work = null, options = {}) => new Storm(work, options);
+module.exports.Storm = Storm;
+module.exports.storm = (work = null, options = {}) => new Storm(work, options);

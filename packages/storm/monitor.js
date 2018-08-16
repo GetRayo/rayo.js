@@ -1,6 +1,6 @@
+const parseurl = require('parseurl');
 const pino = require('pino');
-const rayo = require('rayo');
-const send = require('@rayo/send');
+const { createServer } = require('http');
 
 const { STORM_LOG_NAME = 'Rayo', STORM_LOG_LEVEL = 'info' } = process.env;
 const log = pino({ name: STORM_LOG_NAME, level: STORM_LOG_LEVEL, prettyPrint: true });
@@ -20,16 +20,22 @@ const reform = (item) => {
   return item;
 };
 const pre = (payload) => (Array.isArray(payload) ? payload.map(reform) : reform(payload));
-const requestHandler = (cluster, req, res) => {
-  const workerId = parseInt(req.params.worker, 10) || null;
+const send = (res, data) => {
+  res.setHeader('Content-Length', data.length);
+  res.setHeader('X-Powered-by', '@rayo/storm');
+  res.end(data);
+};
+const requestDispatch = (cluster, res, { workerId, command }) => {
   if (workerId) {
     const worker = cluster.workers[workerId];
     if (!worker) {
-      return res.send(`Worker ${req.params.worker} does not exist.`);
+      res.setHeader('Content-Type', 'text/plain');
+      return send(res, `Worker ${workerId} does not exist.`);
     }
 
-    worker.once('message', (message) => res.send(pre(message)));
-    return worker.send(req.params.cmd || 'health');
+    res.setHeader('Content-Type', 'application/json');
+    worker.once('message', (message) => send(res, JSON.stringify(pre(message))));
+    return worker.send(command);
   }
 
   const current = [];
@@ -42,7 +48,24 @@ const requestHandler = (cluster, req, res) => {
     })
   );
 
-  return res.send(pre(current));
+  res.setHeader('Content-Type', 'application/json');
+  return send(res, JSON.stringify(pre(current)));
+};
+const requestHandler = (cluster, req, res) => {
+  const { pathname } = parseurl(req);
+  const [service, workerId, command = 'health'] = pathname
+    .substr(1, pathname.length)
+    .split('/');
+
+  if (service === 'monitor') {
+    return requestDispatch.bind(null, cluster, res)({
+      workerId: parseInt(workerId, 10) || null,
+      command
+    });
+  }
+
+  res.statusCode = 404;
+  return res.end('This service does not exist.');
 };
 
 module.exports = {
@@ -72,17 +95,17 @@ module.exports = {
   },
 
   monitor: {
-    start: (cluster, port = null) => {
-      this.httpServer = rayo({ port, cluster: false })
-        .through(send())
-        .get('/monitor/:worker?/:cmd?', requestHandler.bind(null, cluster))
-        .start((address) => {
-          log.info(
-            `Monitoring ${Object.keys(cluster.workers).length} workers on port ${
-              address.port
-            }`
-          );
-        });
+    start: (cluster, { monitorPort = null, server = createServer() }) => {
+      this.httpServer = server;
+      this.httpServer.listen(monitorPort);
+      this.httpServer.on('request', requestHandler.bind(null, cluster));
+      this.httpServer.on('listening', () => {
+        log.info(
+          `Monitoring ${Object.keys(cluster.workers).length} workers on port ${
+            this.httpServer.address().port
+          }`
+        );
+      });
     },
 
     stop: () => {

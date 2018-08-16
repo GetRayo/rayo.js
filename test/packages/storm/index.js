@@ -17,7 +17,8 @@ const exec = (file, options = {}) =>
       path,
       options.workers,
       options.workerId || 0,
-      options.command
+      options.command,
+      options.service || 'monitor'
     ]);
     pcs.stdout.on('data', input);
     pcs.stderr.on('data', input);
@@ -57,57 +58,64 @@ module.exports = () => {
 
   it('One worker', (done) => {
     exec('fixtures/worker')
-      .then((res) => filter.bind(null, res, 'Master!', 1))
-      .then((res) => filter.bind(null, res, 'Worker!', 1))
-      .then(() => done());
+      .then((res) => filter(res, 'Master!', 1))
+      .then((res) => filter(res, 'Worker!', 1))
+      .then(() => done())
+      .catch((error) => done(error));
   });
 
   it('Two workers', (done) => {
     exec('fixtures/worker', { workers: 2 })
-      .then((res) => filter.bind(null, res, 'Master!', 1))
-      .then((res) => filter.bind(null, res, 'Worker!', 2))
-      .then(() => done());
+      .then((res) => filter(res, 'Master!', 1))
+      .then((res) => filter(res, 'Worker!', 2))
+      .then(() => done())
+      .catch((error) => done(error));
   });
 
   it('CPU length workers', (done) => {
     exec('fixtures/worker', { workers: cpus.length })
-      .then((res) => filter.bind(null, res, 'Master!', 1))
-      .then((res) => filter.bind(null, res, 'Worker!', cpus.length))
-      .then(() => done());
+      .then((res) => filter(res, 'Master!', 1))
+      .then((res) => filter(res, 'Worker!', cpus.length))
+      .then(() => done())
+      .catch((error) => done(error));
   });
 
   it('Auto length workers', (done) => {
     exec('fixtures/worker', { workers: 'auto' })
-      .then((res) => filter.bind(null, res, 'Master!', 1))
-      .then((res) => filter.bind(null, res, 'Worker!', cpus.length))
-      .then(() => done());
+      .then((res) => filter(res, 'Master!', 1))
+      .then((res) => filter(res, 'Worker!', cpus.length))
+      .then(() => done())
+      .catch((error) => done(error));
   });
 
   it('Without master function', (done) => {
     exec('fixtures/noMaster')
-      .then((res) => filter.bind(null, res, 'Worker!', 1))
-      .then(() => done());
+      .then((res) => filter(res, 'Worker!', 1))
+      .then(() => done())
+      .catch((error) => done(error));
   });
 
   it('Stop', (done) => {
     exec('fixtures/stop')
-      .then((res) => filter.bind(null, res, 'Master!', 1))
-      .then((res) => filter.bind(null, res, 'Worker!', 1))
-      .then(() => done());
+      .then((res) => filter(res, 'Master!', 1))
+      .then((res) => filter(res, 'Worker!', 1))
+      .then(() => done())
+      .catch((error) => done(error));
   });
 
   it('Keep the cluster alive', (done) => {
     exec('fixtures/keepAlive', { workers: 2 })
-      .then((res) => filter.bind(null, res, 'Master!', 1))
-      .then((res) => filter.bind(null, res, 'Worker!', 2))
-      .then(() => done());
+      .then((res) => filter(res, 'Master!', 1))
+      .then((res) => filter(res, 'Worker!', 2))
+      .then(() => done())
+      .catch((error) => done(error));
   });
 
   it('With monitor', (done) => {
     exec('fixtures/monitor')
-      .then((res) => filter.bind(null, res, 'Master!', 1))
-      .then((res) => filter.bind(null, res, 'Worker!', 1))
-      .then(() => done());
+      .then((res) => filter(res, 'Master!', 1))
+      .then(() => done())
+      .catch((error) => done(error));
   });
 
   it('With monitor, request', (done) => {
@@ -123,10 +131,16 @@ module.exports = () => {
         should(json.ppid).be.a.Number();
         should(json.status).be.a.String();
 
-        return filter.bind(null, res, 'Master!', 1);
+        done();
       })
-      .then((res) => filter.bind(null, res, 'Worker!', 1))
-      .then(() => done());
+      .catch((error) => done(error));
+  });
+
+  it('With monitor, invalid request', (done) => {
+    exec('fixtures/monitorRequest', { service: 'monitors' })
+      .then((res) => filter(res, 'This service does not exist.', 1))
+      .then(() => done())
+      .catch((error) => done(error));
   });
 
   it('With monitor, request for valid worker', (done) => {
@@ -141,18 +155,16 @@ module.exports = () => {
           .be.an.Object()
           .and.have.properties('rss', 'heapTotal', 'heapUsed', 'external');
 
-        return filter.bind(null, res, 'Master!', 1);
+        done();
       })
-      .then((res) => filter.bind(null, res, 'Worker!', 1))
-      .then(() => done());
+      .catch((error) => done(error));
   });
 
   it('With monitor, request for invald worker', (done) => {
     exec('fixtures/monitorRequest', { workerId: 5 })
-      .then((res) => filter.bind(null, res, 'Master!', 1))
-      .then((res) => filter.bind(null, res, 'Worker!', 1))
-      .then((res) => filter.bind(res, 'Worker 5 does not exist.', 1))
-      .then(() => done());
+      .then((res) => filter(res, 'Worker 5 does not exist.', 1))
+      .then(() => done())
+      .catch((error) => done(error));
   });
 
   it('Message between processes, valid command', (done) => {
@@ -171,20 +183,18 @@ module.exports = () => {
           .be.an.Object()
           .and.have.properties('rss', 'heapTotal', 'heapUsed', 'external');
 
-        return filter.bind(null, res, 'Master!', 1);
+        return filter(res, 'health', 1); // master -> worker
       })
-      .then((res) => filter.bind(null, res, 'Worker!', 1))
-      .then((res) => filter.bind(null, res, 'health!', 1)) // mas -> wor
-      .then((res) => filter.bind(null, res, 'Hello from the worker!', 1)) // wor -> mas
-      .then(() => done());
+      .then((res) => filter(res, 'Hello from the worker!', 1)) // worker -> master
+      .then(() => done())
+      .catch((error) => done(error));
   });
 
   it('Message between processes, invalid command', (done) => {
     exec('fixtures/command', { command: 'invalid_command' })
-      .then((res) => filter.bind(null, res, 'Master!', 1))
-      .then((res) => filter.bind(null, res, 'Worker!', 1))
-      .then((res) => filter.bind(res, 'invalid_command', 1)) // mas -> wor
-      .then((res) => filter.bind(res, 'iHello from the worker!', 1)) // wor -> mas
-      .then(() => done());
+      .then((res) => filter(res, 'invalid_command', 1)) // master -> worker
+      .then((res) => filter(res, 'Hello from the worker!', 1)) // worker -> master
+      .then(() => done())
+      .catch((error) => done(error));
   });
 };

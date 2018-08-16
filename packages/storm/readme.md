@@ -19,7 +19,7 @@ $> npm i @rayo/storm
 ## Use
 
 ```js
-const storm = require('@rayo/storm');
+const { storm } = require('@rayo/storm');
 
 const yourAwesomeFunction = (workerId) => {
   console.log(`Hello, I am worker ${workerId}`);
