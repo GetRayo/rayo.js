@@ -1,7 +1,7 @@
 /* eslint no-console: 0 */
 
 const autocannon = require('autocannon');
-const chalk = require('chalk');
+const kleur = require('kleur');
 const fs = require('fs');
 const minimist = require('minimist');
 const ora = require('ora');
@@ -58,13 +58,14 @@ const benchmark = async (results) => {
 
       try {
         // 1 warm-up round, 1 to measure.
-        const spin = ora(`Warming up ${chalk.blue(file)}`).start();
+        const framework = kleur.blue(file.replace('.js', ''));
+        const spin = ora(`Warming up ${framework}`).start();
         spin.color = 'yellow';
         await cannon();
-        spin.text = `Running ${chalk.blue(file)}`;
+        spin.text = `Running ${framework}`;
         spin.color = 'green';
         const result = await cannon(file);
-        spin.text = `${chalk.blue(file)}`;
+        spin.text = framework;
         spin.succeed();
         forked.kill('SIGINT');
         await nap(0.25);
@@ -97,7 +98,7 @@ benchmark([]).then((results) => {
   results.forEach((result) => {
     if (result) {
       table.push([
-        chalk.blue(result.title),
+        kleur.blue(result.title.replace('.js', '')),
         result.requests.average,
         result.latency.average,
         (result.throughput.average / 1024 / 1024).toFixed(2)
