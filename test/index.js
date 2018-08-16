@@ -11,5 +11,5 @@ describe('Unit tests', () => {
     describe('Storm', loadUnit('packages/storm'));
   });
 
-  describe('Integration tests', loadUnit('integration'));
+  describe('Integration', loadUnit('integration'));
 });

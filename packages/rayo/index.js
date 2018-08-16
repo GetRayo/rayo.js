@@ -1,7 +1,7 @@
 const http = require('http');
 const parseurl = require('parseurl');
 const { parse } = require('querystring');
-const storm = require('@rayo/storm');
+const { storm } = require('@rayo/storm');
 const Bridge = require('./bridge');
 
 const end = (req, res, status, error) => {
@@ -39,7 +39,7 @@ class Rayo extends Bridge {
     };
 
     if (this.stormOptions) {
-      storm.storm(work, this.stormOptions);
+      storm(work, this.stormOptions);
     } else {
       work();
     }

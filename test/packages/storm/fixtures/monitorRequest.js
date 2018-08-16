@@ -12,7 +12,7 @@ storm(() => process.stdout.write('Worker!'), {
     setTimeout(() => {
       const workerId = parseInt(process.argv[3], 10) || '';
       request('http://localhost:65000')
-        .get(`/monitor/${workerId}`)
+        .get(`/${process.argv[5]}/${workerId}`)
         .end((error, response) => {
           process.stdout.write(response.text);
           this.stop();

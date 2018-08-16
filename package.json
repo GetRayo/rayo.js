@@ -1,5 +1,8 @@
 {
   "private": true,
+  "engines": {
+    "node": ">=8.11.4"
+  },
   "author": {
     "name": "Stefan Aichholzer",
     "email": "theaichholzer@gmail.com",
@@ -17,7 +20,7 @@
     "test": "eslint --quiet . && nyc --reporter=lcov _mocha -R spec --timeout 30000 test/index.js",
     "posttest": "nyc report --reporter=text",
     "report": "codecov && cat ./coverage/lcov.info | coveralls && rm -rf ./coverage ./.nyc_output",
-    "copies": "cp readme.md ./packages/rayo/. && echo rayo/ compress/ send/ storm/ | xargs -n 1 -I flr cp LICENSE ./packages/flr",
+    "copies": "cp readme.md ./packages/rayo/. && echo rayo/ compress/ send/ storm/ | xargs -n 1 -I file cp LICENSE ./packages/file",
     "prerelease": "npm test && npm run copies",
     "release": "lerna publish",
     "update": "npm-check -u"
@@ -36,7 +39,7 @@
     "eslint-plugin-prettier": "^2.6.2",
     "express": "^4.16.3",
     "fastify": "^1.9.0",
-    "lerna": "^3.0.3",
+    "lerna": "^3.0.6",
     "minimist": "^1.2.0",
     "mocha": "^5.2.0",
     "npm-check": "^5.8.0",
