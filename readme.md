@@ -421,11 +421,11 @@ Please note that these results are only meant as raw performance indicators. You
 
 | &nbsp;     | Version | Router | Requests/s | Latency | Throughput/Mb |
 | ---------- | ------: | :----: | ---------: | ------: | ------------: |
-| Rayo/Storm |   1.1.0 |   ✔    |     116320 |    0.81 |         13.25 |
-| Rayo       |   1.2.2 |   ✔    |    72940.8 |    1.30 |          8.57 |
-| Polka      |   0.4.0 |   ✔    |    72547.2 |    1.30 |          8.47 |
-| Fastify    |   1.9.0 |   ✔    |    69753.6 |    1.36 |         10.65 |
-| Express    |  4.16.3 |   ✔    |    61129.6 |    1.55 |          7.08 |
+| Rayo/Storm |   1.1.0 |   ✔    |     126176 |    0.69 |         14.65 |
+| Rayo       |   1.2.3 |   ✔    |    76435.2 |    1.24 |          8.95 |
+| Polka      |   0.4.0 |   ✔    |    75931.2 |    1.25 |          8.73 |
+| Fastify    |  1.11.0 |   ✔    |    70675.2 |    1.34 |         10.95 |
+| Express    |  4.16.3 |   ✔    |    64400.0 |    1.48 |          7.33 |
 
 Run on your own hardware; clone this repository, install the dependencies and run `npm run bench`. Optionally, you may also define your test's parameters:
 

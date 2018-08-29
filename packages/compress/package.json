@@ -1,6 +1,6 @@
 {
   "name": "@rayo/compress",
-  "version": "1.1.7",
+  "version": "1.1.8",
   "description": "🗜 Rayo's compression",
   "main": "index.js",
   "engines": {

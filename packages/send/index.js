@@ -14,10 +14,10 @@ const isJSON = (payload) => {
 /**
  * @TODO Extend this to support more content-types.
  */
-const send = function send(payload, statusCode) {
+const send = function send(payload, statusCode = 200) {
   const { valid, json } = isJSON(payload);
   const response = valid ? json : payload;
-  this.statusCode = statusCode || 200;
+  this.statusCode = statusCode;
   this.setHeader('Content-Length', (response || '').length);
   this.setHeader('Content-Type', valid ? 'application/json' : 'text/plain');
   this.setHeader('X-Powered-by', '@rayo/send');

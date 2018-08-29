@@ -3,7 +3,7 @@ const { storm } = require('../../../../packages/storm');
 storm(
   () => {
     process.stdout.write('Worker!');
-    setTimeout(() => process.exit(), 250);
+    setTimeout(() => process.exit(), 750);
   },
   {
     keepAlive: false,

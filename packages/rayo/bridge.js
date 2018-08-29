@@ -20,10 +20,14 @@ const bridgeThrough = (t) => {
 };
 
 module.exports = class Bridge {
+  /**
+   * this.s = A placeholder for `stacks`. There will be one stack per HTTP verb.
+   * this.t = A placeholder for `through` routes.
+   */
   constructor(path = null) {
     this.id = process.hrtime().join('');
-    this.routes = {};
-    this.s = {};
+    this.routes = [];
+    this.s = [];
     this.bridgedPath = path;
     METHODS.push('all');
     METHODS.forEach((verb) => {
@@ -72,16 +76,12 @@ module.exports = class Bridge {
   }
 
   fetch(verb, path) {
-    return new Promise((yes) => {
-      const url = match(path, this.routes[verb] || []);
-      return yes(
-        !url.length
-          ? null
-          : {
-              params: exec(path, url),
-              stack: this.t.concat(this.s[verb][url[0].old])
-            }
-      );
-    });
+    const url = match(path, this.routes[verb] || []);
+    return !url.length
+      ? null
+      : {
+          params: exec(path, url),
+          stack: this.t.concat(this.s[verb][url[0].old])
+        };
   }
 };

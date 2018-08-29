@@ -90,13 +90,12 @@ module.exports = () => {
 
   it('Dispatch (defined verb)', (done) => {
     server.get('/', () => {});
-    server.dispatch(fake.req, fake.res).then((stack) => {
-      setTimeout(() => {
-        test(server);
-        should(stack).equal(undefined);
-        done();
-      }, 25);
-    });
+    const stack = server.dispatch(fake.req, fake.res);
+    setTimeout(() => {
+      test(server);
+      should(stack).equal(undefined);
+      done();
+    }, 25);
   });
 
   it('Dispatch (undefined verb)', (done) => {
@@ -114,13 +113,12 @@ module.exports = () => {
     });
 
     server.post('/', () => {});
-    server.dispatch(fake.req, fake.res).then((stack) => {
-      setTimeout(() => {
-        test(server);
-        should(stack).equal(undefined);
-        done();
-      }, 25);
-    });
+    const stack = server.dispatch(fake.req, fake.res);
+    setTimeout(() => {
+      test(server);
+      should(stack).equal(undefined);
+      done();
+    }, 25);
   });
 
   it('Dispatch (custom notFound function)', (done) => {
