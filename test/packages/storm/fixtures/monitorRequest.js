@@ -17,6 +17,6 @@ storm(() => process.stdout.write('Worker!'), {
           process.stdout.write(response.text);
           this.stop();
         });
-    }, 500);
+    }, 750);
   }
 });

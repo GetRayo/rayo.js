@@ -26,14 +26,14 @@ class Rayo extends Bridge {
   }
 
   start(callback = function cb() {}) {
-    const work = (workerPid = null) => {
+    const work = (workerPid = undefined) => {
       this.server = this.server || http.createServer();
       this.server.listen(this.port, this.host);
       this.server.on('request', this.dispatch);
       this.server.once('listening', () => {
         this.through();
         const address = this.server.address();
-        address.workerPid = workerPid || undefined;
+        address.workerPid = workerPid;
         callback(address);
       });
     };
@@ -47,9 +47,9 @@ class Rayo extends Bridge {
     return this.server;
   }
 
-  async dispatch(req, res) {
+  dispatch(req, res) {
     const parsedUrl = parseurl(req);
-    const route = await this.fetch(req.method, parsedUrl.pathname);
+    const route = this.fetch(req.method, parsedUrl.pathname);
     if (!route) {
       return this.notFound
         ? this.notFound(req, res)
