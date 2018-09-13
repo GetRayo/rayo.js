@@ -29,7 +29,7 @@
     "ora": "^3.0.0",
     "pancho": "^1.0.1",
     "polka": "^0.4.0",
-    "rayo": "^1.2.3"
+    "rayo": "^1.2.4"
   },
   "bin": {
     "rayobench": "./index.js"
