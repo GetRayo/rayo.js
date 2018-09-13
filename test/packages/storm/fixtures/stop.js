@@ -5,6 +5,6 @@ storm(() => process.stdout.write('Worker!'), {
   workers: parseInt(process.argv[2], 10),
   master() {
     process.stdout.write('Master!');
-    setTimeout(this.stop, 500);
+    this.on('worker', () => setTimeout(() => this.stop(), 1000));
   }
 });

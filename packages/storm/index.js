@@ -1,9 +1,11 @@
 const cluster = require('cluster');
+const EventEmitter = require('events');
 const cpus = require('os').cpus();
 const { log, monitor, messageHandler } = require('./monitor');
 
-class Storm {
+class Storm extends EventEmitter {
   constructor(work, options) {
+    super();
     if (!work || typeof work !== 'function') {
       throw new Error('You need to provide a worker function.');
     }
@@ -25,8 +27,15 @@ class Storm {
   start(options) {
     let processes = options.workers || cpus.length;
     process.on('SIGINT', this.stop).on('SIGTERM', this.stop);
-    cluster.on('exit', this.fork);
-    cluster.on('online', (wrk) => log.info(`Worker ${wrk.process.pid} is online`));
+    cluster.on('online', (wrk) => {
+      this.emit('worker', wrk.process.pid);
+      log.info(`Worker ${wrk.process.pid} is online`);
+    });
+    cluster.on('exit', (wrk) => {
+      this.emit('exit', wrk.process.pid);
+      return this.fork();
+    });
+
     log.info(`Master (${process.pid}) is forking ${processes} worker processes.`);
     while (processes) {
       processes -= 1;
@@ -57,6 +66,7 @@ class Storm {
     }
 
     log.info('The cluster has been terminated.');
+    this.emit('offline');
     process.exit();
   }
 

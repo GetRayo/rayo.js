@@ -1,15 +1,10 @@
 const { storm } = require('../../../../packages/storm');
 
-storm(
-  () => {
-    process.stdout.write('Worker!');
-    setTimeout(() => process.exit(), 750);
-  },
-  {
-    keepAlive: false,
-    workers: parseInt(process.argv[2], 10),
-    master() {
-      process.stdout.write('Master!');
-    }
+storm(() => process.stdout.write('Worker!'), {
+  keepAlive: false,
+  workers: parseInt(process.argv[2], 10),
+  master() {
+    process.stdout.write('Master!');
+    this.on('worker', () => setTimeout(() => this.stop(), 1000));
   }
-);
+});
