@@ -1,16 +1,21 @@
+const cpus = require('os').cpus();
 const { storm } = require('../../../../packages/storm');
 
-storm(
-  () => {
-    process.stdout.write('Worker!');
-    setTimeout(() => process.exit(), 750);
-  },
-  {
-    keepAlive: false,
-    monitor: false,
-    workers: parseInt(process.argv[2], 10),
-    master() {
-      process.stdout.write('Master!');
-    }
+const workers = parseInt(process.argv[2], 10);
+let loaded = 0;
+
+storm(() => process.stdout.write('Worker!'), {
+  keepAlive: false,
+  monitor: false,
+  workers,
+  master() {
+    process.stdout.write('Master!');
+
+    this.on('worker', () => {
+      loaded += 1;
+      if (loaded === (workers || cpus.length)) {
+        setTimeout(() => this.stop(), 1000);
+      }
+    });
   }
-);
+});

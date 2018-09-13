@@ -15,8 +15,8 @@ storm(() => process.stdout.write('Worker!'), {
         .get(`/${process.argv[5]}/${workerId}`)
         .end((error, response) => {
           process.stdout.write(response.text);
-          this.stop();
+          setTimeout(() => this.stop(), 1000);
         });
-    }, 750);
+    }, 1000);
   }
 });
