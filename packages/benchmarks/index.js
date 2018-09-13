@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 /* eslint no-console: 0 */
 
 const autocannon = require('autocannon');

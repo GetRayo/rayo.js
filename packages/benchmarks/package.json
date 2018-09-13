@@ -1,0 +1,40 @@
+{
+  "name": "@rayo/benchmarks",
+  "version": "1.0.0",
+  "description": "🏆 Rayo's benchmarks.",
+  "main": "index.js",
+  "engines": {
+    "node": ">=8.11.4"
+  },
+  "scripts": {
+    "bench": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GetRayo/rayo.js.git"
+  },
+  "author": {
+    "name": "Stefan Aichholzer",
+    "email": "theaichholzer@gmail.com",
+    "url": "https://github.com/aichholzer"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "autocannon": "^2.4.1",
+    "cli-table": "^0.3.1",
+    "express": "^4.16.3",
+    "fastify": "^1.11.0",
+    "kleur": "^2.0.2",
+    "minimist": "^1.2.0",
+    "ora": "^3.0.0",
+    "pancho": "^1.0.1",
+    "polka": "^0.4.0",
+    "rayo": "^1.2.3"
+  },
+  "bin": {
+    "rayobench": "./index.js"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
