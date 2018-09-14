@@ -3,8 +3,7 @@ const { storm } = require('../../../../packages/storm');
 
 const workers = parseInt(process.argv[2], 10);
 let loaded = 0;
-
-storm(() => process.stdout.write('Worker!'), {
+storm(() => {}, {
   keepAlive: false,
   monitor: false,
   workers,
@@ -14,7 +13,7 @@ storm(() => process.stdout.write('Worker!'), {
     this.on('worker', () => {
       loaded += 1;
       if (loaded === (workers || cpus.length)) {
-        setTimeout(() => this.stop(), 1000);
+        this.stop();
       }
     });
   }
