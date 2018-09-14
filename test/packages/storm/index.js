@@ -44,7 +44,7 @@ const extractJSON = (res) => {
     })
     .filter((i) => i);
 
-  return json[0];
+  return json;
 };
 
 module.exports = () => {
@@ -115,7 +115,7 @@ module.exports = () => {
   it('With monitor, request', (done) => {
     exec('fixtures/monitorRequest')
       .then((res) => {
-        const json = extractJSON(res)[0];
+        const json = extractJSON(res)[3][0];
         should(json)
           .be.an.Object()
           .and.have.properties('id', 'pid', 'ppid', 'status');
@@ -140,7 +140,7 @@ module.exports = () => {
   it('With monitor, request for valid worker', (done) => {
     exec('fixtures/monitorRequest', { workerId: 1 })
       .then((res) => {
-        const json = extractJSON(res);
+        const json = extractJSON(res)[4];
         should(json)
           .be.an.Object()
           .and.have.properties('pid', 'ppid', 'platform', 'cpuTime', 'memory');
@@ -164,7 +164,7 @@ module.exports = () => {
   it('Message between processes, valid command', (done) => {
     exec('fixtures/command', { command: 'health' })
       .then((res) => {
-        const json = extractJSON(res);
+        const json = extractJSON(res)[3];
         should(json)
           .be.an.Object()
           .and.have.properties('pid', 'ppid', 'platform', 'upTime', 'cpuTime', 'memory');

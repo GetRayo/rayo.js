@@ -3,7 +3,7 @@ const pino = require('pino');
 const { createServer } = require('http');
 
 const { STORM_LOG_NAME = 'Rayo', STORM_LOG_LEVEL = 'info' } = process.env;
-const log = pino({ name: STORM_LOG_NAME, level: STORM_LOG_LEVEL, prettyPrint: true });
+const log = pino({ name: STORM_LOG_NAME, level: STORM_LOG_LEVEL });
 const round = (number) => Math.round(number * 100) / 100;
 const reform = (item) => {
   item.upTime = item.upTime ? Math.floor(item.upTime) : undefined;
