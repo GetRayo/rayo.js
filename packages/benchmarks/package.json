@@ -23,11 +23,11 @@
     "autocannon": "^2.4.1",
     "cli-table": "^0.3.1",
     "express": "^4.16.3",
-    "fastify": "^1.11.0",
+    "fastify": "^1.11.2",
     "kleur": "^2.0.2",
     "minimist": "^1.2.0",
     "ora": "^3.0.0",
-    "pancho": "^1.0.1",
+    "pancho": "^1.0.2",
     "polka": "^0.4.0",
     "rayo": "^1.2.4"
   },
