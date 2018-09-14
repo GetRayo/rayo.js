@@ -28,12 +28,12 @@ class Storm extends EventEmitter {
     let processes = options.workers || cpus.length;
     process.on('SIGINT', this.stop).on('SIGTERM', this.stop);
     cluster.on('online', (wrk) => {
-      this.emit('worker', wrk.process.pid);
       log.info(`Worker ${wrk.process.pid} is online`);
+      this.emit('worker', wrk.process.pid);
     });
     cluster.on('exit', (wrk) => {
       this.emit('exit', wrk.process.pid);
-      return this.fork();
+      return this.fork(wrk);
     });
 
     log.info(`Master (${process.pid}) is forking ${processes} worker processes.`);
@@ -70,12 +70,10 @@ class Storm extends EventEmitter {
     process.exit();
   }
 
-  fork(worker, code) {
+  fork(wrk) {
     if (this.keepAlive) {
-      const wrk = cluster.fork();
-      log.warn(
-        `Worker ${worker.process.pid} died (${code}). Replace: ${wrk.process.pid}`
-      );
+      const worker = cluster.fork();
+      log.warn(`Worker ${wrk.process.pid} died. Replace: ${worker.process.pid}`);
     }
 
     if (!Object.keys(cluster.workers).length) {

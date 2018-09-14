@@ -25,11 +25,11 @@ const exec = (file, options = {}) =>
     pcs.on('close', yes.bind(null, res));
   });
 
-const filter = (responses, message, length) =>
+const filter = (responses, message) =>
   new Promise((yes) => {
     const messages = responses.filter((res) => res === message);
     should(messages).be.an.Array();
-    should(messages.length).be.aboveOrEqual(length);
+    should(messages.length).be.equal(1);
     return yes(responses);
   });
 
@@ -58,67 +58,56 @@ module.exports = () => {
 
   it('One worker', (done) => {
     exec('fixtures/worker')
-      .then((res) => filter(res, 'Master!', 1))
-      .then((res) => filter(res, 'Worker!', 1))
+      .then((res) => filter(res, 'Master!'))
       .then(() => done())
       .catch((error) => done(error));
   });
 
   it('Two workers', (done) => {
     exec('fixtures/worker', { workers: 2 })
-      .then((res) => filter(res, 'Master!', 1))
-      .then((res) => filter(res, 'Worker!', 2))
+      .then((res) => filter(res, 'Master!'))
       .then(() => done())
       .catch((error) => done(error));
   });
 
   it('CPU length workers', (done) => {
     exec('fixtures/worker', { workers: cpus.length })
-      .then((res) => () => {
-        if (cpus.length <= 12) {
-          filter(res, 'Worker!', cpus.length);
-        }
-      })
+      .then((res) => filter(res, 'Master!'))
       .then(() => done())
       .catch((error) => done(error));
   });
 
   it('Auto length workers', (done) => {
     exec('fixtures/worker', { workers: 'auto' })
-      .then((res) => () => {
-        if (cpus.length <= 12) {
-          filter(res, 'Worker!', cpus.length);
-        }
-      })
+      .then((res) => filter(res, 'Master!'))
       .then(() => done())
       .catch((error) => done(error));
   });
 
   it('Without master function', (done) => {
     exec('fixtures/noMaster')
-      .then((res) => filter(res, 'Worker!', 1))
+      .then((res) => filter(res, 'Worker!'))
       .then(() => done())
       .catch((error) => done(error));
   });
 
   it('Stop', (done) => {
     exec('fixtures/stop')
-      .then((res) => filter(res, 'Master!', 1))
-      .then((res) => filter(res, 'Worker!', 1))
+      .then((res) => filter(res, 'Master!'))
       .then(() => done())
       .catch((error) => done(error));
   });
 
   it('Keep the cluster alive', (done) => {
     exec('fixtures/keepAlive', { workers: 2 })
-      .then((res) => filter(res, 'Master!', 1))
-      .then((res) => filter(res, 'Worker!', 2))
+      .then((res) => filter(res, 'Master!'))
       .then(() => done())
       .catch((error) => done(error));
   });
 
   it('With monitor', (done) => {
     exec('fixtures/monitor')
+      .then((res) => filter(res, 'Master!'))
       .then(() => done())
       .catch((error) => done(error));
   });
@@ -143,7 +132,7 @@ module.exports = () => {
 
   it('With monitor, invalid request', (done) => {
     exec('fixtures/monitorRequest', { service: 'monitors' })
-      .then((res) => filter(res, 'This service does not exist.', 1))
+      .then((res) => filter(res, 'This service does not exist.'))
       .then(() => done())
       .catch((error) => done(error));
   });
@@ -167,7 +156,7 @@ module.exports = () => {
 
   it('With monitor, request for invalid worker', (done) => {
     exec('fixtures/monitorRequest', { workerId: 5 })
-      .then((res) => filter(res, 'Worker 5 does not exist.', 1))
+      .then((res) => filter(res, 'Worker 5 does not exist.'))
       .then(() => done())
       .catch((error) => done(error));
   });
@@ -188,17 +177,17 @@ module.exports = () => {
           .be.an.Object()
           .and.have.properties('rss', 'heapTotal', 'heapUsed', 'external');
 
-        return filter(res, 'health', 1); // master -> worker
+        return filter(res, 'health'); // master -> worker
       })
-      .then((res) => filter(res, 'Hello from the worker!', 1)) // worker -> master
+      .then((res) => filter(res, 'Hello from the worker!')) // worker -> master
       .then(() => done())
       .catch((error) => done(error));
   });
 
   it('Message between processes, invalid command', (done) => {
     exec('fixtures/command', { command: 'invalid_command' })
-      .then((res) => filter(res, 'invalid_command', 1)) // master -> worker
-      .then((res) => filter(res, 'Hello from the worker!', 1)) // worker -> master
+      .then((res) => filter(res, 'invalid_command')) // master -> worker
+      .then((res) => filter(res, 'Hello from the worker!')) // worker -> master
       .then(() => done())
       .catch((error) => done(error));
   });
