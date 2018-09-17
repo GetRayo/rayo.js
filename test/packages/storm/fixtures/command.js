@@ -1,6 +1,7 @@
 const { storm } = require('../../../../packages/storm');
 
 const workers = parseInt(process.argv[2], 10);
+const command = process.argv[4];
 storm(
   () => {
     process.stdout.write('Worker!');
@@ -17,13 +18,15 @@ storm(
     master(cluster) {
       process.stdout.write('Master!');
       const worker = cluster.workers[1];
-      worker.on('message', (message) =>
+      worker.on('message', (message) => {
         process.stdout.write(
           typeof message === 'object' ? JSON.stringify(message) : message
-        )
-      );
+        );
+      });
 
-      worker.send(process.argv[4]);
+      this.on('worker', () => {
+        worker.send(command);
+      });
     }
   }
 );
