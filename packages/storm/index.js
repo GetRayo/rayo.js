@@ -73,7 +73,7 @@ class Storm extends EventEmitter {
   fork(wrk) {
     if (this.keepAlive) {
       const worker = cluster.fork();
-      log.warn(`Worker ${wrk.process.pid} died. Replace: ${worker.process.pid}`);
+      log.warn(`Worker ${wrk.process.pid} died. Replacer: ${worker.process.pid}`);
     }
 
     if (!Object.keys(cluster.workers).length) {
