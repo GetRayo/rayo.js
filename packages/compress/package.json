@@ -20,6 +20,6 @@
     "access": "public"
   },
   "dependencies": {
-    "compressible": "^2.0.14"
+    "compressible": "^2.0.15"
   }
 }
