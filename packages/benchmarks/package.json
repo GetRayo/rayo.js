@@ -1,6 +1,6 @@
 {
   "name": "@rayo/benchmarks",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "🏆 Rayo's benchmarks.",
   "main": "index.js",
   "engines": {
@@ -29,12 +29,13 @@
     "ora": "^3.0.0",
     "pancho": "^1.0.2",
     "polka": "^0.5.1",
-    "rayo": "^1.2.5"
+    "rayo": "^1.2.6"
   },
   "bin": {
     "rayobench": "./index.js"
   },
   "publishConfig": {
     "access": "public"
-  }
+  },
+  "gitHead": "5adcff052a33ae016b3bc3073125117ed1d936eb"
 }
