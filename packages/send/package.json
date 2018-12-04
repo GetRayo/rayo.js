@@ -1,6 +1,6 @@
 {
   "name": "@rayo/send",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "✈️ Rayo's response sender",
   "main": "index.js",
   "engines": {
@@ -18,5 +18,6 @@
   "license": "MIT",
   "publishConfig": {
     "access": "public"
-  }
+  },
+  "gitHead": "5adcff052a33ae016b3bc3073125117ed1d936eb"
 }

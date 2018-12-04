@@ -1,6 +1,6 @@
 {
   "name": "@rayo/benchmarks",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "🏆 Rayo's benchmarks.",
   "main": "index.js",
   "engines": {
@@ -20,21 +20,22 @@
   },
   "license": "MIT",
   "dependencies": {
-    "autocannon": "^3.0.1",
+    "autocannon": "^3.2.0",
     "cli-table": "^0.3.1",
     "express": "^4.16.4",
-    "fastify": "^1.12.1",
-    "kleur": "^2.0.2",
+    "fastify": "^1.13.1",
+    "kleur": "^3.0.0",
     "minimist": "^1.2.0",
     "ora": "^3.0.0",
     "pancho": "^1.0.2",
     "polka": "^0.5.1",
-    "rayo": "^1.2.4"
+    "rayo": "^1.2.6"
   },
   "bin": {
     "rayobench": "./index.js"
   },
   "publishConfig": {
     "access": "public"
-  }
+  },
+  "gitHead": "5adcff052a33ae016b3bc3073125117ed1d936eb"
 }

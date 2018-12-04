@@ -1,6 +1,6 @@
 {
   "name": "@rayo/compress",
-  "version": "1.1.9",
+  "version": "1.1.10",
   "description": "🗜 Rayo's compression",
   "main": "index.js",
   "engines": {
@@ -21,5 +21,6 @@
   },
   "dependencies": {
     "compressible": "^2.0.15"
-  }
+  },
+  "gitHead": "5adcff052a33ae016b3bc3073125117ed1d936eb"
 }
