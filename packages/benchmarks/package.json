@@ -1,6 +1,6 @@
 {
   "name": "@rayo/benchmarks",
-  "version": "1.1.3",
+  "version": "1.1.4",
   "description": "🏆 Rayo's benchmarks.",
   "main": "index.js",
   "engines": {
@@ -29,7 +29,7 @@
     "ora": "^3.1.0",
     "pancho": "^1.0.2",
     "polka": "^0.5.2",
-    "rayo": "^1.2.8"
+    "rayo": "^1.2.9"
   },
   "bin": {
     "rayobench": "./index.js"
