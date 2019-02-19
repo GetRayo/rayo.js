@@ -22,7 +22,7 @@ const exec = (file, options = {}) =>
     ]);
     pcs.stdout.on('data', input);
     pcs.stderr.on('data', input);
-    pcs.on('close', yes.bind(null, res));
+    pcs.on('close', () => setTimeout(yes.bind(null, res), 300));
   });
 
 const filter = (responses, message) =>
