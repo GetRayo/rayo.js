@@ -40,6 +40,6 @@
     "prettier": "^1.16.4",
     "should": "^13.2.3",
     "sinon": "^7.2.3",
-    "supertest": "^3.4.2"
+    "supertest": "^4.0.0"
   }
 }
