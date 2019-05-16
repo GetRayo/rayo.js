@@ -165,8 +165,7 @@ module.exports = () => {
   it('Message between processes, valid command', (done) => {
     exec('fixtures/command', { command: 'health' })
       .then((res) => {
-        const json = extractJSON(res)[3];
-
+        const json = extractJSON(res).pop();
         should(json)
           .be.an.Object()
           .and.have.properties('pid', 'ppid', 'platform', 'upTime', 'cpuTime', 'memory');

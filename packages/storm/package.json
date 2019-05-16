@@ -1,6 +1,6 @@
 {
   "name": "@rayo/storm",
-  "version": "1.1.8",
+  "version": "1.1.9",
   "description": "🌩️ Run clustered applications.",
   "main": "index.js",
   "engines": {
@@ -20,8 +20,8 @@
     "access": "public"
   },
   "dependencies": {
-    "parseurl": "^1.3.2",
-    "pino": "^5.11.1"
+    "parseurl": "^1.3.3",
+    "pino": "^5.12.4"
   },
   "gitHead": "5adcff052a33ae016b3bc3073125117ed1d936eb"
 }
