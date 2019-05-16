@@ -26,20 +26,20 @@
     "update": "npm-check -u"
   },
   "devDependencies": {
-    "codecov": "^3.2.0",
-    "coveralls": "^3.0.2",
-    "eslint": "^5.14.0",
+    "codecov": "^3.5.0",
+    "coveralls": "^3.0.3",
+    "eslint": "^5.16.0",
     "eslint-config-airbnb-base": "^13.1.0",
-    "eslint-config-prettier": "^4.0.0",
-    "eslint-plugin-import": "^2.16.0",
-    "eslint-plugin-prettier": "^3.0.1",
-    "lerna": "^3.13.0",
-    "mocha": "^5.2.0",
+    "eslint-config-prettier": "^4.2.0",
+    "eslint-plugin-import": "^2.17.2",
+    "eslint-plugin-prettier": "^3.1.0",
+    "lerna": "^3.14.1",
+    "mocha": "^6.1.4",
     "npm-check": "^5.8.0",
-    "nyc": "^13.3.0",
-    "prettier": "^1.16.4",
+    "nyc": "^14.1.1",
+    "prettier": "^1.17.1",
     "should": "^13.2.3",
-    "sinon": "^7.2.3",
-    "supertest": "^3.4.2"
+    "sinon": "^7.3.2",
+    "supertest": "^4.0.2"
   }
 }
