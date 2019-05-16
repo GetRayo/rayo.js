@@ -1,6 +1,6 @@
 {
   "name": "rayo",
-  "version": "1.2.9",
+  "version": "1.3.0",
   "description": "⚡️ Rayo, an extremely fast micro-framework for Nodejs.",
   "main": "lib/index.js",
   "engines": {
@@ -18,7 +18,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@rayo/storm": "^1.1.7",
+    "@rayo/storm": "^1.1.8",
     "matchit": "^1.0.7",
     "parseurl": "^1.3.2"
   },
