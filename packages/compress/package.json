@@ -20,7 +20,7 @@
     "access": "public"
   },
   "dependencies": {
-    "compressible": "^2.0.15"
+    "compressible": "^2.0.17"
   },
   "gitHead": "5adcff052a33ae016b3bc3073125117ed1d936eb"
 }
