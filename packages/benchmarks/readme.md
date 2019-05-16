@@ -20,16 +20,16 @@ $> rayobench
 
 Please note that these results are only meant as raw performance indicators. Your application's logic, which is what makes most applications slow, may not see great performance gains between frameworks.
 
-> These tests were conducted on a CPU-optimized server (DigitalOcean, 32 GB RAM, 16 vCPUs, Ubuntu 16.04.4 x64) and Node.js v10.5.0.
+> These tests were conducted on a CPU-optimized server (DigitalOcean, 32 GB RAM, 16 vCPUs, Ubuntu 16.04.4 x64) and Node.js v12.2.0.
 > Measured after one warm-up run.
 
 | &nbsp;     | Version | Router | Requests/s | Latency | Throughput/Mb |
 | ---------- | ------: | :----: | ---------: | ------: | ------------: |
-| Rayo/Storm |   1.1.0 |   ✔    |     126176 |    0.69 |         14.65 |
-| Rayo       |   1.2.3 |   ✔    |    76435.2 |    1.24 |          8.95 |
-| Polka      |   0.4.0 |   ✔    |    75931.2 |    1.25 |          8.73 |
-| Fastify    |  1.11.0 |   ✔    |    70675.2 |    1.34 |         10.95 |
-| Express    |  4.16.3 |   ✔    |    64400.0 |    1.48 |          7.33 |
+| Rayo/Storm |   1.3.1 |   ✔    |   113196.8 |    0.84 |         13.06 |
+| Fastify    |   2.3.2 |   ✔    |    75232.0 |    1.26 |         11.62 |
+| Rayo       |   1.3.1 |   ✔    |    71980.8 |    1.31 |          8.31 |
+| Polka      |   0.5.2 |   ✔    |    71059.2 |    1.33 |          8.20 |
+| Express    |  4.16.4 |   ✔    |    65609.6 |    1.44 |          7.57 |
 
 Run on your own hardware; clone this repository, install the dependencies and run `npm run bench`. Optionally, you may also define your test's parameters:
 
