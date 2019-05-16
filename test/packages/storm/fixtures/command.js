@@ -7,7 +7,7 @@ storm(
     process.stdout.write('Worker!');
     process.send('Hello from the worker!');
     process.on('message', () => {
-      setTimeout(process.exit, 100);
+      setTimeout(process.exit, 200);
     });
   },
   {
