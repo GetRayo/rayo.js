@@ -1,6 +1,6 @@
 {
   "name": "@rayo/send",
-  "version": "1.0.12",
+  "version": "1.0.13",
   "description": "✈️ Rayo's response sender",
   "main": "index.js",
   "engines": {
