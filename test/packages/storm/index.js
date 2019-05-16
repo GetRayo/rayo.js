@@ -30,6 +30,7 @@ const filter = (responses, message) =>
     const messages = responses.filter((res) => res === message);
     should(messages).be.an.Array();
     should(messages.length).be.equal(1);
+
     return yes(responses);
   });
 
@@ -165,6 +166,7 @@ module.exports = () => {
     exec('fixtures/command', { command: 'health' })
       .then((res) => {
         const json = extractJSON(res)[3];
+
         should(json)
           .be.an.Object()
           .and.have.properties('pid', 'ppid', 'platform', 'upTime', 'cpuTime', 'memory');
@@ -177,16 +179,14 @@ module.exports = () => {
           .be.an.Object()
           .and.have.properties('rss', 'heapTotal', 'heapUsed', 'external');
 
-        return filter(res, 'health'); // master -> worker
+        return filter(res, 'Hello from the worker!');
       })
-      .then((res) => filter(res, 'Hello from the worker!')) // worker -> master
       .then(() => done())
       .catch((error) => done(error));
   });
 
   it('Message between processes, invalid command', (done) => {
     exec('fixtures/command', { command: 'invalid_command' })
-      .then((res) => filter(res, 'invalid_command')) // master -> worker
       .then((res) => filter(res, 'Hello from the worker!')) // worker -> master
       .then(() => done())
       .catch((error) => done(error));
