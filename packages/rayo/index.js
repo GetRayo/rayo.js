@@ -5,7 +5,7 @@ const { storm } = require('@rayo/storm');
 const Bridge = require('./bridge');
 
 const ip = (req) => {
-  const { headers = {}, connection = {}, socket = {} } = req || {};
+  const { headers = {}, connection = {}, socket = {} } = req;
   const remoteAddress = connection.remoteAddress || socket.remoteAddress;
   const socketAddress = connection.socket ? connection.socket.remoteAddress : null;
 
