@@ -5,9 +5,9 @@ const { storm } = require('@rayo/storm');
 const Bridge = require('./bridge');
 
 const ip = (req) => {
-  const { headers = {}, connection = { socket: {} }, socket = {} } = req || {};
+  const { headers = {}, connection = {}, socket = {} } = req || {};
   const remoteAddress = connection.remoteAddress || socket.remoteAddress;
-  const socketAddress = connection.socket.remoteAddress || null;
+  const socketAddress = connection.socket ? connection.socket.remoteAddress : null;
 
   return headers['x-forwarded-for'] || remoteAddress || socketAddress;
 };
@@ -64,7 +64,7 @@ class Rayo extends Bridge {
         : end(req, res, 404, `${req.method} ${parsedUrl.pathname} is undefined.`);
     }
 
-    req.ip = ip();
+    req.ip = ip(req);
     req.params = route.params;
     req.pathname = parsedUrl.pathname;
     req.query = parse(parsedUrl.query);
