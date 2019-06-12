@@ -137,6 +137,64 @@ module.exports = () => {
     }, 25);
   });
 
+  it('Dispatch (no remote IP)', (done) => {
+    server.get('/', () => {});
+    fake.req.headers = undefined;
+    fake.req.connection = undefined;
+    fake.req.socket = undefined;
+
+    const stack = server.dispatch(fake.req, fake.res);
+    setTimeout(() => {
+      test(server);
+      should(stack).equal(undefined);
+      done();
+    }, 25);
+  });
+
+  it('Dispatch (IP from connection.remoteAddress)', (done) => {
+    fake.req.connection = { remoteAddress: '1.2.3.4' };
+
+    server.get('/', (req) => {
+      should(req.ip).equal('1.2.3.4');
+    });
+    const stack = server.dispatch(fake.req, fake.res);
+    setTimeout(() => {
+      test(server);
+      should(stack).equal(undefined);
+      done();
+    }, 25);
+  });
+
+  it('Dispatch (IP from connection.socket.remoteAddress)', (done) => {
+    fake.req.connection = {
+      socket: { remoteAddress: '1.2.3.4' }
+    };
+
+    server.get('/', (req) => {
+      should(req.ip).equal('1.2.3.4');
+    });
+    const stack = server.dispatch(fake.req, fake.res);
+    setTimeout(() => {
+      test(server);
+      should(stack).equal(undefined);
+      done();
+    }, 25);
+  });
+
+  it('Dispatch (IP from socket.remoteAddress)', (done) => {
+    fake.req.socket = { remoteAddress: '1.2.3.4' };
+
+    server.get('/', (req) => {
+      should(req.ip).equal('1.2.3.4');
+    });
+    const stack = server.dispatch(fake.req, fake.res);
+    setTimeout(() => {
+      test(server);
+      should(stack).equal(undefined);
+      done();
+    }, 25);
+  });
+
   it('step (without stack)', (done) => {
     server.post('/', () => {});
     setTimeout(() => {
