@@ -81,7 +81,7 @@ module.exports = class Bridge {
       ? null
       : {
           params: exec(path, url),
-          stack: this.t.concat(this.s[verb][url[0].old])
+          stack: this.s[verb][url[0].old]
         };
   }
 };
