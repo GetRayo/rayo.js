@@ -8,8 +8,6 @@ storm(() => {}, {
   monitor: false,
   workers,
   master() {
-    process.stdout.write('Master!');
-
     this.on('worker', () => {
       loaded += 1;
       if (loaded === (workers || cpus.length)) {

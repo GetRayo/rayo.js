@@ -7,8 +7,6 @@ storm(() => process.exit(), {
   monitor: false,
   workers: parseInt(process.argv[2], 10),
   master() {
-    process.stdout.write('Master!');
-
     this.on('worker', () => {
       loaded += 1;
       if (loaded === (workers || cpus.length)) {

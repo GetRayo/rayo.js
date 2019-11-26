@@ -15,7 +15,6 @@ storm(
     monitor: false,
     workers,
     master(cluster) {
-      process.stdout.write('Master!');
       const worker = cluster.workers[1];
       worker.on('message', (message) => {
         process.stdout.write(

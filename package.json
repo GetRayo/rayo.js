@@ -16,8 +16,8 @@
   "scripts": {
     "eslint:fix": "eslint --quiet --fix .",
     "pretest": "lerna bootstrap",
-    "test": "eslint --quiet . && nyc --reporter=lcov _mocha -R progress --timeout 20000 test/index.js",
-    "unit": "_mocha -R spec --timeout 20000 test/index.js",
+    "test": "eslint --quiet . && LOG_LEVEL=debug nyc --reporter=lcov _mocha -R progress --timeout 20000 test/index.js",
+    "unit": "LOG_LEVEL=debug _mocha -R spec --timeout 20000 test/index.js",
     "posttest": "nyc report --reporter=text",
     "report": "codecov && cat ./coverage/lcov.info | coveralls && rm -rf ./coverage ./.nyc_output",
     "copies": "cp readme.md ./packages/rayo/. && echo rayo/ benchmarks/ compress/ send/ storm/ | xargs -n 1 -I file cp LICENSE ./packages/file",
@@ -26,20 +26,20 @@
     "update": "npm-check -u"
   },
   "devDependencies": {
-    "codecov": "^3.5.0",
-    "coveralls": "^3.0.4",
-    "eslint": "^6.0.0",
-    "eslint-config-airbnb-base": "^13.1.0",
-    "eslint-config-prettier": "^6.0.0",
-    "eslint-plugin-import": "^2.17.3",
-    "eslint-plugin-prettier": "^3.1.0",
-    "lerna": "^3.15.0",
-    "mocha": "^6.1.4",
+    "codecov": "^3.6.1",
+    "coveralls": "^3.0.8",
+    "eslint": "^6.7.1",
+    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-config-prettier": "^6.7.0",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-prettier": "^3.1.1",
+    "lerna": "^3.19.0",
+    "mocha": "^6.2.2",
     "npm-check": "^5.8.0",
     "nyc": "^14.1.1",
-    "prettier": "^1.18.2",
+    "prettier": "^1.19.1",
     "should": "^13.2.3",
-    "sinon": "^7.3.2",
+    "sinon": "^7.5.0",
     "supertest": "^4.0.2"
   }
 }
