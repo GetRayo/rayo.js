@@ -44,6 +44,7 @@ const cannon = (title = null) =>
 let index = 0;
 const benchmark = async (results = []) => {
   results.push(
+    // eslint-disable-next-line no-async-promise-executor
     await new Promise(async (yes, no) => {
       let file = files[index];
       if (argv.o && argv.o !== file) {

@@ -1,7 +1,8 @@
 const cluster = require('cluster');
 const EventEmitter = require('events');
 const cpus = require('os').cpus();
-const { log, monitor, messageHandler } = require('./monitor');
+const log = require('./log');
+const { monitor, messageHandler } = require('./monitor');
 
 class Storm extends EventEmitter {
   constructor(work, options) {
@@ -16,6 +17,12 @@ class Storm extends EventEmitter {
     this.fork = this.fork.bind(this);
     this.stop = this.stop.bind(this);
 
+    if (cluster.isMaster) {
+      cluster.setupMaster({ silent: true });
+      // Is the process from the master process needs to be piped into the workers.
+      // cluster.fork().process.stdout.pipe(process.stdout);
+    }
+
     if (cluster.isWorker) {
       this.work();
       return messageHandler.bind(null, process)();
@@ -28,7 +35,7 @@ class Storm extends EventEmitter {
     let processes = options.workers || cpus.length;
     process.on('SIGINT', this.stop).on('SIGTERM', this.stop);
     cluster.on('online', (wrk) => {
-      log.info(`Worker ${wrk.process.pid} is online`);
+      log.debug(`Worker ${wrk.process.pid} is online`);
       this.emit('worker', wrk.process.pid);
     });
     cluster.on('exit', (wrk) => {
@@ -36,7 +43,7 @@ class Storm extends EventEmitter {
       return this.fork(wrk);
     });
 
-    log.info(`Master (${process.pid}) is forking ${processes} worker processes.`);
+    log.debug(`Master (${process.pid}) is forking ${processes} workers.`);
     while (processes) {
       processes -= 1;
       cluster.fork();
@@ -44,6 +51,7 @@ class Storm extends EventEmitter {
 
     cluster.masterPid = process.pid;
     if (options.master) {
+      log.debug(`Master process: ${process.pid}`);
       options.master = options.master.bind(this, cluster);
       options.master();
     }
@@ -65,9 +73,9 @@ class Storm extends EventEmitter {
       index -= 1;
     }
 
-    log.info('The cluster has been terminated.');
+    log.debug('The cluster has been terminated.');
     this.emit('offline');
-    process.exit();
+    setTimeout(process.exit, 200);
   }
 
   fork(wrk) {

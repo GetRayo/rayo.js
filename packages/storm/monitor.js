@@ -1,9 +1,7 @@
 const parseurl = require('parseurl');
-const pino = require('pino');
 const { createServer } = require('http');
+const log = require('./log');
 
-const { STORM_LOG_NAME = 'Rayo', STORM_LOG_LEVEL = 'info' } = process.env;
-const log = pino({ name: STORM_LOG_NAME, level: STORM_LOG_LEVEL });
 const round = (number) => Math.round(number * 100) / 100;
 const reform = (item) => {
   item.upTime = item.upTime ? Math.floor(item.upTime) : undefined;
@@ -58,7 +56,11 @@ const requestHandler = (cluster, req, res) => {
     .split('/');
 
   if (service === 'monitor') {
-    return requestDispatch.bind(null, cluster, res)({
+    return requestDispatch.bind(
+      null,
+      cluster,
+      res
+    )({
       workerId: parseInt(workerId, 10) || null,
       command
     });
@@ -74,7 +76,7 @@ module.exports = {
   messageHandler: (process) => {
     // The `master` process sent this message/command to the worker.
     process.on('message', (cmd) => {
-      log.info(`Worker (${process.pid}) received a message: ${cmd}.`);
+      log.debug(`Worker (${process.pid}) received a message: ${cmd}.`);
       let response = null;
       switch (cmd) {
         case 'health':
@@ -100,7 +102,7 @@ module.exports = {
       this.httpServer.listen(monitorPort);
       this.httpServer.on('request', requestHandler.bind(null, cluster));
       this.httpServer.on('listening', () => {
-        log.info(
+        log.debug(
           `Monitoring ${Object.keys(cluster.workers).length} workers on port ${
             this.httpServer.address().port
           }`
@@ -111,7 +113,7 @@ module.exports = {
     stop: () => {
       if (this.httpServer) {
         this.httpServer.close();
-        log.info('Monitoring has been stopped.');
+        log.debug('Monitoring has been stopped.');
       }
     }
   }
