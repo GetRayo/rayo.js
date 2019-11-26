@@ -8,8 +8,6 @@ storm(() => {}, {
   monitorPort: 65000,
   workers,
   master() {
-    process.stdout.write('Master!');
-
     this.on('worker', () => {
       const workerId = parseInt(process.argv[3], 10) || '';
       request('http://localhost:65000')

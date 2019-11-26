@@ -34,7 +34,14 @@ module.exports = () => {
   });
 
   it('Without path, through', (done) => {
-    test(new Bridge().through(() => {}, () => {}).through());
+    test(
+      new Bridge()
+        .through(
+          () => {},
+          () => {}
+        )
+        .through()
+    );
     done();
   });
 
@@ -44,7 +51,15 @@ module.exports = () => {
   });
 
   it('With path, through', (done) => {
-    test(new Bridge('/path').through(() => {}, () => {}).through(), '/path');
+    test(
+      new Bridge('/path')
+        .through(
+          () => {},
+          () => {}
+        )
+        .through(),
+      '/path'
+    );
     done();
   });
 
@@ -57,7 +72,10 @@ module.exports = () => {
     test(
       new Bridge()
         .bridge()
-        .through(() => {}, () => {})
+        .through(
+          () => {},
+          () => {}
+        )
         .through()
     );
     done();
@@ -72,7 +90,10 @@ module.exports = () => {
     test(
       new Bridge()
         .bridge('/path')
-        .through(() => {}, () => {})
+        .through(
+          () => {},
+          () => {}
+        )
         .through(),
       '/path'
     );

@@ -1,7 +1,8 @@
 const { IncomingMessage } = require('http');
 
 const req = new IncomingMessage('rayo');
-module.exports = Object.assign({}, req, {
+module.exports = {
+  ...req,
   headers: {
     host: 'localhost:5050',
     'user-agent': 'Rayo/1 Gecko/20100101',
@@ -13,4 +14,4 @@ module.exports = Object.assign({}, req, {
   },
   url: '/',
   method: 'GET'
-});
+};
