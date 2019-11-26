@@ -22,7 +22,7 @@
     "report": "codecov && cat ./coverage/lcov.info | coveralls && rm -rf ./coverage ./.nyc_output",
     "copies": "cp readme.md ./packages/rayo/. && echo rayo/ benchmarks/ compress/ send/ storm/ | xargs -n 1 -I file cp LICENSE ./packages/file",
     "prerelease": "npm test && npm run copies",
-    "release": "lerna publish",
+    "release": "GH_TOKEN=$GH_TOKEN lerna publish --no-push",
     "update": "npm-check -u"
   },
   "devDependencies": {
