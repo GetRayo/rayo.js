@@ -396,7 +396,7 @@ server.start();
 ```js
 const rayo = require('rayo');
 
-rayo({ port: 5050 });
+rayo({ port: 5050 })
   .get((req, res) => res.end('Thunderstruck'))
   .start((address) => {
     console.log(`Rayo is up on port ${address.port}`);
