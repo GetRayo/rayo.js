@@ -110,7 +110,7 @@ const fn = (req, res, step) => {
 
 ```
 Please keep in mind that:
-"Your code, your errors."¹
+"Your code, your errors."²
 - It's your responsibility to deal with them accordingly.
 ```
 
