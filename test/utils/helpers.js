@@ -8,18 +8,14 @@ module.exports = {
 
     if (value) {
       should(res.headers).with.property(key);
-      should(res.headers[key])
-        .be.a.String()
-        .and.equal(value);
+      should(res.headers[key]).be.a.String().and.equal(value);
     } else {
       should.not.exist(res.headers[key]);
     }
   },
 
   size: (size) => (res) => {
-    should(res.text.length)
-      .be.a.Number()
-      .and.equal(size);
+    should(res.text.length).be.a.Number().and.equal(size);
   },
 
   wrap: (module, handler, options) =>

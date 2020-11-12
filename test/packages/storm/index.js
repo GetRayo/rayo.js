@@ -126,9 +126,7 @@ module.exports = () => {
       .be.an.Object()
       .and.have.properties('pid', 'ppid', 'platform', 'upTime', 'cpuTime', 'memory');
 
-    should(json.cpuTime)
-      .be.a.Number()
-      .and.greaterThan(0);
+    should(json.cpuTime).be.a.Number().and.greaterThan(0);
 
     should(json.memory)
       .be.an.Object()
