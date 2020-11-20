@@ -18,9 +18,12 @@ const send = function send(payload, statusCode = 200) {
   const { valid, json } = isJSON(payload);
   const response = valid ? json : payload;
   this.statusCode = statusCode;
-  this.setHeader('Content-Length', (response || '').length);
-  this.setHeader('Content-Type', valid ? 'application/json' : 'text/plain');
-  this.setHeader('X-Powered-by', '@rayo/send');
+  this.setHeader('content-length', (response || '').length);
+  this.setHeader('content-type', valid ? 'application/json' : 'text/plain');
+  this.setHeader(
+    'x-powered-by',
+    ['@rayo/send', this.getHeader('x-powered-by')].filter((header) => header).join(', ')
+  );
   this.end(response);
 };
 

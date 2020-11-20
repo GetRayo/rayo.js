@@ -61,19 +61,34 @@ class Rayo extends Bridge {
     req.pathname = parsedUrl.pathname;
     req.query = parse(parsedUrl.query);
 
-    let stack;
-    const route = this.fetch(req.method, parsedUrl.pathname);
-    if (!route) {
-      stack = [
-        this.notFound ||
-          (() => end(req, res, 404, `${req.method} ${parsedUrl.pathname} is undefined.`))
-      ];
-    } else {
-      req.params = route.params;
-      ({ stack } = route);
-    }
+    const data = [];
+    req.on('data', (chunk) => data.push(chunk));
+    req.on('end', () => {
+      let stack;
+      const route = this.fetch(req.method, parsedUrl.pathname);
+      if (!route) {
+        stack = [
+          this.notFound ||
+            (() =>
+              end(req, res, 404, `${req.method} ${parsedUrl.pathname} is undefined.`))
+        ];
+      } else {
+        req.params = route.params;
+        ({ stack } = route);
+      }
 
-    return this.step(req, res, this.t.concat(stack));
+      req.body = data.join('');
+      const contentType = (req.headers && req.headers['content-type']) || '';
+      if (contentType.toLowerCase() === 'application/json') {
+        try {
+          req.body = JSON.parse(req.body);
+        } catch (error) {
+          // Safe and sound... ;)
+        }
+      }
+
+      return this.step(req, res, this.t.concat(stack));
+    });
   }
 
   step(req, res, stack, error = null, statusCode = 400) {
