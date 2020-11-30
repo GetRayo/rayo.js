@@ -36,6 +36,12 @@ module.exports = (options = {}) => (req, res, step) => {
     if (!res.getHeader('content-encoding')) {
       res.compressPass = true;
       res.setHeader('content-encoding', 'gzip');
+      res.setHeader(
+        'x-powered-by',
+        ['@rayo/compress', res.getHeader('x-powered-by')]
+          .filter((header) => header)
+          .join(', ')
+      );
       res.removeHeader('content-length');
       vary(res, 'content-encoding');
     }
