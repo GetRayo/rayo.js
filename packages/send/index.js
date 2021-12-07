@@ -24,6 +24,7 @@ const send = function send(payload, statusCode = 200) {
     'x-powered-by',
     ['@rayo/send', this.getHeader('x-powered-by')].filter((header) => header).join(', ')
   );
+
   this.end(response);
 };
 

@@ -25,10 +25,10 @@ class Storm extends EventEmitter {
 
     if (cluster.isWorker) {
       this.work();
-      return messageHandler.bind(null, process)();
+      messageHandler.bind(null, process)();
+    } else {
+      this.start(options);
     }
-
-    return this.start(options);
   }
 
   start(options) {

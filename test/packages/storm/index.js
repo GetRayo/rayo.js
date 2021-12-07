@@ -36,6 +36,7 @@ const filter = (responses, message) =>
     should(messages).be.an.Array();
     should(messages.length).be.equal(1);
 
+    // eslint-disable-next-line no-promise-executor-return
     return yes(responses);
   });
 
