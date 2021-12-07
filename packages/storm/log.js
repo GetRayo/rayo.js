@@ -45,10 +45,12 @@ const format = (prop, args) => {
 module.exports = new Proxy(
   {},
   {
-    get: (target, prop) => (...args) => {
-      return (levels[prop] || 1) <= logLevel
-        ? process.stdout.write(format(prop, args))
-        : null;
-    }
+    get:
+      (target, prop) =>
+      (...args) => {
+        return (levels[prop] || 1) <= logLevel
+          ? process.stdout.write(format(prop, args))
+          : null;
+      }
   }
 );

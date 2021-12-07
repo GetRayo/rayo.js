@@ -48,30 +48,31 @@ const benchmark = async (results = []) => {
     await new Promise(async (yes, no) => {
       let file = files[index];
       if (argv.o && argv.o !== file) {
-        return yes();
-      }
-
-      process.env.STORM_LOG_LEVEL = 'silent';
-      const forked = fork(`${__dirname}/compare/${file}`);
-      await nap(0.25);
-
-      try {
-        // First round to warm up, second round to measure.
-        file = file.replace('.js', '');
-        const framework = blue(file);
-        const spin = ora(`Warming up ${framework}`).start();
-        spin.color = 'yellow';
-        await cannon();
-        spin.text = `Running ${framework}`;
-        spin.color = 'green';
-        const result = await cannon(file);
-        result.version = (version[`${file.toLowerCase()}`] || '').replace('^', '');
-        spin.succeed(framework);
-        forked.kill('SIGINT');
+        yes();
+      } else {
+        process.env.STORM_LOG_LEVEL = 'silent';
+        const forked = fork(`${__dirname}/compare/${file}`);
         await nap(0.25);
-        return yes(result);
-      } catch (error) {
-        return no(error);
+
+        try {
+          // First round to warm up, second round to measure.
+          file = file.replace('.js', '');
+          const framework = blue(file);
+          const spin = ora(`Warming up ${framework}`).start();
+          spin.color = 'yellow';
+          await cannon();
+          spin.text = `Running ${framework}`;
+          spin.color = 'green';
+          const result = await cannon(file);
+          result.version = (version[`${file.toLowerCase()}`] || '').replace('^', '');
+          spin.succeed(framework);
+          forked.kill('SIGINT');
+
+          await nap(0.25);
+          yes(result);
+        } catch (error) {
+          no(error);
+        }
       }
     })
   );

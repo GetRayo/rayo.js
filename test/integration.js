@@ -1,10 +1,12 @@
+/* eslint default-param-last: 0 */
+
 const http = require('http');
 const should = require('should');
 const rayo = require('../packages/rayo');
 const send = require('../packages/send');
 
-const request = (resolver, options = {}) =>
-  new Promise((yes) => {
+const request = (resolver, options = {}) => {
+  return new Promise((yes) => {
     options.port = options.port || 5050;
     options.path = options.path || '/';
     options.method = options.method || 'GET';
@@ -16,6 +18,7 @@ const request = (resolver, options = {}) =>
 
     req.end();
   });
+};
 const test = (options = {}, headers, status, body) => {
   options.statusCode = options.statusCode || 200;
   options.headers = options.headers || 'text/plain';
@@ -86,13 +89,13 @@ module.exports = () => {
   it('GET request, send(text/plain), status code', (done) => {
     server = server
       .through(send())
-      .get('/', (req, res) => res.send('Thunderstruck!', 204))
+      .get('/', (req, res) => res.send('Thunderstruck!', 202))
       .start();
 
     request(
       test.bind(null, {
         contentLength: 14,
-        statusCode: 204,
+        statusCode: 202,
         body: 'Thunderstruck!'
       })
     ).then(() => {
@@ -122,14 +125,14 @@ module.exports = () => {
   it('GET request, send(application/json), status code', (done) => {
     server = server
       .through(send())
-      .get('/', (req, res) => res.send({ message: 'Thunderstruck!' }, 204))
+      .get('/', (req, res) => res.send({ message: 'Thunderstruck!' }, 202))
       .start();
 
     request(
       test.bind(null, {
         contentLength: 28,
         headers: 'application/json',
-        statusCode: 204,
+        statusCode: 202,
         body: '{"message":"Thunderstruck!"}'
       })
     ).then(() => {
