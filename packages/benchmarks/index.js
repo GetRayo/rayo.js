@@ -3,7 +3,6 @@
 
 const autocannon = require('autocannon');
 const minimist = require('minimist');
-const ora = require('ora');
 const nap = require('pancho');
 const Table = require('cli-table');
 const { blue } = require('kleur');
@@ -58,14 +57,10 @@ const benchmark = async (results = []) => {
           // First round to warm up, second round to measure.
           file = file.replace('.js', '');
           const framework = blue(file);
-          const spin = ora(`Warming up ${framework}`).start();
-          spin.color = 'yellow';
+          process.stdout.write(` - ${framework}`);
           await cannon();
-          spin.text = `Running ${framework}`;
-          spin.color = 'green';
           const result = await cannon(file);
           result.version = (version[`${file.toLowerCase()}`] || '').replace('^', '');
-          spin.succeed(framework);
           forked.kill('SIGINT');
 
           await nap(0.25);
