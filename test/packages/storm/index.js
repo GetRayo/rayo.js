@@ -13,6 +13,7 @@ const exec = (file, options = {}) =>
     } else if (!options.workers) {
       options.workers = 1;
     }
+
     const pcs = spawn('node', [
       path,
       options.workers,

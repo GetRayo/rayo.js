@@ -5,14 +5,14 @@ const log = require('./log');
 const round = (number) => Math.round(number * 100) / 100;
 const reform = (item) => {
   item.upTime = item.upTime ? Math.floor(item.upTime) : undefined;
-  item.cpuTime = item.cpuTime
-    ? round((item.cpuTime.user + item.cpuTime.system) / 1e6)
-    : undefined;
+  if (item.cpuTime) {
+    item.cpuTime.total = round((item.cpuTime.user + item.cpuTime.system) / 1e6);
+  }
 
   if (item.memory) {
     const keys = Object.keys(item.memory);
     for (let k = 0; k < keys.length; k += 1) {
-      item.memory[keys[k]] = round(item.memory[keys[k]] / 1024 / 1024);
+      item.memory[keys[k]] = round(item.memory[keys[k]] / 1024);
     }
   }
   return item;
@@ -23,9 +23,21 @@ const send = (res, data) => {
   res.setHeader('X-Powered-by', '@rayo/storm');
   res.end(data);
 };
+const getWorker = (cluster, pid) => {
+  const workers = Object.values(cluster.workers);
+  let items = workers.length;
+  while (items) {
+    items -= 1;
+    if (workers[items].process.pid === pid) {
+      return workers[items];
+    }
+  }
+
+  return false;
+};
 const requestDispatch = (cluster, res, { workerId, command }) => {
   if (workerId) {
-    const worker = cluster.workers[workerId];
+    const worker = getWorker(cluster, workerId);
     if (!worker) {
       res.setHeader('Content-Type', 'text/plain');
       return send(res, `Worker ${workerId} does not exist.`);
@@ -36,18 +48,20 @@ const requestDispatch = (cluster, res, { workerId, command }) => {
     return worker.send(command);
   }
 
-  const current = [];
-  Object.keys(cluster.workers).forEach((worker) =>
-    current.push({
-      id: cluster.workers[worker].id,
-      pid: cluster.workers[worker].process.pid,
-      ppid: cluster.masterPid,
-      status: cluster.workers[worker].state
-    })
-  );
-
   res.setHeader('Content-Type', 'application/json');
-  return send(res, JSON.stringify(pre(current)));
+  return send(
+    res,
+    JSON.stringify(
+      pre({
+        parent: cluster.masterPid,
+        platform: cluster.platform,
+        workers: Object.entries(cluster.workers).map(([, worker]) => ({
+          pid: worker.process.pid,
+          status: worker.state
+        }))
+      })
+    )
+  );
 };
 const requestHandler = (cluster, req, res) => {
   const { pathname } = parseurl(req);
@@ -76,14 +90,12 @@ module.exports = {
   messageHandler: (process) => {
     // The `master` process sent this message/command to the worker.
     process.on('message', (cmd) => {
-      log.debug(`Worker (${process.pid}) received a message: ${cmd}.`);
+      log.info(`Worker (${process.pid}) received a message: ${cmd}.`);
       let response = null;
       switch (cmd) {
         case 'health':
           response = {
             pid: process.pid,
-            ppid: process.ppid,
-            platform: process.platform,
             upTime: process.uptime(),
             cpuTime: process.cpuUsage(),
             memory: process.memoryUsage()
@@ -102,7 +114,7 @@ module.exports = {
       this.httpServer.listen(monitorPort);
       this.httpServer.on('request', requestHandler.bind(null, cluster));
       this.httpServer.on('listening', () => {
-        log.debug(
+        log.info(
           `Monitoring ${Object.keys(cluster.workers).length} workers on port ${
             this.httpServer.address().port
           }`
@@ -113,7 +125,7 @@ module.exports = {
     stop: () => {
       if (this.httpServer) {
         this.httpServer.close();
-        log.debug('Monitoring has been stopped.');
+        log.info('Monitoring has been stopped.');
       }
     }
   }

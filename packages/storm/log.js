@@ -49,7 +49,7 @@ module.exports = new Proxy(
       (target, prop) =>
       (...args) => {
         return (levels[prop] || 1) <= logLevel
-          ? process.stdout.write(format(prop, args))
+          ? process.stdout.write(`#${format(prop, args)}\n`)
           : null;
       }
   }

@@ -11,8 +11,7 @@ class Storm extends EventEmitter {
       throw new Error('You need to provide a worker function.');
     }
 
-    this.keepAlive = options.keepAlive === undefined ? true : options.keepAlive;
-    this.monitor = options.monitor === undefined ? true : options.monitor;
+    this.keepAlive = !!options.keepAlive;
     this.work = work.bind(this);
     this.fork = this.fork.bind(this);
     this.stop = this.stop.bind(this);
@@ -35,7 +34,7 @@ class Storm extends EventEmitter {
     let processes = options.workers || cpus.length;
     process.on('SIGINT', this.stop).on('SIGTERM', this.stop);
     cluster.on('online', (wrk) => {
-      log.debug(`Worker ${wrk.process.pid} is online`);
+      log.info(`Worker ${wrk.process.pid} is online`);
       this.emit('worker', wrk.process.pid);
     });
     cluster.on('exit', (wrk) => {
@@ -43,20 +42,21 @@ class Storm extends EventEmitter {
       return this.fork(wrk);
     });
 
-    log.debug(`Master (${process.pid}) is forking ${processes} workers.`);
+    log.info(`Master (${process.pid}) is forking ${processes} workers.`);
     while (processes) {
       processes -= 1;
       cluster.fork();
     }
 
     cluster.masterPid = process.pid;
+    cluster.platform = process.platform;
     if (options.master) {
-      log.debug(`Master process: ${process.pid}`);
+      log.info(`Master process: ${process.pid}`);
       options.master = options.master.bind(this, cluster);
       options.master();
     }
 
-    if (this.monitor) {
+    if (options.monitor) {
       monitor.start(cluster, options);
     }
   }
@@ -73,7 +73,7 @@ class Storm extends EventEmitter {
       index -= 1;
     }
 
-    log.debug('The cluster has been terminated.');
+    log.info('The cluster has been terminated.');
     this.emit('offline');
     setTimeout(process.exit, 200);
   }
