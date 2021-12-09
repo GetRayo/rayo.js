@@ -5,9 +5,13 @@ const log = require('./log');
 const round = (number) => Math.round(number * 100) / 100;
 const reform = (item) => {
   item.upTime = item.upTime ? Math.floor(item.upTime) : undefined;
+<<<<<<< HEAD
   if (item.cpuTime) {
     item.cpuTime.total = round((item.cpuTime.user + item.cpuTime.system) / 1e6);
   }
+=======
+  item.cpuTime = item.cpuTime ? round((item.cpuTime.user + item.cpuTime.system) / 1e6) : undefined;
+>>>>>>> 7fcf2e4 (content-type (charset=utf-8) and `max-length`.)
 
   if (item.memory) {
     const keys = Object.keys(item.memory);
@@ -65,9 +69,7 @@ const requestDispatch = (cluster, res, { workerId, command }) => {
 };
 const requestHandler = (cluster, req, res) => {
   const { pathname } = parseurl(req);
-  const [service, workerId, command = 'health'] = pathname
-    .substr(1, pathname.length)
-    .split('/');
+  const [service, workerId, command = 'health'] = pathname.substr(1, pathname.length).split('/');
 
   if (service === 'monitor') {
     return requestDispatch.bind(
@@ -114,10 +116,8 @@ module.exports = {
       this.httpServer.listen(monitorPort);
       this.httpServer.on('request', requestHandler.bind(null, cluster));
       this.httpServer.on('listening', () => {
-        log.info(
-          `Monitoring ${Object.keys(cluster.workers).length} workers on port ${
-            this.httpServer.address().port
-          }`
+        log.debug(
+          `Monitoring ${Object.keys(cluster.workers).length} workers on port ${this.httpServer.address().port}`
         );
       });
     },

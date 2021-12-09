@@ -22,8 +22,6 @@ module.exports = {
 
   wrap: (module, handler, options) =>
     createServer((req, res) =>
-      module(options)(req, res, (error) =>
-        error ? res.end(error.message) : handler(req, res)
-      )
+      module(options)(req, res, (error) => (error ? res.end(error.message) : handler(req, res)))
     )
 };
