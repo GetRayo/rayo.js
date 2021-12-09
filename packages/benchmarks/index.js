@@ -11,9 +11,7 @@ const { readdirSync } = require('fs');
 const { dependencies: version } = require('./package.json');
 
 const files = (() => {
-  const array = readdirSync(`${__dirname}/compare`).filter((file) =>
-    file.match(/(.+)\.js$/)
-  );
+  const array = readdirSync(`${__dirname}/compare`).filter((file) => file.match(/(.+)\.js$/));
   let index = array.length;
   while (index) {
     const rand = Math.floor(Math.random() * (index -= 1));

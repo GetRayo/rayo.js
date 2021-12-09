@@ -115,15 +115,7 @@ const payload = [
     registered: '2015-11-28T03:41:34 -11:00',
     latitude: 59.097331,
     longitude: 58.29156,
-    tags: [
-      'laborum',
-      'adipisicing',
-      'excepteur',
-      'duis',
-      'voluptate',
-      'enim',
-      'cupidatat'
-    ],
+    tags: ['laborum', 'adipisicing', 'excepteur', 'duis', 'voluptate', 'enim', 'cupidatat'],
     friends: [
       {
         id: 0,

@@ -40,9 +40,7 @@ module.exports =
         res.setHeader('content-encoding', 'gzip');
         res.setHeader(
           'x-powered-by',
-          ['@rayo/compress', res.getHeader('x-powered-by')]
-            .filter((header) => header)
-            .join(', ')
+          ['@rayo/compress', res.getHeader('x-powered-by')].filter((header) => header).join(', ')
         );
         res.removeHeader('content-length');
         vary(res, 'content-encoding');

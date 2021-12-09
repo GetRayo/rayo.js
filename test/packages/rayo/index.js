@@ -215,9 +215,7 @@ module.exports = () => {
     server.post('/', () => {});
     setTimeout(() => {
       test(server);
-      const nextStackFunction = server.step(fake.req, fake.res, [
-        () => 'Returned stack function.'
-      ]);
+      const nextStackFunction = server.step(fake.req, fake.res, [() => 'Returned stack function.']);
       should(nextStackFunction).be.a.String();
       should(nextStackFunction).be.equal('Returned stack function.');
 

@@ -20,14 +20,14 @@ module.exports = () => {
   it('send, without payload, without status code', (done) => {
     request(wrap(send, (req, res) => res.send()))
       .get('/')
-      .expect(header('content-type', 'text/plain'))
+      .expect(header('content-type', 'text/plain; charset=utf-8'))
       .expect(200, '', done);
   });
 
   it('send, text', (done) => {
     request(wrap(send, (req, res) => res.send('Thunderstruck!')))
       .get('/')
-      .expect(header('content-type', 'text/plain'))
+      .expect(header('content-type', 'text/plain; charset=utf-8'))
       .expect(header('content-length', '14'))
       .expect(200, 'Thunderstruck!', done);
   });
@@ -35,7 +35,7 @@ module.exports = () => {
   it('send, text and status', (done) => {
     request(wrap(send, (req, res) => res.send('Thunderstruck!', 404)))
       .get('/')
-      .expect(header('content-type', 'text/plain'))
+      .expect(header('content-type', 'text/plain; charset=utf-8'))
       .expect(header('content-length', '14'))
       .expect(404, 'Thunderstruck!', done);
   });

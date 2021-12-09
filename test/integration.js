@@ -21,7 +21,7 @@ const request = (resolver, options = {}) => {
 };
 const test = (options = {}, headers, status, body) => {
   options.statusCode = options.statusCode || 200;
-  options.headers = options.headers || 'text/plain';
+  options.headers = options.headers || 'text/plain; charset=utf-8';
 
   if (headers['content-type']) {
     should(headers['content-type']).be.a.String();

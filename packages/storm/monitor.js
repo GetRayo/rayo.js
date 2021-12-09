@@ -5,9 +5,7 @@ const log = require('./log');
 const round = (number) => Math.round(number * 100) / 100;
 const reform = (item) => {
   item.upTime = item.upTime ? Math.floor(item.upTime) : undefined;
-  item.cpuTime = item.cpuTime
-    ? round((item.cpuTime.user + item.cpuTime.system) / 1e6)
-    : undefined;
+  item.cpuTime = item.cpuTime ? round((item.cpuTime.user + item.cpuTime.system) / 1e6) : undefined;
 
   if (item.memory) {
     const keys = Object.keys(item.memory);
@@ -51,9 +49,7 @@ const requestDispatch = (cluster, res, { workerId, command }) => {
 };
 const requestHandler = (cluster, req, res) => {
   const { pathname } = parseurl(req);
-  const [service, workerId, command = 'health'] = pathname
-    .substr(1, pathname.length)
-    .split('/');
+  const [service, workerId, command = 'health'] = pathname.substr(1, pathname.length).split('/');
 
   if (service === 'monitor') {
     return requestDispatch.bind(
@@ -103,9 +99,7 @@ module.exports = {
       this.httpServer.on('request', requestHandler.bind(null, cluster));
       this.httpServer.on('listening', () => {
         log.debug(
-          `Monitoring ${Object.keys(cluster.workers).length} workers on port ${
-            this.httpServer.address().port
-          }`
+          `Monitoring ${Object.keys(cluster.workers).length} workers on port ${this.httpServer.address().port}`
         );
       });
     },
