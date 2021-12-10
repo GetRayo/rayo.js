@@ -19,6 +19,7 @@ const reform = (item) => {
       item.memory[keys[k]] = round(item.memory[keys[k]] / 1024);
     }
   }
+
   return item;
 };
 const pre = (payload) => (Array.isArray(payload) ? payload.map(reform) : reform(payload));
@@ -48,7 +49,10 @@ const requestDispatch = (cluster, res, { workerId, command }) => {
     }
 
     res.setHeader('Content-Type', 'application/json');
-    worker.once('message', (message) => send(res, JSON.stringify(pre(message))));
+    worker.once('message', (message) => {
+      return send(res, JSON.stringify(pre(message)));
+    });
+
     return worker.send(command);
   }
 
@@ -70,13 +74,9 @@ const requestDispatch = (cluster, res, { workerId, command }) => {
 const requestHandler = (cluster, req, res) => {
   const { pathname } = parseurl(req);
   const [service, workerId, command = 'health'] = pathname.substr(1, pathname.length).split('/');
-
+  const boundDispatch = requestDispatch.bind(null, cluster, res);
   if (service === 'monitor') {
-    return requestDispatch.bind(
-      null,
-      cluster,
-      res
-    )({
+    return boundDispatch({
       workerId: parseInt(workerId, 10) || null,
       command
     });
@@ -89,24 +89,28 @@ const requestHandler = (cluster, req, res) => {
 module.exports = {
   log,
 
-  messageHandler: (process) => {
+  messageHandler: (worker) => {
     // The `master` process sent this message/command to the worker.
-    process.on('message', (cmd) => {
-      log.info(`Worker (${process.pid}) received a message: ${cmd}.`);
+    worker.on('message', (cmd) => {
+      log.debug(`Monitor | Worker (${process.pid}) received a request: ${cmd}.`);
       let response = null;
       switch (cmd) {
         case 'health':
           response = {
-            pid: process.pid,
-            upTime: process.uptime(),
-            cpuTime: process.cpuUsage(),
-            memory: process.memoryUsage()
+            pid: worker.pid,
+            upTime: worker.uptime(),
+            cpuTime: worker.cpuUsage(),
+            memory: worker.memoryUsage()
           };
+          break;
+
+        case 'stop':
+          process.kill(worker.pid, 'SIGTERM');
           break;
         default:
       }
 
-      return response ? process.send(pre(response)) : null;
+      return response ? worker.send(pre(response)) : null;
     });
   },
 

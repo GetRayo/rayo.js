@@ -11,15 +11,13 @@ class Storm extends EventEmitter {
       throw new Error('You need to provide a worker function.');
     }
 
-    this.keepAlive = !!options.keepAlive;
+    this.keepAlive = options.keepAlive === undefined || options.keepAlive;
     this.work = work.bind(this);
     this.fork = this.fork.bind(this);
     this.stop = this.stop.bind(this);
 
     if (cluster.isMaster) {
-      cluster.setupMaster({ silent: true });
-      // Is the process from the master process needs to be piped into the workers.
-      // cluster.fork().process.stdout.pipe(process.stdout);
+      // cluster.setupPrimary();
     }
 
     if (cluster.isWorker) {
@@ -34,15 +32,19 @@ class Storm extends EventEmitter {
     let processes = options.workers || cpus.length;
     process.on('SIGINT', this.stop).on('SIGTERM', this.stop);
     cluster.on('online', (wrk) => {
-      log.info(`Worker ${wrk.process.pid} is online`);
+      log.debug(`Worker ${wrk.process.pid} is online`);
       this.emit('worker', wrk.process.pid);
     });
-    cluster.on('exit', (wrk) => {
+
+    cluster.on('exit', (wrk, code, signal) => {
+      log.debug(`Worker ${wrk.process.pid} has exited`);
       this.emit('exit', wrk.process.pid);
-      return this.fork(wrk);
+      if (signal !== 'SIGTERM') {
+        this.fork(wrk.process.pid);
+      }
     });
 
-    log.info(`Master (${process.pid}) is forking ${processes} workers.`);
+    log.debug(`The master process (${process.pid}) will spawn ${processes} workers.`);
     while (processes) {
       processes -= 1;
       cluster.fork();
@@ -51,7 +53,7 @@ class Storm extends EventEmitter {
     cluster.masterPid = process.pid;
     cluster.platform = process.platform;
     if (options.master) {
-      log.info(`Master process: ${process.pid}`);
+      log.debug(`Master process: ${process.pid}`);
       options.master = options.master.bind(this, cluster);
       options.master();
     }
@@ -64,28 +66,23 @@ class Storm extends EventEmitter {
   stop() {
     monitor.stop();
     this.keepAlive = false;
-    let index = Object.keys(cluster.workers).length;
-    while (index) {
-      if (cluster.workers[index]) {
-        cluster.workers[index].process.kill();
-        cluster.workers[index].kill();
+    let items = Object.keys(cluster.workers).length;
+    while (items) {
+      if (cluster.workers[items]) {
+        process.kill(cluster.workers[items].process.pid);
       }
-      index -= 1;
+      items -= 1;
     }
 
-    log.info('The cluster has been terminated.');
+    log.debug('The cluster has been terminated.');
     this.emit('offline');
     setTimeout(process.exit, 200);
   }
 
-  fork(wrk) {
+  fork(pid) {
     if (this.keepAlive) {
       const worker = cluster.fork();
-      log.warn(`Worker ${wrk.process.pid} died. Replacer: ${worker.process.pid}`);
-    }
-
-    if (!Object.keys(cluster.workers).length) {
-      monitor.stop();
+      log.warn(`Worker ${pid} died. Replacer: ${worker.process.pid}`);
     }
   }
 }

@@ -124,7 +124,7 @@ module.exports = () => {
   it('Message between processes, valid command', async () => {
     const res = await exec('fixtures/command', { command: 'health' });
     const json = extractJSON(res).pop();
-    should(json).be.an.Object().and.have.properties('pid', 'ppid', 'platform', 'upTime', 'cpuTime', 'memory');
+    should(json).be.an.Object().and.have.properties('pid', 'upTime', 'cpuTime', 'memory');
 
     should(json.cpuTime).be.a.Number().and.greaterThan(0);
 
