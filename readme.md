@@ -26,7 +26,7 @@ Your server will feel like it got hit by a lightning bolt...
 - extensible & plugable,
 - < 85 LOC (with routing and all)
 
-> ¹ `Rayo` is not intended to be an Express replacement, thus the API is similar, inspired-by, but not identical.</ br>
+> ¹ `Rayo` is not intended to be an Express replacement, thus the API is similar, inspired-by, but not identical.<br />
 > ² Some middleware rely on Express-specific features, which `Rayo` may or may not implement.
 
 
