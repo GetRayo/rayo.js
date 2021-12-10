@@ -121,7 +121,7 @@ module.exports = () => {
     return filter(res, 'Worker 5 does not exist.');
   });
 
-  it('Message between processes, valid command', async () => {
+  it('Message between processes, valid command (health)', async () => {
     const res = await exec('fixtures/command', { command: 'health' });
     const json = extractJSON(res).pop();
     should(json).be.an.Object().and.have.properties('pid', 'upTime', 'cpuTime', 'memory');
@@ -132,6 +132,11 @@ module.exports = () => {
 
     filter(res, 'Master process: \\d+');
     return filter(res, 'Hello from the worker!');
+  });
+
+  it('Message between processes, valid command (stop)', async () => {
+    const res = await exec('fixtures/command', { command: 'stop' });
+    return filter(res, 'Worker \\d+ has exited');
   });
 
   it('Message between processes, invalid command', async () => {
