@@ -13,11 +13,7 @@ logLevel = levels[logLevel] || 1;
 const format = (prop, args) => {
   /* istanbul ignore next */
   const values = args
-    .map((arg) =>
-      !(arg instanceof Error) && typeof arg === 'object'
-        ? JSON.stringify(arg, null, 2)
-        : arg
-    )
+    .map((arg) => (!(arg instanceof Error) && typeof arg === 'object' ? JSON.stringify(arg, null, 2) : arg))
     .join('\n');
 
   const date = new Intl.DateTimeFormat('de-AT', {
@@ -48,9 +44,7 @@ module.exports = new Proxy(
     get:
       (target, prop) =>
       (...args) => {
-        return (levels[prop] || 1) <= logLevel
-          ? process.stdout.write(format(prop, args))
-          : null;
+        return (levels[prop] || 1) <= logLevel ? process.stdout.write(format(prop, args)) : null;
       }
   }
 );

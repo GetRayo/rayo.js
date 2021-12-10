@@ -17,9 +17,7 @@ storm(
     master(cluster) {
       const worker = cluster.workers[1];
       worker.on('message', (message) => {
-        process.stdout.write(
-          typeof message === 'object' ? JSON.stringify(message) : message
-        );
+        process.stdout.write(typeof message === 'object' ? JSON.stringify(message) : message);
       });
 
       this.on('worker', () => {
