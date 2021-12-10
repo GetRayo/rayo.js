@@ -5,7 +5,7 @@
 [![CodeFactor](https://www.codefactor.io/repository/github/getrayo/rayo.js/badge)](https://www.codefactor.io/repository/github/getrayo/rayo.js)
 [![Coverage Status](https://coveralls.io/repos/github/GetRayo/rayo.js/badge.svg?branch=master)](https://coveralls.io/github/GetRayo/rayo.js?branch=master)
 [![Build Status](https://app.travis-ci.com/GetRayo/rayo.js.svg?branch=master)](https://app.travis-ci.com/GetRayo/rayo.js)
-[![Greenkeeper badge](https://badges.greenkeeper.io/GetRayo/rayo.js.svg)](https://greenkeeper.io/)
+[![Vulnerability score](https://snyk-widget.herokuapp.com/badge/npm/rayo/badge.svg)](https://snyk.io/)
 [![Known Vulnerabilities](https://snyk.io/test/github/GetRayo/rayo.js/badge.svg?targetFile=package.json)](https://snyk.io/test/github/GetRayo/rayo.js?targetFile=package.json)
 
 </div>
