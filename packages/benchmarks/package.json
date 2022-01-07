@@ -22,7 +22,7 @@
   "dependencies": {
     "autocannon": "^7.5.0",
     "cli-table": "^0.3.11",
-    "express": "^4.17.1",
+    "express": "^4.17.2",
     "fastify": "^3.24.1",
     "kleur": "^4.1.4",
     "minimist": "^1.2.5",
