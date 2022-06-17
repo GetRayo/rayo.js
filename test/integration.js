@@ -86,6 +86,49 @@ module.exports = () => {
     });
   });
 
+  it('GET request, send(text/html)', (done) => {
+    server = server
+      .through(send())
+      .get('/', (req, res) => {
+        res.setHeader('Content-Type', 'text/html; charset=UTF-8');
+        return res.send('Thunderstruck!');
+      })
+      .start();
+
+    request(
+      test.bind(null, {
+        contentLength: 14,
+        headers: 'text/html; charset=UTF-8',
+        body: 'Thunderstruck!'
+      })
+    ).then(() => {
+      server.close();
+      done();
+    });
+  });
+
+  it('GET request, send(text/html), status code', (done) => {
+    server = server
+      .through(send())
+      .get('/', (req, res) => {
+        res.setHeader('Content-Type', 'text/html; charset=UTF-8');
+        return res.send('Thunderstruck!', 202);
+      })
+      .start();
+
+    request(
+      test.bind(null, {
+        contentLength: 14,
+        statusCode: 202,
+        headers: 'text/html; charset=UTF-8',
+        body: 'Thunderstruck!'
+      })
+    ).then(() => {
+      server.close();
+      done();
+    });
+  });
+
   it('GET request, send(text/plain), status code', (done) => {
     server = server
       .through(send())
@@ -113,7 +156,7 @@ module.exports = () => {
     request(
       test.bind(null, {
         contentLength: 28,
-        headers: 'application/json',
+        headers: 'application/json; charset=utf-8',
         body: '{"message":"Thunderstruck!"}'
       })
     ).then(() => {
@@ -131,7 +174,7 @@ module.exports = () => {
     request(
       test.bind(null, {
         contentLength: 28,
-        headers: 'application/json',
+        headers: 'application/json; charset=utf-8',
         statusCode: 202,
         body: '{"message":"Thunderstruck!"}'
       })

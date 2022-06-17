@@ -40,17 +40,43 @@ module.exports = () => {
       .expect(404, 'Thunderstruck!', done);
   });
 
+  it('send, html', (done) => {
+    request(
+      wrap(send, (req, res) => {
+        res.setHeader('content-type', 'text/html; charset=utf-8');
+        return res.send('Thunderstruck!');
+      })
+    )
+      .get('/')
+      .expect(header('content-type', 'text/html; charset=utf-8'))
+      .expect(header('content-length', '14'))
+      .expect(200, 'Thunderstruck!', done);
+  });
+
+  it('send, html and status', (done) => {
+    request(
+      wrap(send, (req, res) => {
+        res.setHeader('content-type', 'text/html; charset=utf-8');
+        return res.send('Thunderstruck!', 404);
+      })
+    )
+      .get('/')
+      .expect(header('content-type', 'text/html; charset=utf-8'))
+      .expect(header('content-length', '14'))
+      .expect(404, 'Thunderstruck!', done);
+  });
+
   it('send, json', (done) => {
     request(wrap(send, (req, res) => res.send({ status: 'Thunderstruck!' })))
       .get('/')
-      .expect(header('content-type', 'application/json'))
+      .expect(header('content-type', 'application/json; charset=utf-8'))
       .expect(200, '{"status":"Thunderstruck!"}', done);
   });
 
   it('send, json and status', (done) => {
     request(wrap(send, (req, res) => res.send({ status: 'Thunderstruck!' }, 404)))
       .get('/')
-      .expect(header('content-type', 'application/json'))
+      .expect(header('content-type', 'application/json; charset=utf-8'))
       .expect(404, '{"status":"Thunderstruck!"}', done);
   });
 
@@ -58,7 +84,7 @@ module.exports = () => {
     const json = require.call(null, '../../utils/sample.json');
     request(wrap(send, (req, res) => res.send(json)))
       .get('/')
-      .expect(header('content-type', 'application/json'))
+      .expect(header('content-type', 'application/json; charset=utf-8'))
       .expect(200, done);
   });
 
@@ -66,7 +92,7 @@ module.exports = () => {
     const json = require.call(null, '../../utils/sample.json');
     request(wrap(send, (req, res) => res.send(json, 404)))
       .get('/')
-      .expect(header('content-type', 'application/json'))
+      .expect(header('content-type', 'application/json; charset=utf-8'))
       .expect(404, done);
   });
 };
