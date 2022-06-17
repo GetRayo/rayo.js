@@ -19,8 +19,7 @@ const send = function send(payload, statusCode = 200) {
   const response = valid ? json : payload;
   this.statusCode = statusCode;
 
-  const headers = { ...this.getHeaders() };
-  if (!headers['content-type']) {
+  if (!this.getHeader('content-type')) {
     this.setHeader('content-type', valid ? 'application/json; charset=utf-8' : 'text/plain; charset=utf-8');
   }
   this.setHeader('content-length', (response || '').length);
