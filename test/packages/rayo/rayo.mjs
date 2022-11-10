@@ -1,13 +1,13 @@
-const should = require('should');
-const sinon = require('sinon');
-const { METHODS } = require('http');
-const storm = require('../../../packages/storm');
-const rayo = require('../../../packages/rayo');
+import should from 'should';
+import sinon from 'sinon';
+import { METHODS } from 'http';
+import { default as Storm } from '../../../packages/storm/index.js';
+import rayo from '../../../packages/rayo/index.js';
 
-const fake = {
-  req: require.call(null, '../../utils/req'),
-  res: require.call(null, '../../utils/res')
-};
+import req from '../../utils/req.mjs';
+import res from '../../utils/res.mjs';
+
+const fake = { req, res };
 
 const test = (server) => {
   should(server).be.an.Object();
@@ -25,7 +25,7 @@ const test = (server) => {
 
 let sandbox;
 let server = null;
-module.exports = () => {
+export default function rayoTest() {
   beforeEach(() => {
     sandbox = sinon.createSandbox();
     server = rayo({ port: 5050 });
@@ -49,7 +49,7 @@ module.exports = () => {
       }
     }).get('/', () => {});
 
-    sinon.stub(storm.Storm.prototype, 'start').callsFake(() => ({ cluster: 'ok' }));
+    sinon.stub(Storm.prototype, 'start').callsFake(() => ({ cluster: 'ok' }));
     const httpServer = server.start();
     setTimeout(() => {
       if (httpServer) {

@@ -38,7 +38,7 @@ const format = (prop, args) => {
  * Use with caution!
  */
 /* istanbul ignore next */
-module.exports = new Proxy(
+export default new Proxy(
   {},
   {
     get:

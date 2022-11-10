@@ -3,6 +3,7 @@
   "version": "1.0.23",
   "description": "✈️ Rayo's response sender",
   "main": "index.js",
+  "type": "module",
   "engines": {
     "node": ">=8.11.4"
   },

@@ -1,8 +1,8 @@
-const cluster = require('cluster');
-const EventEmitter = require('events');
-const cpus = require('os').cpus();
-const log = require('./log');
-const { monitor, messageHandler } = require('./monitor');
+import cluster from 'cluster';
+import EventEmitter from 'events';
+import { cpus } from 'os';
+import log from './log.mjs';
+import monitor from './monitor.mjs';
 
 class Storm extends EventEmitter {
   constructor(work, options) {
@@ -18,21 +18,21 @@ class Storm extends EventEmitter {
     this.stop = this.stop.bind(this);
 
     if (cluster.isMaster) {
-      cluster.setupMaster({ silent: true });
+      cluster.setupPrimary({ silent: true });
       // Is the process from the master process needs to be piped into the workers.
       // cluster.fork().process.stdout.pipe(process.stdout);
     }
 
     if (cluster.isWorker) {
       this.work();
-      messageHandler.bind(null, process)();
+      monitor.messageHandler.bind(null, process)();
     } else {
       this.start(options);
     }
   }
 
   start(options) {
-    let processes = options.workers || cpus.length;
+    let processes = options.workers || cpus().length;
     process.on('SIGINT', this.stop).on('SIGTERM', this.stop);
     cluster.on('online', (wrk) => {
       log.debug(`Worker ${wrk.process.pid} is online`);
@@ -57,12 +57,12 @@ class Storm extends EventEmitter {
     }
 
     if (this.monitor) {
-      monitor.start(cluster, options);
+      monitor.service.start(cluster, options);
     }
   }
 
   stop() {
-    monitor.stop();
+    monitor.service.stop();
     this.keepAlive = false;
     let index = Object.keys(cluster.workers).length;
     while (index) {
@@ -85,10 +85,12 @@ class Storm extends EventEmitter {
     }
 
     if (!Object.keys(cluster.workers).length) {
-      monitor.stop();
+      monitor.service.stop();
     }
   }
 }
 
-module.exports.Storm = Storm;
-module.exports.storm = (work = null, options = {}) => new Storm(work, options);
+export default Storm;
+export function storm(work = null, options = {}) {
+  return new Storm(work, options);
+}

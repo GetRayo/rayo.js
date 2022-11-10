@@ -1,5 +1,5 @@
-const compressible = require('compressible');
-const { createGzip } = require('zlib');
+import compressible from 'compressible';
+import { createGzip } from 'zlib';
 
 const doable = (req, res) => {
   if (!res.compressPass && res.getHeader('content-encoding')) {
@@ -27,9 +27,8 @@ const vary = (res, key) => {
   }
 };
 
-module.exports =
-  (options = {}) =>
-  (req, res, step) => {
+export default function compress(options = {}) {
+  return (req, res, step) => {
     const { write, end } = res;
     const zip = createGzip(options);
     zip.on('data', write.bind(res)).on('end', end.bind(res));
@@ -66,5 +65,6 @@ module.exports =
       return end.call(res, data, encoding);
     };
 
-    step();
+    return step();
   };
+}

@@ -1,6 +1,6 @@
-const should = require('should');
-const cpus = require('os').cpus();
-const { spawn } = require('child_process');
+import should from 'should';
+import { cpus } from 'os';
+import { spawn } from 'child_process';
 
 const exec = (file, options = {}) =>
   new Promise((yes) => {
@@ -54,7 +54,7 @@ const extractJSON = (res) => {
   return json;
 };
 
-module.exports = () => {
+export default function stormTest() {
   it('Throws an error', async () => {
     const res = await exec('fixtures/throwError');
     const error = res[0].indexOf('You need to provide a worker function.');
@@ -72,7 +72,7 @@ module.exports = () => {
   });
 
   it('CPU length workers', async () => {
-    const res = await exec('fixtures/worker', { workers: cpus.length });
+    const res = await exec('fixtures/worker', { workers: cpus().length });
     return filter(res, 'Master process: \\d+');
   });
 
@@ -111,6 +111,7 @@ module.exports = () => {
 
   it('With monitor, request for valid worker', async () => {
     const res = await exec('fixtures/monitorRequest', { workerId: 1 });
+    console.log(res);
     return filter(res, 'Master process: \\d+');
   });
 
@@ -138,4 +139,4 @@ module.exports = () => {
     filter(res, 'Master process: \\d+');
     return filter(res, 'Hello from the worker!'); // worker -> master
   });
-};
+}

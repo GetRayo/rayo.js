@@ -1,8 +1,8 @@
-const http = require('http');
-const parseurl = require('parseurl');
-const { parse } = require('querystring');
-const { storm } = require('@rayo/storm');
-const Bridge = require('./bridge');
+import http from 'http';
+import parseurl from 'parseurl';
+import { parse } from 'querystring';
+import { storm } from '@rayo/storm';
+import Bridge from './bridge.mjs';
 
 const ip = (req) => {
   const { headers = {}, connection = {}, socket = {} } = req;
@@ -11,7 +11,6 @@ const ip = (req) => {
 
   return headers['x-forwarded-for'] || remoteAddress || socketAddress;
 };
-
 const end = (req, res, status, message) => {
   res.statusCode = status;
   res.setHeader('Content-Length', message.length);
@@ -87,4 +86,6 @@ class Rayo extends Bridge {
   }
 }
 
-module.exports = (options = {}) => new Rayo(options);
+export default function rayo(options = {}) {
+  return new Rayo(options);
+}
