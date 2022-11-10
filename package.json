@@ -16,16 +16,17 @@
   "scripts": {
     "eslint:fix": "eslint --quiet --fix .",
     "pretest": "lerna bootstrap",
-    "test": "npm run eslint:fix && LOG_LEVEL=debug nyc --reporter=lcov _mocha -R progress --timeout 10000 test/index.js",
+    "test": "npm run eslint:fix && LOG_LEVEL=debug c8 --reporter=lcov _mocha -R nyan --timeout 10000 test/index.js",
     "unit": "LOG_LEVEL=debug _mocha -R spec --timeout 20000 test/index.js",
-    "posttest": "nyc report --reporter=text",
-    "report": "codecov && cat ./coverage/lcov.info | coveralls && rm -rf ./coverage ./.nyc_output",
+    "posttest": "c8 report --reporter=text",
+    "report": "codecov && cat ./coverage/lcov.info | coveralls && rm -rf ./coverage",
     "copies": "cp readme.md ./packages/rayo/. && echo rayo/ benchmarks/ compress/ send/ storm/ | xargs -n 1 -I file cp LICENSE ./packages/file",
     "prerelease": "npm test && npm run copies",
     "release": "GH_TOKEN=$token lerna publish --no-push",
     "update": "npm-check -u"
   },
   "devDependencies": {
+    "c8": "^7.12.0",
     "codecov": "^3.8.1",
     "coveralls": "^3.1.0",
     "eslint": "^8.4.0",
@@ -33,13 +34,12 @@
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-prettier": "^4.0.0",
-    "lerna": "^4.0.0",
-    "mocha": "^9.1.3",
-    "npm-check": "^5.9.2",
-    "nyc": "^15.1.0",
+    "lerna": "^6.0.3",
+    "mocha": "^10.1.0",
+    "npm-check": "^6.0.1",
     "prettier": "^2.1.2",
     "should": "^13.2.3",
-    "sinon": "^12.0.1",
+    "sinon": "^14.0.2",
     "supertest": "^6.0.1"
   }
 }
