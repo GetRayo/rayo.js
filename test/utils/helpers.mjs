@@ -1,7 +1,7 @@
-const should = require('should');
-const { createServer } = require('http');
+import should from 'should';
+import { createServer } from 'http';
 
-module.exports = {
+const helpers = {
   header:
     (key = null, value = null) =>
     (res) => {
@@ -25,3 +25,5 @@ module.exports = {
       module(options)(req, res, (error) => (error ? res.end(error.message) : handler(req, res)))
     )
 };
+
+export default helpers;

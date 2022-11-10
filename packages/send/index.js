@@ -14,7 +14,7 @@ const isJSON = (payload) => {
 /**
  * @TODO Extend this to support more content-types.
  */
-const send = function send(payload, statusCode = 200) {
+const sendIt = function sendIt(payload, statusCode = 200) {
   const { valid, json } = isJSON(payload);
   const response = valid ? json : payload;
   this.statusCode = statusCode;
@@ -28,7 +28,9 @@ const send = function send(payload, statusCode = 200) {
   this.end(response);
 };
 
-module.exports = () => (req, res, step) => {
-  res.send = send.bind(res);
-  step();
-};
+export default function send() {
+  return (req, res, step) => {
+    res.send = sendIt.bind(res);
+    return step();
+  };
+}

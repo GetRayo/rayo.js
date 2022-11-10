@@ -1,5 +1,5 @@
-const { METHODS } = require('http');
-const { exec, match, parse } = require('matchit');
+import { METHODS } from 'http';
+import { exec, match, parse } from 'matchit';
 
 const bridges = [];
 const bridgeThrough = (t) => {
@@ -19,7 +19,7 @@ const bridgeThrough = (t) => {
   return t;
 };
 
-module.exports = class Bridge {
+export default class Bridge {
   /**
    * this.s = A placeholder for `stacks`. There will be one stack per HTTP verb.
    * this.t = A placeholder for `through` routes.

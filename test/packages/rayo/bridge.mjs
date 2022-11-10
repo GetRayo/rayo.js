@@ -1,6 +1,6 @@
-const should = require('should');
-const { METHODS } = require('http');
-const Bridge = require('../../../packages/rayo/bridge');
+import should from 'should';
+import { METHODS } from 'http';
+import Bridge from '../../../packages/rayo/bridge.mjs';
 
 const test = (bridge, path = null) => {
   should(bridge).be.an.Object();
@@ -20,7 +20,7 @@ const test = (bridge, path = null) => {
   }
 };
 
-module.exports = () => {
+export default function bridgeTest() {
   it('Without path', (done) => {
     test(new Bridge());
     done();
