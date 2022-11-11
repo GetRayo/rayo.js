@@ -84,4 +84,4 @@ export default class Bridge {
           stack: this.s[verb][url[0].old]
         };
   }
-};
+}

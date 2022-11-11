@@ -17,7 +17,7 @@
   "scripts": {
     "eslint:fix": "eslint --quiet --fix .",
     "pretest": "lerna bootstrap",
-    "test": "npm run eslint:fix && LOG_LEVEL=debug c8 --reporter=lcov _mocha -R nyan --timeout 10000 test/index.js",
+    "test": "npm run eslint:fix && LOG_LEVEL=debug c8 --reporter=cobertura _mocha -R progress --timeout 10000 test/index.js",
     "unit": "LOG_LEVEL=debug _mocha -R spec --timeout 20000 test/index.js",
     "posttest": "c8 report --reporter=text",
     "report": "codecov && cat ./coverage/lcov.info | coveralls && rm -rf ./coverage",
