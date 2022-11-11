@@ -1,4 +1,4 @@
-const fastify = require('fastify')();
+import Fastify from 'fastify';
 
 const schema = {
   schema: {
@@ -14,8 +14,10 @@ const schema = {
     }
   }
 };
-const handler = (req, reply) => {
-  reply.send(`Thunderstruck... ${req.params.alias}`);
-};
 
-fastify.get('/users/:alias', schema, handler).listen(5050);
+const fastify = Fastify();
+fastify
+  .get('/:say', schema, (req, reply) => {
+    reply.send(`Thunderstruck... ${req.params.say}`);
+  })
+  .listen({ port: 5050 });

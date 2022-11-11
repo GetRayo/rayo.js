@@ -1,17 +1,16 @@
 #!/usr/bin/env node
-/* eslint no-console: 0 */
 
-const autocannon = require('autocannon');
-const minimist = require('minimist');
-const nap = require('pancho');
-const Table = require('cli-table');
-const { blue } = require('kleur');
-const { fork } = require('child_process');
-const { readdirSync } = require('fs');
-const { dependencies: version } = require('./package.json');
+import { cpus } from 'os';
+import autocannon from 'autocannon';
+import minimist from 'minimist';
+import nap from 'pancho';
+import Table from 'cli-table';
+import kleur from 'kleur';
+import { fork } from 'child_process';
+import { readdirSync, readFileSync } from 'fs';
 
 const files = (() => {
-  const array = readdirSync(`${__dirname}/compare`).filter((file) => file.match(/(.+)\.js$/));
+  const array = readdirSync('./compare').filter((file) => file.match(/(.+)\.js$/));
   let index = array.length;
   while (index) {
     const rand = Math.floor(Math.random() * (index -= 1));
@@ -24,41 +23,40 @@ const files = (() => {
 })();
 
 const argv = minimist(process.argv.slice(2));
-const cannon = (title = null) =>
-  new Promise((yes, no) => {
-    autocannon(
-      {
-        title,
-        url: argv.u || 'http://localhost:5050/users/rayo',
-        connections: argv.c || 100,
-        pipelining: argv.p || 10,
-        duration: argv.d || 5
-      },
-      (error, result) => (error ? no(error) : yes(result))
-    );
+const workers = cpus().length;
+const cn = (title = null) =>
+  autocannon({
+    title,
+    url: argv.u || 'http://localhost:5050/hello',
+    connections: argv.c || workers * 125,
+    pipelining: argv.p || workers * 10,
+    duration: argv.d || 10,
+    workers
   });
 
 let index = 0;
+const { dependencies: version } = JSON.parse(readFileSync('./package.json', 'utf8'));
 const benchmark = async (results = []) => {
   results.push(
     // eslint-disable-next-line no-async-promise-executor
     await new Promise(async (yes, no) => {
-      let file = files[index];
+      const file = files[index];
       if (argv.o && argv.o !== file) {
         yes();
       } else {
-        process.env.STORM_LOG_LEVEL = 'silent';
-        const forked = fork(`${__dirname}/compare/${file}`);
-        await nap(0.25);
+        const forked = fork(`./compare/${file}`);
+        await nap(0.5);
 
         try {
-          // First round to warm up, second round to measure.
-          file = file.replace('.js', '');
-          const framework = blue(file);
-          process.stdout.write(` - ${framework}`);
-          await cannon();
-          const result = await cannon(file);
-          result.version = (version[`${file.toLowerCase()}`] || '').replace('^', '');
+          let title = file.replace('.js', '');
+          const framework = kleur.blue(title);
+          process.stdout.write(` ✔ ${framework}\n`);
+          // Warm up...
+          await cn();
+          // Measure!
+          const result = await cn(title);
+          title = title === 'RayoStorm' ? '@rayo/storm' : title;
+          result.version = (version[`${title.toLowerCase()}`] || '').replace('^', '');
           forked.kill('SIGINT');
 
           await nap(0.25);
@@ -78,20 +76,21 @@ const benchmark = async (results = []) => {
 
 benchmark().then((results) => {
   const table = new Table({
-    head: ['', 'Version', 'Requests/sec', 'Latency', 'Throughput/Mb']
+    head: ['', 'Version', 'Reqs/sec ^', 'Reqs/sec *', 'Latency *', 'Throughput *']
   });
 
   results.forEach((result) => {
     if (result) {
       table.push([
-        blue(result.title.replace('.js', '')),
+        kleur.blue(result.title.replace('.js', '')),
         result.version || '',
+        result.requests.max,
         result.requests.average,
         result.latency.average,
-        (result.throughput.average / 1024 / 1024).toFixed(2)
+        `${(result.throughput.average / 1024 / 1024).toFixed(2)} Mb.`
       ]);
     }
   });
 
-  console.log(table.toString());
+  process.stdout.write(`${table.toString()}\n * Average\n`);
 });

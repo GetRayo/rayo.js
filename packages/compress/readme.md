@@ -12,8 +12,8 @@ $> npm i @rayo/compress
 ## Use
 
 ```js
-const rayo = require('rayo');
-const compress = require('@rayo/compress');
+import rayo from 'rayo';
+import compress from '@rayo/compress';
 
 rayo({ port: 5050 })
   .through(compress())

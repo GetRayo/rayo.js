@@ -1,7 +1,8 @@
+/* eslint import/extensions: 0 */
 /* eslint no-console: 0 */
 
-const rayo = require('../../packages/rayo');
-const send = require('../../packages/send');
+import rayo from '../../packages/rayo/index.js';
+import send from '../../packages/send/index.js';
 
 const options = {
   port: 5050,

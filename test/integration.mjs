@@ -1,4 +1,4 @@
-/* eslint default-param-last: 0 */
+/* eslint import/extensions: 0 */
 
 import http from 'http';
 import should from 'should';
@@ -19,7 +19,7 @@ const request = (resolver, options = {}) => {
     req.end();
   });
 };
-const test = (options = {}, headers, status, body) => {
+const test = (options, headers, status, body) => {
   options.statusCode = options.statusCode || 200;
   options.headers = options.headers || 'text/plain; charset=utf-8';
 

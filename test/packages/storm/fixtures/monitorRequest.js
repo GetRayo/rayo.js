@@ -1,8 +1,9 @@
-import { request } from 'http';
-// eslint-disable-next-line import/extensions
+/* eslint import/extensions: 0 */
+
+import helpers from '../../../utils/helpers.mjs';
 import { storm } from '../../../../packages/storm/index.js';
 
-const workers = parseInt(process.argv[2], 10);
+const [, , workers, workerId, , service] = process.argv;
 storm(() => {}, {
   keepAlive: false,
   monitor: true,
@@ -10,25 +11,16 @@ storm(() => {}, {
   workers,
   master() {
     this.on('worker', () => {
-      const workerId = parseInt(process.argv[3], 10) || '';
-      const req = request(
-        {
+      setTimeout(async () => {
+        const data = await helpers.request({
           host: 'localhost',
           port: 65000,
-          path: `/${process.argv[5]}/${workerId}`
-        },
-        (response) => {
-          let data = [];
-          response.on('data', (chunk) => data.push(chunk));
-          response.on('end', () => {
-            data = data.join('');
-            process.stdout.write(response.text);
-            this.stop();
-          });
-        }
-      );
+          path: `/${service}/${workerId}`
+        });
 
-      req.end();
+        process.stdout.write(data);
+        this.stop();
+      }, 200);
     });
   }
 });

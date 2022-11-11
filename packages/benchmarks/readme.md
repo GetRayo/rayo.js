@@ -48,6 +48,11 @@ $> rayobench -- -u http://localhost:5050 -c 1000 -p 25 -d 10
 > Results ~~may~~ will vary on different hardware.
 
 
+## Missing a framework?
+
+Just submit a PR with whatever framework you consider is worthy of being ranked here.
+
+
 ## License
 
 [MIT](https://github.com/GetRayo/rayo.js/blob/master/LICENSE)

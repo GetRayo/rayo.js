@@ -1,3 +1,5 @@
+/* eslint import/extensions: 0 */
+
 import path from 'path';
 import sinon from 'sinon';
 import request from 'supertest';

@@ -44,13 +44,13 @@
       <h3 id="install">Install</h3>
       <pre>$&gt; npm i rayo</pre>
       <h3 id="use">Use</h3>
-      <pre>const rayo = require('rayo');
+      <pre>import rayo from 'rayo';
 
 rayo({ port: 5050 })
   .get('/hello/:user', (req, res) =&gt; res.end(`Hello ${req.params.user}`))
   .start();</pre>
       <h4>With multiple handlers</h4>
-      <pre>const rayo = require('rayo');
+      <pre>import rayo from 'rayo';
 
 // "age" handler
 const age = (req, res, step) =&gt; {
@@ -88,7 +88,7 @@ rayo({ port: 5050 })
         <p>² Rayo is WIP, so you may encounter actual errors that need to be dealt with. If so, please point them out to us via a pull request. 👍</p>
       </blockquote>
       <p>If you have implemented a custom error function (see <code>onError</code> under <a href="#rayooptions--">options</a>) you may invoke it at any time by calling the <code>step()</code> function with an argument.</p>
-      <pre>const rayo = require('rayo');
+      <pre>import rayo from 'rayo';
 
 const options = {
   port: 5050,
@@ -174,7 +174,7 @@ const fn = (error, req, res, step) => {
         <br />Requests that match the given verb and path will be routed through the specified handlers.
       </blockquote>
       <p>This method is basically an alias of the <a href="#routeverb-path-handlers">.route</a> method, with the difference that the verb is defined by the method name itself.</p>
-      <pre>const rayo = require('rayo');
+      <pre>import rayo from 'rayo';
 
 /**
  * Setup a path ('/') on the specified HTTP verbs.
@@ -190,7 +190,7 @@ rayo({ port: 5050 })
       <blockquote>
         Requests which match any verb and the given path will be routed through the specified handlers.
       </blockquote>
-      <pre>const rayo = require('rayo');
+      <pre>import rayo from 'rayo';
 
 /**
  * Setup a path ('/') on all HTTP verbs.
@@ -204,7 +204,7 @@ rayo({ port: 5050 })
       <blockquote>
         All requests, any verb and any path, will be routed through the specified handlers.
       </blockquote>
-      <pre>const rayo = require('rayo');
+      <pre>import rayo from 'rayo';
 
 // "age" handler
 const age = (req, res, step) =&gt; {
@@ -230,7 +230,7 @@ rayo({ port: 5050 })
       <blockquote>
         Requests which match the given verb and path will be routed through the specified handlers.
       </blockquote>
-      <pre>const rayo = require('rayo');
+      <pre>import rayo from 'rayo';
 
 rayo({ port: 5050 })
   .route('GET', '/', (req, res) =&gt; res.end('Thunderstruck, GET'))
@@ -244,7 +244,7 @@ rayo({ port: 5050 })
       <p>A <code>bridge</code> instance exposes all of Rayo's routing methods (<a href="#throughhandlers">.through</a>, <a href="#routeverb-path-handlers">.route</a>, <a href="#verbpath-handlers">.verb</a> and <a href="#allpath-handlers">.all</a>). You may create any
         number of bridges and Rayo will automagically take care of mapping them.</p>
       <p>What makes <code>bridges</code> really awesome is the fact that they allow very granular control over what your application exposes. For example, enabling <a href="https://github.com/GetRayo/rayo.js/tree/master/packages/compress">content compression</a> only on certain paths.</p>
-      <pre>const rayo = require('rayo');
+      <pre>import rayo from 'rayo';
 
 const server = rayo({ port: 5050 });
 
@@ -294,7 +294,7 @@ server.start();</pre>
         <p>Starts Rayo -Your server is now listening for incoming requests.</p>
       </blockquote>
 
-      <pre>const rayo = require('rayo');
+      <pre>import rayo from 'rayo';
 
 rayo({ port: 5050 });
   .get((req, res) =&gt; res.end('Thunderstruck'))

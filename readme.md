@@ -43,7 +43,7 @@ $> npm i rayo
 ## Use
 
 ```js
-const rayo = require('rayo');
+import rayo from 'rayo';
 
 rayo({ port: 5050 })
   .get('/hello/:user', (req, res) => res.end(`Hello ${req.params.user}`))
@@ -54,7 +54,7 @@ rayo({ port: 5050 })
 <summary>🔎 (with multiple handlers)</summary>
 
 ```js
-const rayo = require('rayo');
+import rayo from 'rayo';
 
 // "age" handler
 const age = (req, res, step) => {
@@ -123,7 +123,7 @@ If you have implemented your own error function (see `onError` under [options](#
 <summary>🔎</summary>
 
 ```js
-const rayo = require('rayo');
+import rayo from 'rayo';
 
 const options = {
   port: 5050,
@@ -219,7 +219,7 @@ This method is basically an alias of the [`.route`](#routeverb-path-handlers) me
 <summary>🔎</summary>
 
 ```js
-const rayo = require('rayo');
+import rayo from 'rayo';
 
 /**
  * Setup a path ('/') on the specified HTTP verbs.
@@ -246,7 +246,7 @@ rayo({ port: 5050 })
 <summary>🔎</summary>
 
 ```js
-const rayo = require('rayo');
+import rayo from 'rayo';
 
 /**
  * Setup a path ('/') on all HTTP verbs.
@@ -271,7 +271,7 @@ rayo({ port: 5050 })
 <summary>🔎</summary>
 
 ```js
-const rayo = require('rayo');
+import rayo from 'rayo';
 
 // "age" handler
 const age = (req, res, step) => {
@@ -308,7 +308,7 @@ rayo({ port: 5050 })
 <summary>🔎</summary>
 
 ```js
-const rayo = require('rayo');
+import rayo from 'rayo';
 
 rayo({ port: 5050 })
   .route('GET', '/', (req, res) => res.end('Thunderstruck, GET'))
@@ -334,7 +334,7 @@ What makes `bridges` really awesome is the fact that they allow very granular co
 <summary>🔎</summary>
 
 ```js
-const rayo = require('rayo');
+import rayo from 'rayo';
 
 const server = rayo({ port: 5050 });
 
@@ -395,7 +395,7 @@ server.start();
 <summary>🔎</summary>
 
 ```js
-const rayo = require('rayo');
+import rayo from 'rayo';
 
 rayo({ port: 5050 })
   .get((req, res) => res.end('Thunderstruck'))

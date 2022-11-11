@@ -98,9 +98,7 @@ const monitor = {
       httpServer.listen(monitorPort);
       httpServer.on('request', requestHandler.bind(null, cluster));
       httpServer.on('listening', () => {
-        log.debug(
-          `Monitoring ${Object.keys(cluster.workers).length} workers on port ${httpServer.address().port}`
-        );
+        log.debug(`Monitoring ${Object.keys(cluster.workers).length} workers on port ${httpServer.address().port}`);
       });
     },
     stop: function stop() {

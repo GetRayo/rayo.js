@@ -1,3 +1,5 @@
+/* eslint import/extensions: 0 */
+
 import should from 'should';
 import { METHODS } from 'http';
 import Bridge from '../../../packages/rayo/bridge.mjs';
@@ -97,4 +99,4 @@ export default function bridgeTest() {
     test(new Bridge().all('/path', () => {}));
     done();
   });
-};
+}

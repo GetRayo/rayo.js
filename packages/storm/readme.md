@@ -19,10 +19,10 @@ $> npm i @rayo/storm
 ## Use
 
 ```js
-const { storm } = require('@rayo/storm');
+import { storm } from '@rayo/storm';
 
-const yourAwesomeFunction = (workerId) => {
-  console.log(`Hello, I am worker ${workerId}`);
+const yourAwesomeFunction = () => {
+  console.log(`Hello, I am worker ${process.pid}`);
 };
 
 storm(yourAwesomeFunction, {
