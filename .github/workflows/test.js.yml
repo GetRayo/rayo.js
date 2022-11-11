@@ -25,21 +25,26 @@ jobs:
 
       - run: npm i
 
-      - name: Test
-        run: npm test
+      - run: npm test
 
-      - name: Codacy in parallel
+      - name: Save coverage results
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-${{ matrix.node-version }}
+          path: coverage/lcov.info
+          retention-days: 1
+
+  coverage:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download math result for job 1
+        uses: actions/download-artifact@v3
+        with:
+          name: coverage-18.x
+
+      - name: Codacy report
         uses: codacy/codacy-coverage-reporter-action@v1
         with:
           project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
           coverage-reports: coverage/lcov.info
-
-  finish:
-    needs: test
-    runs-on: ubuntu-latest
-    steps:
-    - name: Codacy report
-      uses: codacy/codacy-coverage-reporter-action@v1
-      with:
-        project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
-        coverage-reports: coverage/lcov.info
