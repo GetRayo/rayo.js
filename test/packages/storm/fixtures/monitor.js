@@ -1,7 +1,8 @@
-// eslint-disable-next-line import/extensions
+/* eslint import/extensions: 0 */
+
 import { storm } from '../../../../packages/storm/index.js';
 
-const workers = parseInt(process.argv[2], 10);
+const [, , workers] = process.argv;
 storm(() => {}, {
   keepAlive: false,
   workers,

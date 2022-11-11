@@ -17,10 +17,11 @@ class Storm extends EventEmitter {
     this.fork = this.fork.bind(this);
     this.stop = this.stop.bind(this);
 
-    if (cluster.isMaster) {
-      cluster.setupPrimary({ silent: true });
-      // Is the process from the master process needs to be piped into the workers.
-      // cluster.fork().process.stdout.pipe(process.stdout);
+    if (cluster.isPrimary) {
+      cluster.setupPrimary({
+        silent: false,
+        schedulingPolicy: cluster.SCHED_RR
+      });
     }
 
     if (cluster.isWorker) {
@@ -32,7 +33,7 @@ class Storm extends EventEmitter {
   }
 
   start(options) {
-    let processes = options.workers || cpus().length;
+    let processes = parseInt(options.workers, 10) || cpus().length;
     process.on('SIGINT', this.stop).on('SIGTERM', this.stop);
     cluster.on('online', (wrk) => {
       log.debug(`Worker ${wrk.process.pid} is online`);

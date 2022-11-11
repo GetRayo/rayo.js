@@ -1,8 +1,9 @@
+/* eslint import/extensions: 0 */
 /* eslint no-console: 0 */
 
-const https = require('https');
-const { readFileSync } = require('fs');
-const rayo = require('../../packages/rayo');
+import https from 'https';
+import { readFileSync } from 'fs';
+import rayo from '../../packages/rayo/index.js';
 
 const server = https.createServer({
   key: readFileSync(`${__dirname}/localhost.key`),

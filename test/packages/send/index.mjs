@@ -1,3 +1,5 @@
+/* eslint import/extensions: 0 */
+
 import { readFileSync } from 'fs';
 import should from 'should';
 import path from 'path';

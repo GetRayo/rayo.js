@@ -1,7 +1,9 @@
+/* eslint import/extensions: 0 */
+
 import should from 'should';
 import sinon from 'sinon';
 import { METHODS } from 'http';
-import { default as Storm } from '../../../packages/storm/index.js';
+import Storm from '../../../packages/storm/index.js';
 import rayo from '../../../packages/rayo/index.js';
 
 import req from '../../utils/req.mjs';
@@ -124,9 +126,9 @@ export default function rayoTest() {
   it('Dispatch (custom notFound function)', (done) => {
     server = rayo({
       port: 5050,
-      notFound: (req) => {
-        should(req.method).be.a.String();
-        should(req.method).be.equal('GET');
+      notFound: (rq) => {
+        should(rq.method).be.a.String();
+        should(rq.method).be.equal('GET');
       }
     }).post('/', () => {});
     server.dispatch(fake.req, fake.res);
@@ -154,8 +156,8 @@ export default function rayoTest() {
   it('Dispatch (IP from connection.remoteAddress)', (done) => {
     fake.req.connection = { remoteAddress: '1.2.3.4' };
 
-    server.get('/', (req) => {
-      should(req.ip).equal('1.2.3.4');
+    server.get('/', (rq) => {
+      should(rq.ip).equal('1.2.3.4');
     });
     const stack = server.dispatch(fake.req, fake.res);
     setTimeout(() => {
@@ -170,8 +172,8 @@ export default function rayoTest() {
       socket: { remoteAddress: '1.2.3.4' }
     };
 
-    server.get('/', (req) => {
-      should(req.ip).equal('1.2.3.4');
+    server.get('/', (rq) => {
+      should(rq.ip).equal('1.2.3.4');
     });
     const stack = server.dispatch(fake.req, fake.res);
     setTimeout(() => {
@@ -184,8 +186,8 @@ export default function rayoTest() {
   it('Dispatch (IP from socket.remoteAddress)', (done) => {
     fake.req.socket = { remoteAddress: '1.2.3.4' };
 
-    server.get('/', (req) => {
-      should(req.ip).equal('1.2.3.4');
+    server.get('/', (rq) => {
+      should(rq.ip).equal('1.2.3.4');
     });
     const stack = server.dispatch(fake.req, fake.res);
     setTimeout(() => {
@@ -260,4 +262,4 @@ export default function rayoTest() {
       done();
     }, 25);
   });
-};
+}

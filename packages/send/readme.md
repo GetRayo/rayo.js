@@ -12,8 +12,8 @@ $> npm i @rayo/send
 ## Use
 
 ```js
-const rayo = require('rayo');
-const send = require('@rayo/send');
+import rayo from 'rayo';
+import send from '@rayo/send';
 
 rayo({ port: 5050 })
   .through(send())
@@ -29,7 +29,7 @@ rayo({ port: 5050 })
 
 `res.send()` will try to guess the _content-type_ based on the payload and send the appropriate headers. It will also send a status code and end the response.
 
-> **Note:** `res.send()` will incur a performance hit due to the guess work and the headers being written with every response.
+> **Note:** `res.send()` will incur a tiny performance hit due to the guess work and the headers being written with every response.
 
 
 ## API

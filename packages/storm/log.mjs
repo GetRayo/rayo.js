@@ -5,13 +5,13 @@ const levels = {
   error: 1
 };
 
-/* istanbul ignore next */
+/* c8 ignore next */
 let logLevel = process.env.LOG_LEVEL || 'error';
-/* istanbul ignore next */
+/* c8 ignore next */
 logLevel = levels[logLevel] || 1;
 
 const format = (prop, args) => {
-  /* istanbul ignore next */
+  /* c8 ignore next */
   const values = args
     .map((arg) => (!(arg instanceof Error) && typeof arg === 'object' ? JSON.stringify(arg, null, 2) : arg))
     .join('\n');
@@ -32,18 +32,18 @@ const format = (prop, args) => {
 
 /**
  * Keep in mind that logging (writing to the console) can be an expensive operation
- * in high traffic situations and it will have an impact on performance-sensitive
+ * in high traffic situations, and it will have an impact on performance-sensitive
  * applications.
  *
  * Use with caution!
  */
-/* istanbul ignore next */
 export default new Proxy(
   {},
   {
     get:
       (target, prop) =>
       (...args) => {
+        /* c8 ignore next */
         return (levels[prop] || 1) <= logLevel ? process.stdout.write(format(prop, args)) : null;
       }
   }

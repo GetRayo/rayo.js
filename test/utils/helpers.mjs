@@ -1,5 +1,5 @@
 import should from 'should';
-import { createServer } from 'http';
+import { createServer, request } from 'http';
 
 const helpers = {
   header:
@@ -23,7 +23,26 @@ const helpers = {
   wrap: (module, handler, options) =>
     createServer((req, res) =>
       module(options)(req, res, (error) => (error ? res.end(error.message) : handler(req, res)))
-    )
+    ),
+
+  request: (options) => {
+    return new Promise((yes) => {
+      const req = request(options, (response) => {
+        const data = [];
+        console.log(response);
+        if (response.statusCode === 404) {
+          // return no();
+        }
+
+        response.on('data', (chunk) => data.push(chunk));
+        response.on('end', () => {
+          return yes(data.join(''));
+        });
+      });
+
+      req.end();
+    });
+  }
 };
 
 export default helpers;

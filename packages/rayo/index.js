@@ -33,14 +33,14 @@ class Rayo extends Bridge {
   }
 
   start(callback = function cb() {}) {
-    const work = (workerPid = undefined) => {
+    const work = () => {
       this.server = this.server || http.createServer();
       this.server.listen(this.port, this.host);
       this.server.on('request', this.dispatch);
       this.server.once('listening', () => {
         this.through();
         const address = this.server.address();
-        address.workerPid = workerPid;
+        address.workerPid = process.pid;
         callback(address);
       });
     };

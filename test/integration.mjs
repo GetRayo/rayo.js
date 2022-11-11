@@ -1,5 +1,3 @@
-/* eslint default-param-last: 0 */
-
 import http from 'http';
 import should from 'should';
 import rayo from '../packages/rayo/index.js';

@@ -13,16 +13,24 @@ const exec = (file, options = {}) =>
     } else if (!options.workers) {
       options.workers = 1;
     }
+
     const pcs = spawn('node', [
       path,
       options.workers,
       options.workerId || 0,
-      options.command,
-      options.service || 'monitor'
+      options.command || '',
+      options.service || 'monitor',
+      options.keepAsString || 'no'
     ]);
 
-    pcs.stdout.on('data', input);
-    pcs.stderr.on('data', input);
+    pcs.stdout.on('data', (data) => {
+      // process.stdout.write(data.toString());
+      return input(data);
+    });
+    pcs.stderr.on('data', (data) => {
+      // process.stderr.write(`Error ${data.toString()}`);
+      return input(data);
+    });
     pcs.on('close', () => setTimeout(() => yes(res), 250));
   });
 
@@ -62,7 +70,7 @@ export default function stormTest() {
   });
 
   it('One worker', async () => {
-    const res = await exec('fixtures/worker');
+    const res = await exec('fixtures/worker', { workers: 1 });
     return filter(res, 'Master process: \\d+');
   });
 
@@ -76,8 +84,8 @@ export default function stormTest() {
     return filter(res, 'Master process: \\d+');
   });
 
-  it('Auto length workers', async () => {
-    const res = await exec('fixtures/worker', { workers: 'auto' });
+  it('Invalid (string) length workers, defaults to `cpu cores`', async () => {
+    const res = await exec('fixtures/worker', { workers: 'strings_are_invalid', keepAsString: 'yes' });
     return filter(res, 'Master process: \\d+');
   });
 
@@ -98,7 +106,7 @@ export default function stormTest() {
     return filter(res, 'Master process: \\d+');
   });
 
-  it('With monitor, request', async () => {
+  it('With monitor, valid request', async () => {
     const res = await exec('fixtures/monitorRequest');
     return filter(res, 'Master process: \\d+');
   });
@@ -111,7 +119,6 @@ export default function stormTest() {
 
   it('With monitor, request for valid worker', async () => {
     const res = await exec('fixtures/monitorRequest', { workerId: 1 });
-    console.log(res);
     return filter(res, 'Master process: \\d+');
   });
 
@@ -125,11 +132,8 @@ export default function stormTest() {
     const res = await exec('fixtures/command', { command: 'health' });
     const json = extractJSON(res).pop();
     should(json).be.an.Object().and.have.properties('pid', 'ppid', 'platform', 'upTime', 'cpuTime', 'memory');
-
     should(json.cpuTime).be.a.Number().and.greaterThan(0);
-
     should(json.memory).be.an.Object().and.have.properties('rss', 'heapTotal', 'heapUsed', 'external');
-
     filter(res, 'Master process: \\d+');
     return filter(res, 'Hello from the worker!');
   });

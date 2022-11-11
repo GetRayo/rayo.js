@@ -1,17 +1,20 @@
+/* eslint import/extensions: 0 */
+
 import { cpus } from 'os';
-// eslint-disable-next-line import/extensions
 import { storm } from '../../../../packages/storm/index.js';
 
-const workers = parseInt(process.argv[2], 10);
+const [, , workers, , , , keepAsString] = process.argv;
+const toLoad = keepAsString === 'yes' ? cpus().length : parseInt(workers, 10);
+
 let loaded = 0;
 storm(() => {}, {
   keepAlive: false,
   monitor: false,
-  workers,
+  workers: keepAsString === 'yes' ? workers : toLoad,
   master() {
     this.on('worker', () => {
       loaded += 1;
-      if (loaded === (workers || cpus().length)) {
+      if (loaded === toLoad) {
         this.stop();
       }
     });
