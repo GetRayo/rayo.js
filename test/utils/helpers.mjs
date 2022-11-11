@@ -29,7 +29,6 @@ const helpers = {
     return new Promise((yes) => {
       const req = request(options, (response) => {
         const data = [];
-        console.log(response);
         if (response.statusCode === 404) {
           // return no();
         }

@@ -1,3 +1,5 @@
+/* eslint import/extensions: 0 */
+
 import http from 'http';
 import should from 'should';
 import rayo from '../packages/rayo/index.js';
@@ -17,7 +19,7 @@ const request = (resolver, options = {}) => {
     req.end();
   });
 };
-const test = (options = {}, headers, status, body) => {
+const test = (options, headers, status, body) => {
   options.statusCode = options.statusCode || 200;
   options.headers = options.headers || 'text/plain; charset=utf-8';
 
