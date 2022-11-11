@@ -32,8 +32,7 @@ jobs:
         uses: codacy/codacy-coverage-reporter-action@v1
         with:
           project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
-          flag-name: test-${{ matrix.node-version }}
-          parallel: true
+          coverage-reports: coverage/lcov.info
 
   finish:
     needs: test
@@ -44,4 +43,3 @@ jobs:
       with:
         project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
         coverage-reports: coverage/lcov.info
-        parallel-finished: true
