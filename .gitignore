@@ -4,6 +4,13 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+packages/rayo/readme.md
+packages/rayo/LICENSE
+packages/benchmarks/LICENSE
+packages/compress/LICENSE
+packages/send/LICENSE
+packages/storm/LICENSE
+
 # Runtime data
 pids
 *.pid

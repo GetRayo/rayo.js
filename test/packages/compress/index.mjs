@@ -73,6 +73,7 @@ export default function compressTest() {
       .set('accept-encoding', 'gzip')
       .expect(helpers.header('content-encoding', 'gzip'))
       .expect(helpers.header('transfer-encoding', 'chunked'))
+      .expect(helpers.header('x-powered-by', '@rayo/compress'))
       .expect(200, done);
   });
 

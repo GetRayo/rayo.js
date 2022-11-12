@@ -1,9 +1,8 @@
 import { METHODS } from 'http';
 import { exec, match, parse } from 'matchit';
 
-const bridges = [];
 const bridgeThrough = (t) => {
-  bridges.forEach((b) => {
+  t.bridges.forEach((b) => {
     Object.keys(b.routes).forEach((v) => {
       t.routes[v] = b.routes[v].concat(t.routes[v] || []);
     });
@@ -21,13 +20,14 @@ const bridgeThrough = (t) => {
 
 export default class Bridge {
   /**
-   * this.s = A placeholder for `stacks`. There will be one stack per HTTP verb.
+   * this.s = A placeholder for `stacks`. One stack per HTTP verb.
    * this.t = A placeholder for `through` routes.
    */
   constructor(path = null) {
     this.id = process.hrtime().join('');
     this.routes = [];
     this.s = [];
+    this.bridges = [];
     this.bridgedPath = path;
     METHODS.push('all');
     METHODS.forEach((verb) => {
@@ -42,7 +42,7 @@ export default class Bridge {
       this.t = [];
       this.bridge = (bridgedPath) => {
         const bridge = new Bridge(bridgedPath);
-        bridges.push(bridge);
+        this.bridges.push(bridge);
         return bridge;
       };
     }
