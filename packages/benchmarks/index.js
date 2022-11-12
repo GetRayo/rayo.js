@@ -23,24 +23,27 @@ const files = (() => {
 })();
 
 const argv = minimist(process.argv.slice(2));
-const workers = cpus().length;
+const workers = argv.w || cpus().length;
+const connections = argv.c || workers * 125;
+const pipelining = argv.p || workers * 10;
+const duration = argv.d || 10;
+
 const cn = (title = null) =>
   autocannon({
     title,
     url: argv.u || 'http://localhost:5050/hello',
-    connections: argv.c || workers * 125,
-    pipelining: argv.p || workers * 10,
-    duration: argv.d || 10,
+    connections,
+    pipelining,
+    duration,
     workers
   });
 
-let index = 0;
 const { dependencies: version } = JSON.parse(readFileSync('./package.json', 'utf8'));
-const benchmark = async (results = []) => {
-  results.push(
+const benchmark = async (bench = { index: 0, results: [] }) => {
+  bench.results.push(
     // eslint-disable-next-line no-async-promise-executor
     await new Promise(async (yes, no) => {
-      const file = files[index];
+      const file = files[bench.index];
       if (argv.o && argv.o !== file) {
         yes();
       } else {
@@ -68,12 +71,15 @@ const benchmark = async (results = []) => {
     })
   );
 
-  index += 1;
-  return index < files.length
-    ? benchmark(results)
-    : results.sort((a, b) => (b.requests.average < a.requests.average ? -1 : 1));
+  bench.index += 1;
+  return bench.index < files.length
+    ? benchmark(bench)
+    : bench.results.sort((a, b) => (b.requests.average < a.requests.average ? -1 : 1));
 };
 
+process.stdout.write(
+  `\n Running with ${connections} connections, ${pipelining} pipelines and on ${workers} CPU cores.\n\n`
+);
 benchmark().then((results) => {
   const table = new Table({
     head: ['', 'Version', 'Reqs/sec ^', 'Reqs/sec *', 'Latency *', 'Throughput *']
