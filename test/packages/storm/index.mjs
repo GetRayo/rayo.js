@@ -1,6 +1,6 @@
-const should = require('should');
-const cpus = require('os').cpus();
-const { spawn } = require('child_process');
+import should from 'should';
+import { cpus } from 'os';
+import { spawn } from 'child_process';
 
 const exec = (file, options = {}) =>
   new Promise((yes) => {
@@ -13,16 +13,24 @@ const exec = (file, options = {}) =>
     } else if (!options.workers) {
       options.workers = 1;
     }
+
     const pcs = spawn('node', [
       path,
       options.workers,
       options.workerId || 0,
-      options.command,
-      options.service || 'monitor'
+      options.command || '',
+      options.service || 'monitor',
+      options.keepAsString || 'no'
     ]);
 
-    pcs.stdout.on('data', input);
-    pcs.stderr.on('data', input);
+    pcs.stdout.on('data', (data) => {
+      // process.stdout.write(data.toString());
+      return input(data);
+    });
+    pcs.stderr.on('data', (data) => {
+      // process.stderr.write(`Error ${data.toString()}`);
+      return input(data);
+    });
     pcs.on('close', () => setTimeout(() => yes(res), 250));
   });
 
@@ -54,7 +62,7 @@ const extractJSON = (res) => {
   return json;
 };
 
-module.exports = () => {
+export default function stormTest() {
   it('Throws an error', async () => {
     const res = await exec('fixtures/throwError');
     const error = res[0].indexOf('You need to provide a worker function.');
@@ -62,7 +70,7 @@ module.exports = () => {
   });
 
   it('One worker', async () => {
-    const res = await exec('fixtures/worker');
+    const res = await exec('fixtures/worker', { workers: 1 });
     return filter(res, 'Master process: \\d+');
   });
 
@@ -72,12 +80,12 @@ module.exports = () => {
   });
 
   it('CPU length workers', async () => {
-    const res = await exec('fixtures/worker', { workers: cpus.length });
+    const res = await exec('fixtures/worker', { workers: cpus().length });
     return filter(res, 'Master process: \\d+');
   });
 
-  it('Auto length workers', async () => {
-    const res = await exec('fixtures/worker', { workers: 'auto' });
+  it('Invalid (string) length workers, defaults to `cpu cores`', async () => {
+    const res = await exec('fixtures/worker', { workers: 'strings_are_invalid', keepAsString: 'yes' });
     return filter(res, 'Master process: \\d+');
   });
 
@@ -98,7 +106,7 @@ module.exports = () => {
     return filter(res, 'Master process: \\d+');
   });
 
-  it('With monitor, request', async () => {
+  it('With monitor, valid request', async () => {
     const res = await exec('fixtures/monitorRequest');
     return filter(res, 'Master process: \\d+');
   });
@@ -124,11 +132,8 @@ module.exports = () => {
     const res = await exec('fixtures/command', { command: 'health' });
     const json = extractJSON(res).pop();
     should(json).be.an.Object().and.have.properties('pid', 'ppid', 'platform', 'upTime', 'cpuTime', 'memory');
-
     should(json.cpuTime).be.a.Number().and.greaterThan(0);
-
     should(json.memory).be.an.Object().and.have.properties('rss', 'heapTotal', 'heapUsed', 'external');
-
     filter(res, 'Master process: \\d+');
     return filter(res, 'Hello from the worker!');
   });
@@ -138,4 +143,4 @@ module.exports = () => {
     filter(res, 'Master process: \\d+');
     return filter(res, 'Hello from the worker!'); // worker -> master
   });
-};
+}

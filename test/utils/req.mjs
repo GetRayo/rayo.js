@@ -1,8 +1,8 @@
-const { IncomingMessage } = require('http');
+import { IncomingMessage } from 'http';
 
-const req = new IncomingMessage('rayo');
-module.exports = {
-  ...req,
+const incoming = new IncomingMessage('rayo');
+const req = {
+  ...incoming,
   headers: {
     host: 'localhost:5050',
     'user-agent': 'Rayo/1 Gecko/20100101',
@@ -15,3 +15,5 @@ module.exports = {
   url: '/',
   method: 'GET'
 };
+
+export default req;

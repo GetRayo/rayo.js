@@ -1,8 +1,8 @@
-const polka = require('polka');
+import polka from 'polka';
 
 const app = polka();
-const handler = (req, res) => {
-  res.end(`Thunderstruck... ${req.params.alias}`);
-};
-
-app.get('/users/:alias', handler).listen(5050);
+app
+  .get('/:say', (req, res) => {
+    res.end(`Thunderstruck... ${req.params.say}`);
+  })
+  .listen(5050);

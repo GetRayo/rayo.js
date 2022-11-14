@@ -1,6 +1,8 @@
-const { storm } = require('../../../../packages/storm');
+/* eslint import/extensions: 0 */
 
-const workers = parseInt(process.argv[2], 10);
+import { storm } from '../../../../packages/storm/index.js';
+
+const [, , workers] = process.argv;
 storm(() => {}, {
   keepAlive: false,
   workers,

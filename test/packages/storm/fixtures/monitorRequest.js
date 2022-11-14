@@ -1,7 +1,9 @@
-const request = require('supertest');
-const { storm } = require('../../../../packages/storm');
+/* eslint import/extensions: 0 */
 
-const workers = parseInt(process.argv[2], 10);
+import helpers from '../../../utils/helpers.mjs';
+import { storm } from '../../../../packages/storm/index.js';
+
+const [, , workers, workerId, , service] = process.argv;
 storm(() => {}, {
   keepAlive: false,
   monitor: true,
@@ -9,13 +11,16 @@ storm(() => {}, {
   workers,
   master() {
     this.on('worker', () => {
-      const workerId = parseInt(process.argv[3], 10) || '';
-      request('http://localhost:65000')
-        .get(`/${process.argv[5]}/${workerId}`)
-        .end((error, response) => {
-          process.stdout.write(response.text);
-          this.stop();
+      setTimeout(async () => {
+        const data = await helpers.request({
+          host: 'localhost',
+          port: 65000,
+          path: `/${service}/${workerId}`
         });
+
+        process.stdout.write(data);
+        this.stop();
+      }, 200);
     });
   }
 });

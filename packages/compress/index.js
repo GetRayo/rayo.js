@@ -1,7 +1,7 @@
-const compressible = require('compressible');
-const { createGzip } = require('zlib');
+import compressible from 'compressible';
+import { createGzip } from 'zlib';
 
-const doable = (req, res) => {
+const canDo = function canDo({ req, res }) {
   if (!res.compressPass && res.getHeader('content-encoding')) {
     return false;
   }
@@ -14,7 +14,7 @@ const doable = (req, res) => {
  * https://developer.mozilla.org/en-US/docs/Web/HTTP/Content_negotiation
  * https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Vary
  */
-const vary = (res, key) => {
+const vary = function vary({ res, key }) {
   let header = res.getHeader('vary');
   if (!header) {
     res.setHeader('vary', key);
@@ -27,38 +27,35 @@ const vary = (res, key) => {
   }
 };
 
-module.exports =
-  (options = {}) =>
-  (req, res, step) => {
+const press = function press({ res, zip, data, encoding }) {
+  if (!res.getHeader('content-encoding')) {
+    res.compressPass = true;
+    const poweredBy = ['@rayo/compress', res.getHeader('x-powered-by')].filter((h) => h).join(', ');
+    res.setHeader('x-powered-by', poweredBy);
+    res.setHeader('content-encoding', 'gzip');
+    res.removeHeader('content-length');
+    vary({ res, key: 'content-encoding' });
+  }
+
+  zip.write(Buffer.from(data, encoding));
+};
+
+export default function compress(options = {}) {
+  return (req, res, step) => {
     const { write, end } = res;
     const zip = createGzip(options);
     zip.on('data', write.bind(res)).on('end', end.bind(res));
 
-    const press = (data, encoding) => {
-      if (!res.getHeader('content-encoding')) {
-        res.compressPass = true;
-        res.setHeader('content-encoding', 'gzip');
-        res.setHeader(
-          'x-powered-by',
-          ['@rayo/compress', res.getHeader('x-powered-by')].filter((header) => header).join(', ')
-        );
-        res.removeHeader('content-length');
-        vary(res, 'content-encoding');
-      }
-
-      zip.write(Buffer.from(data, encoding));
-    };
-
     res.write = (data, encoding = 'utf8') =>
-      doable(req, res) ? press(data, encoding) : write.call(res, data, encoding);
+      canDo({ req, res }) ? press({ res, zip, data, encoding }) : write.call(res, data, encoding);
 
     res.end = (data = null, encoding = 'utf8') => {
       if (!data) {
         return zip.end();
       }
 
-      if (doable(req, res)) {
-        press(data, encoding);
+      if (canDo({ req, res })) {
+        press({ res, zip, data, encoding });
         return zip.end();
       }
 
@@ -66,5 +63,6 @@ module.exports =
       return end.call(res, data, encoding);
     };
 
-    step();
+    return step();
   };
+}

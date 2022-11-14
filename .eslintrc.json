@@ -5,6 +5,18 @@
   },
   "extends": ["airbnb-base", "plugin:prettier/recommended"],
   "plugins": ["import", "prettier"],
+  "parserOptions": {
+    "ecmaVersion": 2020,
+    "sourceType": "module"
+  },
+  "settings": {
+    "import/extensions": [".js", ".mjs"],
+    "import/resolver": {
+      "node": {
+        "extensions": [".js"]
+      }
+    }
+  },
   "rules": {
     "arrow-parens": ["error", "always"],
     "no-underscore-dangle": "error",

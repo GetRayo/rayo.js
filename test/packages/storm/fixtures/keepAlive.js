@@ -1,16 +1,19 @@
-const cpus = require('os').cpus();
-const { storm } = require('../../../../packages/storm');
+/* eslint import/extensions: 0 */
 
-const workers = parseInt(process.argv[2], 10);
+import { storm } from '../../../../packages/storm/index.js';
+
+const [, , workers] = process.argv;
+const toLoad = parseInt(workers, 10);
+
 let loaded = 0;
 storm(() => process.exit(), {
   monitor: false,
-  workers: parseInt(process.argv[2], 10),
+  workers: toLoad,
   master() {
     this.on('worker', () => {
       loaded += 1;
-      if (loaded === (workers || cpus.length)) {
-        setTimeout(this.stop, 500);
+      if (loaded === toLoad) {
+        setTimeout(this.stop, 250);
       }
     });
   }

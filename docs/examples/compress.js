@@ -1,10 +1,11 @@
+/* eslint import/extensions: 0 */
 /* eslint no-console: 0 */
 
-const http = require('http');
-const { createReadStream } = require('fs');
-const { PassThrough } = require('stream');
-const rayo = require('../../packages/rayo');
-const compress = require('../../packages/compress');
+import http from 'http';
+import { createReadStream } from 'fs';
+import { PassThrough } from 'stream';
+import rayo from '../../packages/rayo/index.js';
+import compress from '../../packages/compress/index.js';
 
 const payload = [
   {

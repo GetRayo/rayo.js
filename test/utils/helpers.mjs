@@ -1,7 +1,7 @@
-const should = require('should');
-const { createServer } = require('http');
+import should from 'should';
+import { createServer, request } from 'http';
 
-module.exports = {
+const helpers = {
   header:
     (key = null, value = null) =>
     (res) => {
@@ -23,5 +23,25 @@ module.exports = {
   wrap: (module, handler, options) =>
     createServer((req, res) =>
       module(options)(req, res, (error) => (error ? res.end(error.message) : handler(req, res)))
-    )
+    ),
+
+  request: (options) => {
+    return new Promise((yes) => {
+      const req = request(options, (response) => {
+        const data = [];
+        if (response.statusCode === 404) {
+          // return no();
+        }
+
+        response.on('data', (chunk) => data.push(chunk));
+        response.on('end', () => {
+          return yes(data.join(''));
+        });
+      });
+
+      req.end();
+    });
+  }
 };
+
+export default helpers;

@@ -1,7 +1,8 @@
-const { storm } = require('../../../../packages/storm');
+/* eslint import/extensions: 0 */
 
-const workers = parseInt(process.argv[2], 10);
-const command = process.argv[4];
+import { storm } from '../../../../packages/storm/index.js';
+
+const [, , workers, , command] = process.argv;
 storm(
   () => {
     process.stdout.write('Worker!');
@@ -20,9 +21,7 @@ storm(
         process.stdout.write(typeof message === 'object' ? JSON.stringify(message) : message);
       });
 
-      this.on('worker', () => {
-        worker.send(command);
-      });
+      setTimeout(() => worker.send(command), 200);
     }
   }
 );

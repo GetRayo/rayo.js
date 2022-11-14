@@ -1,9 +1,9 @@
-/* eslint default-param-last: 0 */
+/* eslint import/extensions: 0 */
 
-const http = require('http');
-const should = require('should');
-const rayo = require('../packages/rayo');
-const send = require('../packages/send');
+import http from 'http';
+import should from 'should';
+import rayo from '../packages/rayo/index.js';
+import send from '../packages/send/index.js';
 
 const request = (resolver, options = {}) => {
   return new Promise((yes) => {
@@ -19,7 +19,7 @@ const request = (resolver, options = {}) => {
     req.end();
   });
 };
-const test = (options = {}, headers, status, body) => {
+const test = (options, headers, status, body) => {
   options.statusCode = options.statusCode || 200;
   options.headers = options.headers || 'text/plain; charset=utf-8';
 
@@ -35,7 +35,7 @@ const test = (options = {}, headers, status, body) => {
 };
 
 let server = null;
-module.exports = () => {
+export default function integrationTest() {
   beforeEach(() => {
     server = rayo({ port: 5050, cluster: false });
   });
@@ -251,4 +251,4 @@ module.exports = () => {
         done();
       });
   });
-};
+}

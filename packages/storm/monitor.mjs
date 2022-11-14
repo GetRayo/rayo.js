@@ -1,6 +1,6 @@
-const parseurl = require('parseurl');
-const { createServer } = require('http');
-const log = require('./log');
+import parseurl from 'parseurl';
+import { createServer } from 'http';
+import log from './log.mjs';
 
 const round = (number) => Math.round(number * 100) / 100;
 const reform = (item) => {
@@ -24,6 +24,7 @@ const send = (res, data) => {
 const requestDispatch = (cluster, res, { workerId, command }) => {
   if (workerId) {
     const worker = cluster.workers[workerId];
+
     if (!worker) {
       res.setHeader('Content-Type', 'text/plain');
       return send(res, `Worker ${workerId} does not exist.`);
@@ -49,7 +50,7 @@ const requestDispatch = (cluster, res, { workerId, command }) => {
 };
 const requestHandler = (cluster, req, res) => {
   const { pathname } = parseurl(req);
-  const [service, workerId, command = 'health'] = pathname.substr(1, pathname.length).split('/');
+  const [service, workerId, command = 'health'] = pathname.substring(1, pathname.length).split('/');
 
   if (service === 'monitor') {
     return requestDispatch.bind(
@@ -66,9 +67,9 @@ const requestHandler = (cluster, req, res) => {
   return res.end('This service does not exist.');
 };
 
-module.exports = {
+let httpServer = null;
+const monitor = {
   log,
-
   messageHandler: (process) => {
     // The `master` process sent this message/command to the worker.
     process.on('message', (cmd) => {
@@ -91,24 +92,22 @@ module.exports = {
       return response ? process.send(pre(response)) : null;
     });
   },
-
-  monitor: {
-    start: (cluster, { monitorPort = null, server = createServer() }) => {
-      this.httpServer = server;
-      this.httpServer.listen(monitorPort);
-      this.httpServer.on('request', requestHandler.bind(null, cluster));
-      this.httpServer.on('listening', () => {
-        log.debug(
-          `Monitoring ${Object.keys(cluster.workers).length} workers on port ${this.httpServer.address().port}`
-        );
+  service: {
+    start: function start(cluster, { monitorPort = null, server = createServer() }) {
+      httpServer = server;
+      httpServer.listen(monitorPort);
+      httpServer.on('request', requestHandler.bind(null, cluster));
+      httpServer.on('listening', () => {
+        log.debug(`Monitoring ${Object.keys(cluster.workers).length} workers on port ${httpServer.address().port}`);
       });
     },
-
-    stop: () => {
-      if (this.httpServer) {
-        this.httpServer.close();
+    stop: function stop() {
+      if (httpServer) {
+        httpServer.close();
         log.debug('Monitoring has been stopped.');
       }
     }
   }
 };
+
+export default monitor;

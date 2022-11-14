@@ -1,15 +1,20 @@
-const loadUnit = (unit) => require.call(null, `./${unit}`);
+import rayoTest from './packages/rayo/rayo.mjs';
+import bridgeTest from './packages/rayo/bridge.mjs';
+import compressTest from './packages/compress/index.mjs';
+import sendTest from './packages/send/index.mjs';
+import stormTest from './packages/storm/index.mjs';
+import integrationTest from './integration.mjs';
 
 describe('Unit tests', () => {
   describe('Packages', () => {
     describe('Rayo', () => {
-      describe('rayo', loadUnit('packages/rayo'));
-      describe('bridge', loadUnit('packages/rayo/bridge'));
+      describe('rayo', rayoTest);
+      describe('bridge', bridgeTest);
     });
-    describe('Compress', loadUnit('packages/compress'));
-    describe('Send', loadUnit('packages/send'));
-    describe('Storm', loadUnit('packages/storm'));
+    describe('Compress', compressTest);
+    describe('Send', sendTest);
+    describe('Storm', stormTest);
   });
 
-  describe('Integration', loadUnit('integration'));
+  describe('Integration', integrationTest);
 });

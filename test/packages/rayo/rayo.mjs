@@ -1,13 +1,15 @@
-const should = require('should');
-const sinon = require('sinon');
-const { METHODS } = require('http');
-const storm = require('../../../packages/storm');
-const rayo = require('../../../packages/rayo');
+/* eslint import/extensions: 0 */
 
-const fake = {
-  req: require.call(null, '../../utils/req'),
-  res: require.call(null, '../../utils/res')
-};
+import should from 'should';
+import sinon from 'sinon';
+import { METHODS } from 'http';
+import Storm from '../../../packages/storm/index.js';
+import rayo from '../../../packages/rayo/index.js';
+
+import req from '../../utils/req.mjs';
+import res from '../../utils/res.mjs';
+
+const fake = { req, res };
 
 const test = (server) => {
   should(server).be.an.Object();
@@ -25,7 +27,7 @@ const test = (server) => {
 
 let sandbox;
 let server = null;
-module.exports = () => {
+export default function rayoTest() {
   beforeEach(() => {
     sandbox = sinon.createSandbox();
     server = rayo({ port: 5050 });
@@ -49,7 +51,7 @@ module.exports = () => {
       }
     }).get('/', () => {});
 
-    sinon.stub(storm.Storm.prototype, 'start').callsFake(() => ({ cluster: 'ok' }));
+    sinon.stub(Storm.prototype, 'start').callsFake(() => ({ cluster: 'ok' }));
     const httpServer = server.start();
     setTimeout(() => {
       if (httpServer) {
@@ -124,9 +126,9 @@ module.exports = () => {
   it('Dispatch (custom notFound function)', (done) => {
     server = rayo({
       port: 5050,
-      notFound: (req) => {
-        should(req.method).be.a.String();
-        should(req.method).be.equal('GET');
+      notFound: (rq) => {
+        should(rq.method).be.a.String();
+        should(rq.method).be.equal('GET');
       }
     }).post('/', () => {});
     server.dispatch(fake.req, fake.res);
@@ -154,8 +156,8 @@ module.exports = () => {
   it('Dispatch (IP from connection.remoteAddress)', (done) => {
     fake.req.connection = { remoteAddress: '1.2.3.4' };
 
-    server.get('/', (req) => {
-      should(req.ip).equal('1.2.3.4');
+    server.get('/', (rq) => {
+      should(rq.ip).equal('1.2.3.4');
     });
     const stack = server.dispatch(fake.req, fake.res);
     setTimeout(() => {
@@ -170,8 +172,8 @@ module.exports = () => {
       socket: { remoteAddress: '1.2.3.4' }
     };
 
-    server.get('/', (req) => {
-      should(req.ip).equal('1.2.3.4');
+    server.get('/', (rq) => {
+      should(rq.ip).equal('1.2.3.4');
     });
     const stack = server.dispatch(fake.req, fake.res);
     setTimeout(() => {
@@ -184,8 +186,8 @@ module.exports = () => {
   it('Dispatch (IP from socket.remoteAddress)', (done) => {
     fake.req.socket = { remoteAddress: '1.2.3.4' };
 
-    server.get('/', (req) => {
-      should(req.ip).equal('1.2.3.4');
+    server.get('/', (rq) => {
+      should(rq.ip).equal('1.2.3.4');
     });
     const stack = server.dispatch(fake.req, fake.res);
     setTimeout(() => {
@@ -260,4 +262,4 @@ module.exports = () => {
       done();
     }, 25);
   });
-};
+}

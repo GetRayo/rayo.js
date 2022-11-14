@@ -3,8 +3,9 @@
   "version": "1.1.25",
   "description": "🗜 Rayo's compression",
   "main": "index.js",
+  "type": "module",
   "engines": {
-    "node": ">=8.11.4"
+    "node": ">14"
   },
   "repository": {
     "type": "git",

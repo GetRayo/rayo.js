@@ -31,7 +31,7 @@ Please note that these results are only meant as raw performance indicators. You
 | Polka      |  0.5.2  |   ✔    |    74665.6 |    12.8 |         10.26 |
 | Express    |  4.16.4 |   ✔    |    17874.4 |    55.2 |          2.45 |
 
-> `Rayo/Storm` relies on the cluster feature which spawn a server process on each available CPU core, thus it yields better results.
+> `Rayo/Storm` relies on Nodejs' `cluster` which will spawn a server process on each available CPU core, thus yielding better results.
 
 Run on your own hardware; clone this repository, install the dependencies and run `npm run bench`. Optionally, you may also define your test's parameters:
 
@@ -44,8 +44,14 @@ $> rayobench -- -u http://localhost:5050 -c 1000 -p 25 -d 10
 - `-p` (_pipelines_) -Defaults to `10`
 - `-d` (_duration_) -Defaults to `10` (seconds)
 - `-o` (_only_) Run only one particular benchmark. -Defaults to `null`
+- `-w` (_workers_) The number of workers to run the benchmarks. -Defaults to `cpu count`
 
 > Results ~~may~~ will vary on different hardware.
+
+
+## Missing a framework?
+
+Just submit a PR with whatever framework you consider is worthy of being ranked here.
 
 
 ## License
