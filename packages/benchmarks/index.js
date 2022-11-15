@@ -6,11 +6,15 @@ import minimist from 'minimist';
 import nap from 'pancho';
 import Table from 'cli-table';
 import kleur from 'kleur';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
 import { fork } from 'child_process';
 import { readdirSync, readFileSync } from 'fs';
 
+const base = dirname(fileURLToPath(import.meta.url));
+const comparePath = join(base, './compare');
 const files = (() => {
-  const array = readdirSync('./compare').filter((file) => file.match(/(.+)\.js$/));
+  const array = readdirSync(comparePath).filter((file) => file.match(/(.+)\.js$/));
   let index = array.length;
   while (index) {
     const rand = Math.floor(Math.random() * (index -= 1));
@@ -47,7 +51,7 @@ const benchmark = async (bench = { index: 0, results: [] }) => {
       if (argv.o && argv.o !== file) {
         yes();
       } else {
-        const forked = fork(`./compare/${file}`);
+        const forked = fork(`${comparePath}/${file}`);
         await nap(0.5);
 
         try {
