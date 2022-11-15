@@ -3,23 +3,15 @@
 import { readFileSync } from 'fs';
 import should from 'should';
 import path from 'path';
-import sinon from 'sinon';
 import request from 'supertest';
 import { fileURLToPath } from 'url';
 import send from '../../../packages/send/index.js';
 import helpers from '../../utils/helpers.mjs';
 
 const directory = path.dirname(fileURLToPath(import.meta.url));
-const sampleJSON = readFileSync(path.join(directory, '../../utils/sample.json'), 'utf8');
+const sampleJSON = readFileSync(path.join(directory, '../../samples/data.json'), 'utf8');
 
-let sandbox;
 export default function sendTest() {
-  beforeEach(() => {
-    sandbox = sinon.createSandbox();
-  });
-
-  afterEach(() => sandbox.restore());
-
   it('send', (done) => {
     should(send()).be.a.Function();
     done();
