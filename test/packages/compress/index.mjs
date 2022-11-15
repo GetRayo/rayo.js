@@ -2,6 +2,7 @@
 
 import path from 'path';
 import sinon from 'sinon';
+import should from 'should';
 import request from 'supertest';
 import { readFileSync } from 'fs';
 import { fileURLToPath } from 'url';
@@ -20,7 +21,7 @@ export default function compressTest() {
 
   afterEach(() => sandbox.restore());
 
-  it('no gzip content-encoding', (done) => {
+  it('no compressed, content-encoding', (done) => {
     request(helpers.wrap(compress, (req, res) => res.end('Thunderstruck!')))
       .get('/')
       .set('accept-encoding', 'text/plain')
@@ -41,42 +42,6 @@ export default function compressTest() {
       .expect(200, 'Thunderstruck!', done);
   });
 
-  it('content-length', (done) => {
-    request(helpers.wrap(compress, (req, res) => res.end('Thunderstruck!')))
-      .get('/')
-      .expect(helpers.header('content-length', '14'))
-      .expect(200, done);
-  });
-
-  it('content-encoding already set', (done) => {
-    const step = helpers.wrap(compress, (req, res) => {
-      res.setHeader('content-type', 'text/plain');
-      res.setHeader('content-encoding', 'thunderZip');
-      res.end('Thunderstruck!');
-    });
-
-    request(step)
-      .get('/')
-      .set('accept-encoding', 'gzip')
-      .expect(helpers.header('content-encoding', 'thunderZip'))
-      .expect(200, 'Thunderstruck!', done);
-  });
-
-  it('transfer-encoding', (done) => {
-    const step = helpers.wrap(compress, (req, res) => {
-      res.setHeader('content-type', 'text/plain');
-      res.end('Thunderstruck!');
-    });
-
-    request(step)
-      .get('/')
-      .set('accept-encoding', 'gzip')
-      .expect(helpers.header('content-encoding', 'gzip'))
-      .expect(helpers.header('transfer-encoding', 'chunked'))
-      .expect(helpers.header('x-powered-by', '@rayo/compress'))
-      .expect(200, done);
-  });
-
   it('no content-length', (done) => {
     const step = helpers.wrap(compress, (req, res) => {
       res.setHeader('content-type', 'text/plain');
@@ -90,194 +55,638 @@ export default function compressTest() {
       .expect(200, done);
   });
 
-  it('res.write() -without header and res.end() -without data', (done) => {
-    const step = helpers.wrap(compress, (req, res) => {
-      res.write('Hello!');
-      res.end();
+  describe('gzip', () => {
+    it('content-encoding, transfer-encoding, gzip', (done) => {
+      const step = helpers.wrap(compress, (req, res) => {
+        res.setHeader('content-type', 'text/plain');
+        res.end('Thunderstruck!');
+      });
+
+      request(step)
+        .get('/')
+        .set('accept-encoding', 'gzip')
+        .expect(helpers.header('content-encoding', 'gzip'))
+        .expect(helpers.header('transfer-encoding', 'chunked'))
+        .expect(helpers.header('x-powered-by', '@rayo/compress'))
+        .expect(200, done);
     });
 
-    request(step)
-      .get('/')
-      .set('accept-encoding', 'gzip')
-      .expect(helpers.header('content-encoding'))
-      .expect(helpers.header('transfer-encoding', 'chunked'))
-      .expect(200, done);
-  });
+    it('res.write() -without header and res.end() -without data, gzip', (done) => {
+      const step = helpers.wrap(compress, (req, res) => {
+        res.write('Hello!');
+        res.end();
+      });
 
-  it('res.write() and res.end() -without data', (done) => {
-    const step = helpers.wrap(compress, (req, res) => {
-      res.setHeader('content-type', 'text/plain');
-      res.write('Hello!');
-      res.end();
+      request(step)
+        .get('/')
+        .set('accept-encoding', 'gzip')
+        .expect(helpers.header('content-encoding', 'gzip'))
+        .expect(helpers.header('transfer-encoding', 'chunked'))
+        .expect(200, done);
     });
 
-    request(step)
-      .get('/')
-      .set('accept-encoding', 'gzip')
-      .expect(helpers.header('content-encoding', 'gzip'))
-      .expect(helpers.header('transfer-encoding', 'chunked'))
-      .expect(200, 'Hello!', done);
-  });
+    it('res.write() and res.end() -without data, gzip', (done) => {
+      const step = helpers.wrap(compress, (req, res) => {
+        res.setHeader('content-type', 'text/plain');
+        res.write('Hello!');
+        res.end();
+      });
 
-  it('res.write() and res.end() -with data', (done) => {
-    const step = helpers.wrap(compress, (req, res) => {
-      res.setHeader('content-type', 'text/plain');
-      res.write('Hello! ');
-      res.end('I am compressed!');
+      request(step)
+        .get('/')
+        .set('accept-encoding', 'gzip')
+        .expect(helpers.header('content-encoding', 'gzip'))
+        .expect(helpers.header('transfer-encoding', 'chunked'))
+        .expect(200, 'Hello!', done);
     });
 
-    request(step)
-      .get('/')
-      .set('accept-encoding', 'gzip')
-      .expect(helpers.header('content-encoding', 'gzip'))
-      .expect(helpers.header('transfer-encoding', 'chunked'))
-      .expect(200, 'Hello! I am compressed!', done);
-  });
+    it('res.write() and res.end() -with data, gzip', (done) => {
+      const step = helpers.wrap(compress, (req, res) => {
+        res.setHeader('content-type', 'text/plain');
+        res.write('Hello! ');
+        res.end('I am compressed!');
+      });
 
-  it('1 Mb body', (done) => {
-    const body = Buffer.alloc(1000000, '.');
-    const step = helpers.wrap(compress, (req, res) => {
-      res.setHeader('content-type', 'text/plain');
-      res.end(body);
+      request(step)
+        .get('/')
+        .set('accept-encoding', 'gzip')
+        .expect(helpers.header('content-encoding', 'gzip'))
+        .expect(helpers.header('transfer-encoding', 'chunked'))
+        .expect(200, 'Hello! I am compressed!', done);
     });
 
-    request(step)
-      .get('/')
-      .set('accept-encoding', 'gzip')
-      .expect(helpers.header('content-encoding', 'gzip'))
-      .expect(helpers.header('transfer-encoding', 'chunked'))
-      .expect(helpers.size(body.length))
-      .expect(200, done);
-  });
-
-  it('10 Mb body', (done) => {
-    const body = Buffer.alloc(1e7, '.');
-    const step = helpers.wrap(compress, (req, res) => {
-      res.setHeader('content-type', 'text/plain');
-      res.end(body);
-    });
-
-    request(step)
-      .get('/')
-      .set('accept-encoding', 'gzip')
-      .expect(helpers.header('content-encoding', 'gzip'))
-      .expect(helpers.header('transfer-encoding', 'chunked'))
-      .expect(helpers.size(body.length))
-      .expect(200, done);
-  });
-
-  it('10 Mb body, with 1 Kb compression chunks', (done) => {
-    const body = Buffer.alloc(1e7, '.');
-    const step = helpers.wrap(
-      compress,
-      (req, res) => {
-        res.setHeader('Content-Type', 'text/plain');
+    it('1 Mb body, gzip', (done) => {
+      const body = Buffer.alloc(1000000, '.');
+      const step = helpers.wrap(compress, (req, res) => {
+        res.setHeader('content-type', 'text/plain');
         res.end(body);
-      },
-      { chunkSize: 1024 }
-    );
+      });
 
-    request(step)
-      .get('/')
-      .set('accept-encoding', 'gzip')
-      .expect(helpers.header('content-encoding', 'gzip'))
-      .expect(helpers.header('transfer-encoding', 'chunked'))
-      .expect(helpers.size(body.length))
-      .expect(200, done);
-  });
-
-  it('pipe, 1 Mb body', (done) => {
-    const body = Buffer.alloc(1000000, '.');
-    const step = helpers.wrap(compress, (req, res) => {
-      res.setHeader('content-type', 'text/plain');
-      const bufferStream = new PassThrough();
-      bufferStream.pipe(res);
-      bufferStream.end(body);
+      request(step)
+        .get('/')
+        .set('accept-encoding', 'gzip')
+        .expect(helpers.header('content-encoding', 'gzip'))
+        .expect(helpers.header('transfer-encoding', 'chunked'))
+        .expect(helpers.size(body.length))
+        .expect(200, done);
     });
 
-    request(step)
-      .get('/')
-      .set('accept-encoding', 'gzip')
-      .expect(helpers.header('content-encoding', 'gzip'))
-      .expect(helpers.header('transfer-encoding', 'chunked'))
-      .expect(helpers.size(body.length))
-      .expect(200, done);
-  });
+    it('10 Mb body, gzip', (done) => {
+      const body = Buffer.alloc(1e7, '.');
+      const step = helpers.wrap(compress, (req, res) => {
+        res.setHeader('content-type', 'text/plain');
+        res.end(body);
+      });
 
-  it('pipe, 10 Mb body', (done) => {
-    const body = Buffer.alloc(1e7, '.');
-    const step = helpers.wrap(compress, (req, res) => {
-      res.setHeader('content-type', 'text/plain');
-      const bufferStream = new PassThrough();
-      bufferStream.pipe(res);
-      bufferStream.end(body);
+      request(step)
+        .get('/')
+        .set('accept-encoding', 'gzip')
+        .expect(helpers.header('content-encoding', 'gzip'))
+        .expect(helpers.header('transfer-encoding', 'chunked'))
+        .expect(helpers.size(body.length))
+        .expect(200, done);
     });
 
-    request(step)
-      .get('/')
-      .set('accept-encoding', 'gzip')
-      .expect(helpers.header('content-encoding', 'gzip'))
-      .expect(helpers.header('transfer-encoding', 'chunked'))
-      .expect(helpers.size(body.length))
-      .expect(200, done);
-  });
-
-  it('pipe, 10 Mb body with 1 Kb compression chunks', (done) => {
-    const body = Buffer.alloc(1e7, '.');
-    const step = helpers.wrap(
-      compress,
-      (req, res) => {
+    it('pipe, 1 Mb body, gzip', (done) => {
+      const body = Buffer.alloc(1000000, '.');
+      const step = helpers.wrap(compress, (req, res) => {
         res.setHeader('content-type', 'text/plain');
         const bufferStream = new PassThrough();
         bufferStream.pipe(res);
         bufferStream.end(body);
-      },
-      { chunkSize: 1024 }
-    );
+      });
 
-    request(step)
-      .get('/')
-      .set('accept-encoding', 'gzip')
-      .expect(helpers.header('content-encoding', 'gzip'))
-      .expect(helpers.header('transfer-encoding', 'chunked'))
-      .expect(helpers.size(body.length))
-      .expect(200, done);
+      request(step)
+        .get('/')
+        .set('accept-encoding', 'gzip')
+        .expect(helpers.header('content-encoding', 'gzip'))
+        .expect(helpers.header('transfer-encoding', 'chunked'))
+        .expect(helpers.size(body.length))
+        .expect(200, done);
+    });
+
+    it('pipe, 10 Mb body, gzip', (done) => {
+      const body = Buffer.alloc(1e7, '.');
+      const step = helpers.wrap(compress, (req, res) => {
+        res.setHeader('content-type', 'text/plain');
+        const bufferStream = new PassThrough();
+        bufferStream.pipe(res);
+        bufferStream.end(body);
+      });
+
+      request(step)
+        .get('/')
+        .set('accept-encoding', 'gzip')
+        .expect(helpers.header('content-encoding', 'gzip'))
+        .expect(helpers.header('transfer-encoding', 'chunked'))
+        .expect(helpers.size(body.length))
+        .expect(200, done);
+    });
+
+    it('10 Mb body, with 1 Kb compression chunks, gzip', (done) => {
+      const body = Buffer.alloc(1e7, '.');
+      const step = helpers.wrap(
+        compress,
+        (req, res) => {
+          res.setHeader('Content-Type', 'text/plain');
+          res.end(body);
+        },
+        { gzip: { chunkSize: 1024 } }
+      );
+
+      request(step)
+        .get('/')
+        .set('accept-encoding', 'gzip')
+        .expect(helpers.header('content-encoding', 'gzip'))
+        .expect(helpers.header('transfer-encoding', 'chunked'))
+        .expect(helpers.size(body.length))
+        .expect(200, done);
+    });
+
+    it('pipe, 10 Mb body with 4 Kb compression chunks, gzip', (done) => {
+      const body = Buffer.alloc(1e7, '.');
+      const step = helpers.wrap(
+        compress,
+        (req, res) => {
+          res.setHeader('content-type', 'text/plain');
+          const bufferStream = new PassThrough();
+          bufferStream.pipe(res);
+          bufferStream.end(body);
+        },
+        { gzip: { chunkSize: 4096 } }
+      );
+
+      request(step)
+        .get('/')
+        .set('accept-encoding', 'gzip')
+        .expect(helpers.header('content-encoding', 'gzip'))
+        .expect(helpers.header('transfer-encoding', 'chunked'))
+        .expect(helpers.size(body.length))
+        .expect(200, done);
+    });
+
+    it('pipe, 10 Mb body with 32 Kb compression chunks, gzip', (done) => {
+      const body = Buffer.alloc(1e7, '.');
+      const step = helpers.wrap(
+        compress,
+        (req, res) => {
+          res.setHeader('content-type', 'text/plain');
+          const bufferStream = new PassThrough();
+          bufferStream.pipe(res);
+          bufferStream.end(body);
+        },
+        { gzip: { chunkSize: 32768 } }
+      );
+
+      request(step)
+        .get('/')
+        .set('accept-encoding', 'gzip')
+        .expect(helpers.header('content-encoding', 'gzip'))
+        .expect(helpers.header('transfer-encoding', 'chunked'))
+        .expect(helpers.size(body.length))
+        .expect(200, done);
+    });
+
+    it('res.end() .json, gzip', (done) => {
+      const json = JSON.stringify({
+        message: 'Thunderstruck',
+        age: 20,
+        name: 'Rayo',
+        power: 'reduction'
+      });
+      const step = helpers.wrap(compress, (req, res) => {
+        res.setHeader('content-type', 'application/json');
+        res.end(json);
+      });
+
+      request(step)
+        .get('/')
+        .set('accept-encoding', 'gzip')
+        .expect(helpers.header('content-type', 'application/json'))
+        .expect(helpers.header('content-encoding', 'gzip'))
+        .expect(helpers.header('transfer-encoding', 'chunked'))
+        .expect(200, json, done);
+    });
+
+    it('res.end() .json (large), gzip', (done) => {
+      const step = helpers.wrap(compress, (req, res) => {
+        res.setHeader('content-type', 'application/json');
+        res.end(sampleJSON);
+      });
+
+      request(step)
+        .get('/')
+        .set('accept-encoding', 'gzip')
+        .expect(helpers.header('content-type', 'application/json'))
+        .expect(helpers.header('content-encoding', 'gzip'))
+        .expect(helpers.header('transfer-encoding', 'chunked'))
+        .expect(200, done);
+    });
   });
 
-  it('res.end() .json', (done) => {
-    const json = JSON.stringify({
-      message: 'Thunderstruck',
-      age: 20,
-      name: 'Rayo',
-      power: 'reduction'
-    });
-    const step = helpers.wrap(compress, (req, res) => {
-      res.setHeader('content-type', 'application/json');
-      res.end(json);
+  describe('brotli', () => {
+    it('content-encoding, transfer-encoding, brotli', (done) => {
+      const step = helpers.wrap(compress, (req, res) => {
+        res.setHeader('content-type', 'text/plain');
+        res.end('Thunderstruck!');
+      });
+
+      step.listen();
+      const { port } = step.address();
+      helpers
+        .request({
+          port,
+          host: 'localhost',
+          path: '/',
+          headers: { 'accept-encoding': 'br' }
+        })
+        .then(({ status, headers, data }) => {
+          should(status).be.equal(200);
+          should(data).be.equal('Thunderstruck!');
+          should(headers).with.property('content-encoding');
+          should(headers).with.property('transfer-encoding');
+          should(headers['content-encoding']).be.a.String().and.equal('br');
+          should(headers['transfer-encoding']).be.a.String().and.equal('chunked');
+
+          step.close();
+          done();
+        });
     });
 
-    request(step)
-      .get('/')
-      .set('accept-encoding', 'gzip')
-      .expect(helpers.header('content-type', 'application/json'))
-      .expect(helpers.header('content-encoding', 'gzip'))
-      .expect(helpers.header('transfer-encoding', 'chunked'))
-      .expect(200, json, done);
-  });
+    it('res.write() -without header and res.end() -without data, brotli', (done) => {
+      const step = helpers.wrap(compress, (req, res) => {
+        res.write('Hello!');
+        res.end();
+      });
 
-  it('res.end() .json (large)', (done) => {
-    const step = helpers.wrap(compress, (req, res) => {
-      res.setHeader('content-type', 'application/json');
-      res.end(sampleJSON);
+      step.listen();
+      const { port } = step.address();
+      helpers
+        .request({
+          port,
+          host: 'localhost',
+          path: '/',
+          headers: { 'accept-encoding': 'br' }
+        })
+        .then(({ status, headers, data }) => {
+          should(status).be.equal(200);
+          should(data).be.equal('Hello!');
+          should(headers).with.property('content-encoding');
+          should(headers).with.property('transfer-encoding');
+          should(headers['content-encoding']).be.a.String().and.equal('br');
+          should(headers['transfer-encoding']).be.a.String().and.equal('chunked');
+
+          step.close();
+          done();
+        });
     });
 
-    request(step)
-      .get('/')
-      .set('accept-encoding', 'gzip')
-      .expect(helpers.header('content-type', 'application/json'))
-      .expect(helpers.header('content-encoding', 'gzip'))
-      .expect(helpers.header('transfer-encoding', 'chunked'))
-      .expect(200, done);
+    it('res.write() and res.end() -without data, brotli', (done) => {
+      const step = helpers.wrap(compress, (req, res) => {
+        res.setHeader('content-type', 'text/plain');
+        res.write('Hello!');
+        res.end();
+      });
+
+      step.listen();
+      const { port } = step.address();
+      helpers
+        .request({
+          port,
+          host: 'localhost',
+          path: '/',
+          headers: { 'accept-encoding': 'br' }
+        })
+        .then(({ status, headers, data }) => {
+          should(status).be.equal(200);
+          should(data).be.equal('Hello!');
+          should(headers).with.property('content-encoding');
+          should(headers).with.property('transfer-encoding');
+          should(headers['content-encoding']).be.a.String().and.equal('br');
+          should(headers['transfer-encoding']).be.a.String().and.equal('chunked');
+
+          step.close();
+          done();
+        });
+    });
+
+    it('res.write() and res.end() -with data, brotli', (done) => {
+      const step = helpers.wrap(compress, (req, res) => {
+        res.setHeader('content-type', 'text/plain');
+        res.write('Hello! ');
+        res.end('I am compressed!');
+      });
+
+      step.listen();
+      const { port } = step.address();
+      helpers
+        .request({
+          port,
+          host: 'localhost',
+          path: '/',
+          headers: { 'accept-encoding': 'br' }
+        })
+        .then(({ status, headers, data }) => {
+          should(status).be.equal(200);
+          should(data).be.equal('Hello! I am compressed!');
+          should(headers).with.property('content-encoding');
+          should(headers).with.property('transfer-encoding');
+          should(headers['content-encoding']).be.a.String().and.equal('br');
+          should(headers['transfer-encoding']).be.a.String().and.equal('chunked');
+
+          step.close();
+          done();
+        });
+    });
+
+    it('1 Mb body, brotli', (done) => {
+      const body = Buffer.alloc(1000000, '.');
+      const step = helpers.wrap(compress, (req, res) => {
+        res.setHeader('content-type', 'text/plain');
+        res.end(body);
+      });
+
+      step.listen();
+      const { port } = step.address();
+      helpers
+        .request({
+          port,
+          host: 'localhost',
+          path: '/',
+          headers: { 'accept-encoding': 'br' }
+        })
+        .then(({ status, headers, data }) => {
+          should(status).be.equal(200);
+          should(data.length).be.equal(body.length);
+          should(headers).with.property('content-encoding');
+          should(headers).with.property('transfer-encoding');
+          should(headers['content-encoding']).be.a.String().and.equal('br');
+          should(headers['transfer-encoding']).be.a.String().and.equal('chunked');
+
+          step.close();
+          done();
+        });
+    });
+
+    it('10 Mb body, brotli', (done) => {
+      const body = Buffer.alloc(1e7, '.');
+      const step = helpers.wrap(compress, (req, res) => {
+        res.setHeader('content-type', 'text/plain');
+        res.end(body);
+      });
+
+      step.listen();
+      const { port } = step.address();
+      helpers
+        .request({
+          port,
+          host: 'localhost',
+          path: '/',
+          headers: { 'accept-encoding': 'br' }
+        })
+        .then(({ status, headers, data }) => {
+          should(status).be.equal(200);
+          should(data.length).be.equal(body.length);
+          should(headers).with.property('content-encoding');
+          should(headers).with.property('transfer-encoding');
+          should(headers['content-encoding']).be.a.String().and.equal('br');
+          should(headers['transfer-encoding']).be.a.String().and.equal('chunked');
+
+          step.close();
+          done();
+        });
+    });
+
+    it('pipe, 1 Mb body, brotli', (done) => {
+      const body = Buffer.alloc(1000000, '.');
+      const step = helpers.wrap(compress, (req, res) => {
+        res.setHeader('content-type', 'text/plain');
+        const bufferStream = new PassThrough();
+        bufferStream.pipe(res);
+        bufferStream.end(body);
+      });
+
+      step.listen();
+      const { port } = step.address();
+      helpers
+        .request({
+          port,
+          host: 'localhost',
+          path: '/',
+          headers: { 'accept-encoding': 'br' }
+        })
+        .then(({ status, headers, data }) => {
+          should(status).be.equal(200);
+          should(data.length).be.equal(body.length);
+          should(headers).with.property('content-encoding');
+          should(headers).with.property('transfer-encoding');
+          should(headers['content-encoding']).be.a.String().and.equal('br');
+          should(headers['transfer-encoding']).be.a.String().and.equal('chunked');
+
+          step.close();
+          done();
+        });
+    });
+
+    it('pipe, 10 Mb body, brotli', (done) => {
+      const body = Buffer.alloc(1e7, '.');
+      const step = helpers.wrap(compress, (req, res) => {
+        res.setHeader('content-type', 'text/plain');
+        const bufferStream = new PassThrough();
+        bufferStream.pipe(res);
+        bufferStream.end(body);
+      });
+
+      step.listen();
+      const { port } = step.address();
+      helpers
+        .request({
+          port,
+          host: 'localhost',
+          path: '/',
+          headers: { 'accept-encoding': 'br' }
+        })
+        .then(({ status, headers, data }) => {
+          should(status).be.equal(200);
+          should(data.length).be.equal(body.length);
+          should(headers).with.property('content-encoding');
+          should(headers).with.property('transfer-encoding');
+          should(headers['content-encoding']).be.a.String().and.equal('br');
+          should(headers['transfer-encoding']).be.a.String().and.equal('chunked');
+
+          step.close();
+          done();
+        });
+    });
+
+    it('10 Mb body, with 1 Kb compression chunks, brotli', (done) => {
+      const body = Buffer.alloc(1e7, '.');
+      const step = helpers.wrap(
+        compress,
+        (req, res) => {
+          res.setHeader('Content-Type', 'text/plain');
+          res.end(body);
+        },
+        { brotli: { chunkSize: 1024 } }
+      );
+
+      step.listen();
+      const { port } = step.address();
+      helpers
+        .request({
+          port,
+          host: 'localhost',
+          path: '/',
+          headers: { 'accept-encoding': 'br' }
+        })
+        .then(({ status, headers, data }) => {
+          should(status).be.equal(200);
+          should(data.length).be.equal(body.length);
+          should(headers).with.property('content-encoding');
+          should(headers).with.property('transfer-encoding');
+          should(headers['content-encoding']).be.a.String().and.equal('br');
+          should(headers['transfer-encoding']).be.a.String().and.equal('chunked');
+
+          step.close();
+          done();
+        });
+    });
+
+    it('pipe, 10 Mb body with 4 Kb compression chunks, brotli', (done) => {
+      const body = Buffer.alloc(1e7, '.');
+      const step = helpers.wrap(
+        compress,
+        (req, res) => {
+          res.setHeader('content-type', 'text/plain');
+          const bufferStream = new PassThrough();
+          bufferStream.pipe(res);
+          bufferStream.end(body);
+        },
+        { brotli: { chunkSize: 4096 } }
+      );
+
+      step.listen();
+      const { port } = step.address();
+      helpers
+        .request({
+          port,
+          host: 'localhost',
+          path: '/',
+          headers: { 'accept-encoding': 'br' }
+        })
+        .then(({ status, headers, data }) => {
+          should(status).be.equal(200);
+          should(data.length).be.equal(body.length);
+          should(headers).with.property('content-encoding');
+          should(headers).with.property('transfer-encoding');
+          should(headers['content-encoding']).be.a.String().and.equal('br');
+          should(headers['transfer-encoding']).be.a.String().and.equal('chunked');
+
+          step.close();
+          done();
+        });
+    });
+
+    it('pipe, 10 Mb body with 32 Kb compression chunks, brotli', (done) => {
+      const body = Buffer.alloc(1e7, '.');
+      const step = helpers.wrap(
+        compress,
+        (req, res) => {
+          res.setHeader('content-type', 'text/plain');
+          const bufferStream = new PassThrough();
+          bufferStream.pipe(res);
+          bufferStream.end(body);
+        },
+        { brotli: { chunkSize: 32768 } }
+      );
+
+      step.listen();
+      const { port } = step.address();
+      helpers
+        .request({
+          port,
+          host: 'localhost',
+          path: '/',
+          headers: { 'accept-encoding': 'br' }
+        })
+        .then(({ status, headers, data }) => {
+          should(status).be.equal(200);
+          should(data.length).be.equal(body.length);
+          should(headers).with.property('content-encoding');
+          should(headers).with.property('transfer-encoding');
+          should(headers['content-encoding']).be.a.String().and.equal('br');
+          should(headers['transfer-encoding']).be.a.String().and.equal('chunked');
+
+          step.close();
+          done();
+        });
+    });
+
+    it('res.end() .json, brotli', (done) => {
+      const json = JSON.stringify({
+        message: 'Thunderstruck',
+        age: 20,
+        name: 'Rayo',
+        power: 'reduction'
+      });
+      const step = helpers.wrap(compress, (req, res) => {
+        res.setHeader('content-type', 'application/json');
+        res.end(json);
+      });
+
+      step.listen();
+      const { port } = step.address();
+      helpers
+        .request({
+          port,
+          host: 'localhost',
+          path: '/',
+          headers: { 'accept-encoding': 'br' }
+        })
+        .then(({ status, headers, data }) => {
+          should(status).be.equal(200);
+          should(data).be.equal(json);
+          should(headers).with.property('content-type');
+          should(headers).with.property('content-encoding');
+          should(headers).with.property('transfer-encoding');
+          should(headers['content-type']).be.a.String().and.equal('application/json');
+          should(headers['content-encoding']).be.a.String().and.equal('br');
+          should(headers['transfer-encoding']).be.a.String().and.equal('chunked');
+
+          step.close();
+          done();
+        });
+    });
+
+    it('res.end() .json (large), brotli', (done) => {
+      const step = helpers.wrap(compress, (req, res) => {
+        res.setHeader('content-type', 'application/json');
+        res.end(sampleJSON);
+      });
+
+      step.listen();
+      const { port } = step.address();
+      helpers
+        .request({
+          port,
+          host: 'localhost',
+          path: '/',
+          headers: { 'accept-encoding': 'br' }
+        })
+        .then(({ status, headers, data }) => {
+          should(status).be.equal(200);
+          should(data).be.equal(sampleJSON);
+          should(headers).with.property('content-type');
+          should(headers).with.property('content-encoding');
+          should(headers).with.property('transfer-encoding');
+          should(headers['content-type']).be.a.String().and.equal('application/json');
+          should(headers['content-encoding']).be.a.String().and.equal('br');
+          should(headers['transfer-encoding']).be.a.String().and.equal('chunked');
+
+          step.close();
+          done();
+        });
+    });
   });
 
   it('vary header', (done) => {

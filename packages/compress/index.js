@@ -1,14 +1,4 @@
-import compressible from 'compressible';
-import { createGzip } from 'zlib';
-
-const canDo = function canDo({ req, res }) {
-  if (!res.compressPass && res.getHeader('content-encoding')) {
-    return false;
-  }
-
-  const encoding = req.headers['accept-encoding'] || '';
-  return encoding.indexOf('gzip') >= 0 && compressible(res.getHeader('content-type'));
-};
+import { constants, createBrotliCompress, createGzip } from 'zlib';
 
 /**
  * https://developer.mozilla.org/en-US/docs/Web/HTTP/Content_negotiation
@@ -27,40 +17,75 @@ const vary = function vary({ res, key }) {
   }
 };
 
-const press = function press({ res, zip, data, encoding }) {
-  if (!res.getHeader('content-encoding')) {
-    res.compressPass = true;
-    const poweredBy = ['@rayo/compress', res.getHeader('x-powered-by')].filter((h) => h).join(', ');
-    res.setHeader('x-powered-by', poweredBy);
-    res.setHeader('content-encoding', 'gzip');
-    res.removeHeader('content-length');
-    vary({ res, key: 'content-encoding' });
-  }
-
-  zip.write(Buffer.from(data, encoding));
-};
-
-export default function compress(options = {}) {
+const sizeOf = (data, encoding) => (data ? Buffer.byteLength(data, encoding) : 0);
+export default function compress(options = { gzip: {}, brotli: {} }) {
   return (req, res, step) => {
+    let clientEncoding = req.headers['accept-encoding'];
+    [clientEncoding] = clientEncoding.match(/\bbr\b/i) || clientEncoding.match(/\bgzip\b/i) || [];
+
+    if (!clientEncoding) {
+      return step();
+    }
+
     const { write, end } = res;
-    const zip = createGzip(options);
-    zip.on('data', write.bind(res)).on('end', end.bind(res));
+    let press;
+    let sizeHint = 0;
+    let isPressing = false;
+    const init = function init() {
+      isPressing = true;
 
-    res.write = (data, encoding = 'utf8') =>
-      canDo({ req, res }) ? press({ res, zip, data, encoding }) : write.call(res, data, encoding);
+      const accepted = /(text\/(css|csv|html|javascript|plain|xml))|(application\/(json|xml))/i;
+      const canPress = accepted.test(res.getHeader('content-type') || 'text/plain');
 
-    res.end = (data = null, encoding = 'utf8') => {
-      if (!data) {
-        return zip.end();
+      if (canPress && clientEncoding) {
+        const poweredBy = ['@rayo/compress', res.getHeader('x-powered-by')].filter((h) => h).join(', ');
+        res.setHeader('x-powered-by', poweredBy);
+        res.setHeader('content-encoding', clientEncoding);
+        res.removeHeader('content-length');
+        vary({ res, key: 'content-encoding' });
+
+        sizeHint = res.getHeader('content-length') || sizeHint;
+        if (clientEncoding === 'br') {
+          press = createBrotliCompress({
+            ...options.brotli,
+            params: {
+              [constants.BROTLI_PARAM_MODE]: constants.BROTLI_MODE_TEXT,
+              [constants.BROTLI_PARAM_QUALITY]: options.brotli?.level || 4,
+              [constants.BROTLI_PARAM_SIZE_HINT]: sizeHint
+            }
+          });
+        } else {
+          press = createGzip(options.gzip);
+        }
+
+        press.on('data', (...args) => write.apply(res, args) === false && press.pause());
+        press.on('end', (...args) => end.apply(res, args));
+        res.on('drain', () => press.resume());
+      }
+    };
+
+    res.write = function zipWrite(...args) {
+      const [data, encoding] = args;
+      sizeHint += sizeOf(data, encoding);
+      if (!isPressing) {
+        init();
       }
 
-      if (canDo({ req, res })) {
-        press({ res, zip, data, encoding });
-        return zip.end();
+      return press ? press.write(...args) : write.apply(this, args);
+    };
+
+    res.end = function zipEnd(...args) {
+      const [data, encoding] = args;
+      sizeHint += sizeOf(data, encoding);
+      if (!data && isPressing) {
+        return press.end();
       }
 
-      res.setHeader('content-length', data.length);
-      return end.call(res, data, encoding);
+      if (!isPressing) {
+        init();
+      }
+
+      return press ? press.end(...args) : end.apply(this, args);
     };
 
     return step();
