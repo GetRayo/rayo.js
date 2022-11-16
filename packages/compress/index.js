@@ -21,7 +21,7 @@ const types = /(text\/(css|csv|html|javascript|plain|xml))|(application\/(json|x
 export default function compress({ preferBrotli = false, threshold = 1024, level = 6, chunkSize = 16 } = {}) {
   return (req, res, step) => {
     let clientEncoding = req.headers['accept-encoding'];
-    const [br] = clientEncoding.match(/\bbr\b/i) || [];
+    const [br] = (createBrotliCompress && clientEncoding.match(/\bbr\b/i)) || [];
     const [gzip] = clientEncoding.match(/\bgzip\b/i) || [];
 
     clientEncoding = (br && preferBrotli) || (br && !gzip) ? br : gzip;
