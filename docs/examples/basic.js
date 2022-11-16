@@ -5,14 +5,7 @@ import rayo from '../../packages/rayo/index.js';
 import compress from '../../packages/compress/index.js';
 import send from '../../packages/send/index.js';
 
-rayo({
-  port: 8080,
-  storm: {
-    workers: 4,
-    monitor: true,
-    monitorPort: 65000
-  }
-})
+rayo({ port: 8080 })
   .through(compress({ chunkSize: 1024 }), send())
   .get('/', (req, res) => {
     res.setHeader('content-type', 'text/plain');

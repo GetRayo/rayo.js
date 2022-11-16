@@ -1,14 +1,4 @@
-import compressible from 'compressible';
-import { createGzip } from 'zlib';
-
-const canDo = function canDo({ req, res }) {
-  if (!res.compressPass && res.getHeader('content-encoding')) {
-    return false;
-  }
-
-  const encoding = req.headers['accept-encoding'] || '';
-  return encoding.indexOf('gzip') >= 0 && compressible(res.getHeader('content-type'));
-};
+import { constants, createBrotliCompress, createGzip } from 'zlib';
 
 /**
  * https://developer.mozilla.org/en-US/docs/Web/HTTP/Content_negotiation
@@ -27,40 +17,70 @@ const vary = function vary({ res, key }) {
   }
 };
 
-const press = function press({ res, zip, data, encoding }) {
-  if (!res.getHeader('content-encoding')) {
-    res.compressPass = true;
-    const poweredBy = ['@rayo/compress', res.getHeader('x-powered-by')].filter((h) => h).join(', ');
-    res.setHeader('x-powered-by', poweredBy);
-    res.setHeader('content-encoding', 'gzip');
-    res.removeHeader('content-length');
-    vary({ res, key: 'content-encoding' });
-  }
-
-  zip.write(Buffer.from(data, encoding));
-};
-
-export default function compress(options = {}) {
+const types = /(text\/(css|csv|html|javascript|plain|xml))|(application\/(json|xml))/i;
+export default function compress({ preferBrotli = false, threshold = 1024, level = 6, chunkSize = 16 } = {}) {
   return (req, res, step) => {
+    let clientEncoding = req.headers['accept-encoding'];
+    const [br] = (createBrotliCompress && clientEncoding.match(/\bbr\b/i)) || [];
+    const [gzip] = clientEncoding.match(/\bgzip\b/i) || [];
+
+    clientEncoding = (br && preferBrotli) || (br && !gzip) ? br : gzip;
+    if (!clientEncoding || req.method === 'HEAD') {
+      return step();
+    }
+
+    let press;
+    let sizeHint = 0;
     const { write, end } = res;
-    const zip = createGzip(options);
-    zip.on('data', write.bind(res)).on('end', end.bind(res));
 
-    res.write = (data, encoding = 'utf8') =>
-      canDo({ req, res }) ? press({ res, zip, data, encoding }) : write.call(res, data, encoding);
-
-    res.end = (data = null, encoding = 'utf8') => {
-      if (!data) {
-        return zip.end();
+    const init = function init([data, encoding]) {
+      sizeHint += data ? Buffer.byteLength(data, encoding) : 0;
+      const go = sizeHint >= threshold;
+      if (!go && !res.getHeader('x-skip-compression')) {
+        res.setHeader('x-skip-compression', 'below threshold');
       }
 
-      if (canDo({ req, res })) {
-        press({ res, zip, data, encoding });
-        return zip.end();
-      }
+      const pressType = types.test(res.getHeader('content-type') || 'text/plain');
+      if (!press && pressType && clientEncoding && go) {
+        const poweredBy = ['@rayo/compress', res.getHeader('x-powered-by')].filter((h) => h).join(', ');
+        res.setHeader('x-powered-by', poweredBy);
+        res.setHeader('content-encoding', clientEncoding);
+        res.removeHeader('content-length');
+        vary({ res, key: 'content-encoding' });
 
-      res.setHeader('content-length', data.length);
-      return end.call(res, data, encoding);
+        const chunk = +chunkSize * 1024 || constants.Z_DEFAULT_CHUNK;
+        const pressLevel = +level >= 1 ? level : 6;
+        sizeHint = +res.getHeader('content-length') || sizeHint;
+        if (clientEncoding === 'br') {
+          press = createBrotliCompress({
+            chunkSize: chunk,
+            params: {
+              [constants.BROTLI_PARAM_MODE]: constants.BROTLI_MODE_TEXT,
+              [constants.BROTLI_PARAM_QUALITY]: pressLevel <= 11 ? pressLevel : 11,
+              [constants.BROTLI_PARAM_SIZE_HINT]: sizeHint
+            }
+          });
+        } else {
+          press = createGzip({
+            chunkSize: chunk,
+            level: pressLevel <= 9 ? pressLevel : 9
+          });
+        }
+
+        press.on('data', (...args) => write.apply(res, args) === false && press.pause());
+        press.on('end', (...args) => end.apply(res, args));
+        res.on('drain', () => press.resume());
+      }
+    };
+
+    res.write = function zipWrite(...args) {
+      init(args);
+      return press ? press.write(...args) : write.apply(this, args);
+    };
+
+    res.end = function zipEnd(...args) {
+      init(args);
+      return press ? press.end(...args) : end.apply(this, args);
     };
 
     return step();
