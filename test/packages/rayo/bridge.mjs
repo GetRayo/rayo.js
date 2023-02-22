@@ -1,9 +1,9 @@
 /* eslint import/extensions: 0 */
 
 import should from 'should';
-import { METHODS } from 'http';
 import Bridge from '../../../packages/rayo/bridge.mjs';
 
+const METHODS = ['GET', 'HEAD', 'POST', 'PUT', 'DELETE', 'CONNECT', 'OPTIONS', 'TRACE', 'PATCH'];
 const test = (bridge, path = null) => {
   should(bridge).be.an.Object();
   should(bridge).have.properties('id', 'bridgedPath', 'routes', 'through', 'route', 'fetch');

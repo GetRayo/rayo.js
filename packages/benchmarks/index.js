@@ -29,7 +29,7 @@ const files = (() => {
 const argv = minimist(process.argv.slice(2));
 const workers = argv.w || cpus().length;
 const connections = argv.c || 500;
-const pipelining = argv.p ||  10;
+const pipelining = argv.p || 10;
 const duration = argv.d || 5;
 
 const cn = (title = null) =>

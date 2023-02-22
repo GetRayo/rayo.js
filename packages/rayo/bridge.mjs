@@ -1,35 +1,30 @@
-import { METHODS } from 'http';
 import { exec, match, parse } from 'matchit';
 
+const METHODS = ['GET', 'HEAD', 'POST', 'PUT', 'DELETE', 'CONNECT', 'OPTIONS', 'TRACE', 'PATCH', 'all'];
 const bridgeThrough = (t) => {
   t.bridges.forEach((b) => {
-    Object.keys(b.routes).forEach((v) => {
-      t.routes[v] = b.routes[v].concat(t.routes[v] || []);
-    });
+    for (const [k, v] of Object.entries(b.routes)) {
+      t.routes[k] = v.concat(t.routes[k]);
+    }
 
-    Object.keys(b.s).forEach((v) => {
-      t.s[v] = t.s[v] || {};
-      Object.keys(b.s[v]).forEach((p) => {
-        t.s[v][p] = b.s[v][p].concat(t.s[v][p] || []);
-      });
-    });
+    for (const [k, v] of Object.entries(b.stacks)) {
+      t.stacks[k] ||= {};
+      for (const [kk, vv] of Object.entries(v)) {
+        t.stacks[k][kk] = v[kk].concat(vv);
+      }
+    }
   });
 
   return t;
 };
 
 export default class Bridge {
-  /**
-   * this.s = A placeholder for `stacks`. One stack per HTTP verb.
-   * this.t = A placeholder for `through` routes.
-   */
   constructor(path = null) {
     this.id = process.hrtime().join('');
-    this.routes = [];
-    this.s = [];
-    this.bridges = [];
+    this.routes = {};
+    this.stacks = {};
+    this.bridges = new Set();
     this.bridgedPath = path;
-    METHODS.push('all');
     METHODS.forEach((verb) => {
       const bind = [verb];
       if (path) {
@@ -39,10 +34,10 @@ export default class Bridge {
     });
 
     if (!path) {
-      this.t = [];
+      this.gates = [];
       this.bridge = (bridgedPath) => {
         const bridge = new Bridge(bridgedPath);
-        this.bridges.push(bridge);
+        this.bridges.add(bridge);
         return bridge;
       };
     }
@@ -50,20 +45,20 @@ export default class Bridge {
 
   through(...handlers) {
     if (!handlers.length) {
-      this.t = this.s['*'] && this.s['*']['*'] ? this.s['*']['*'] : [];
+      this.gates = this.stacks['*']?.['*'] || [];
       return bridgeThrough(this);
     }
 
-    const [verb, path] = this.bridgedPath ? ['all', this.bridgedPath] : ['*', '*'];
+    const [verb, path] = this.bridgedPath ? ['through', this.bridgedPath] : ['*', '*'];
     return this.route(verb, path, ...handlers);
   }
 
   route(verb, path, ...handlers) {
     const set = (m) => {
-      this.routes[m] = this.routes[m] || [];
-      this.s[m] = this.s[m] || {};
+      this.routes[m] ||= [];
+      this.stacks[m] ||= {};
       this.routes[m].push(parse(path));
-      this.s[m][path] = (this.s[m][path] || []).concat(handlers);
+      this.stacks[m][path] = (this.stacks[m][path] || []).concat(handlers);
     };
 
     if (verb === 'all') {
@@ -81,7 +76,7 @@ export default class Bridge {
       ? null
       : {
           params: exec(path, url),
-          stack: this.s[verb][url[0].old]
+          stack: this.stacks[verb][url[0].old]
         };
   }
 }
