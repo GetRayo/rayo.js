@@ -2,13 +2,13 @@
 
 import should from 'should';
 import sinon from 'sinon';
-import { METHODS } from 'http';
 import Storm from '../../../packages/storm/index.js';
 import rayo from '../../../packages/rayo/index.js';
 
 import req from '../../utils/req.mjs';
 import res from '../../utils/res.mjs';
 
+const METHODS = ['GET', 'HEAD', 'POST', 'PUT', 'DELETE', 'CONNECT', 'OPTIONS', 'TRACE', 'PATCH'];
 const fake = { req, res };
 
 const test = (server) => {

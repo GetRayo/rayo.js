@@ -1,6 +1,6 @@
 {
   "name": "@rayo/benchmarks",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "description": "🏆 Rayo's benchmarks.",
   "main": "index.js",
   "type": "module",

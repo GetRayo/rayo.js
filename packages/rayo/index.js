@@ -69,7 +69,7 @@ class Rayo extends Bridge {
       ({ stack } = route);
     }
 
-    return this.step(req, res, this.t.concat(stack));
+    return this.step(req, res, this.gates.concat(stack));
   }
 
   step(req, res, stack, error = null, statusCode = 400) {

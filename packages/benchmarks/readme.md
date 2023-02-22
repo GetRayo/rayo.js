@@ -33,7 +33,7 @@ $> rayobench -- -u http://localhost:5050 -c 1000 -p 25 -d 10
 
 Please note that these results are only meant as raw performance indicators. Your application's logic, which is what makes most applications slow, may not see great performance gains between frameworks.
 
-> These tests were conducted on a CPU-optimized server (DigitalOcean; 32 GB RAM, 16 vCPUs, Debian 11 x64) and Node.js v16.18.1.<br />
+> These tests were conducted on Mac Studio (M1 Ultra, 64 GB RAM, 20 CPU) and Node.js v16.18.1.<br />
 > Measured after one warm-up run.
 
 ```
@@ -42,20 +42,20 @@ Tested with:
 500 connections,
 20 pipelines,
 5 seconds,
-16 CPU cores.
+20 CPU cores.
 
 ┌────────────┬─────────┬────────────┬────────────┬───────────┬──────────────┐
 │            │ Version │ Reqs/sec ^ │ Reqs/sec * │ Latency * │ Throughput * │
 ├────────────┼─────────┼────────────┼────────────┼───────────┼──────────────┤
-│ Storm      │ 1.3.0   │ 306104     │ 243155.2   │ 41.02     │ 33.63 Mb.    │
+│ Storm      │ 1.3.0   │ 226325     │ 213081.6   │ 23.05     │ 29.46 Mb.    │
 ├────────────┼─────────┼────────────┼────────────┼───────────┼──────────────┤
-│ Rayo       │ 1.4.0   │ 49207      │ 48316.8    │ 202.73    │ 6.68 Mb.     │
+│ Rayo       │ 1.4.0   │ 127765     │ 125267.2   │ 39.24     │ 17.32 Mb.    │
 ├────────────┼─────────┼────────────┼────────────┼───────────┼──────────────┤
-│ Polka      │ 0.5.2   │ 50934      │ 48080      │ 202.09    │ 6.65 Mb.     │
+│ Polka      │ 0.5.2   │ 126479     │ 122886.4   │ 38.22     │ 16.99 Mb.    │
 ├────────────┼─────────┼────────────┼────────────┼───────────┼──────────────┤
-│ Fastify    │ 4.9.2   │ 49360      │ 47068.8    │ 207.95    │ 8.39 Mb.     │
+│ Fastify    │ 4.10.2  │ 122810     │ 121273.6   │ 40.6      │ 21.63 Mb.    │
 ├────────────┼─────────┼────────────┼────────────┼───────────┼──────────────┤
-│ Express    │ 4.17.1  │ 13868      │ 11423.6    │ 805.53    │ 1.58 Mb.     │
+│ Express    │ 4.17.1  │ 37094      │ 36035.2    │ 135.91    │ 4.98 Mb.     │
 └────────────┴─────────┴────────────┴────────────┴───────────┴──────────────┘
  * Average
 ```

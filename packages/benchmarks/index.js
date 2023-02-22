@@ -28,9 +28,9 @@ const files = (() => {
 
 const argv = minimist(process.argv.slice(2));
 const workers = argv.w || cpus().length;
-const connections = argv.c || workers * 125;
-const pipelining = argv.p || workers * 10;
-const duration = argv.d || 10;
+const connections = argv.c || 500;
+const pipelining = argv.p || 10;
+const duration = argv.d || 5;
 
 const cn = (title = null) =>
   autocannon({
