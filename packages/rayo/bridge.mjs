@@ -8,7 +8,7 @@ const bridgeThrough = (t) => {
     }
 
     for (const [k, v] of Object.entries(b.stacks)) {
-      t.stacks[k] ||= {};
+      t.stacks[k] = t.stacks[k] || {};
       for (const [kk, vv] of Object.entries(v)) {
         t.stacks[k][kk] = v[kk].concat(vv);
       }
@@ -55,8 +55,8 @@ export default class Bridge {
 
   route(verb, path, ...handlers) {
     const set = (m) => {
-      this.routes[m] ||= [];
-      this.stacks[m] ||= {};
+      this.routes[m] = this.routes[m] || [];
+      this.stacks[m] = this.stacks[m] || {};
       this.routes[m].push(parse(path));
       this.stacks[m][path] = (this.stacks[m][path] || []).concat(handlers);
     };
