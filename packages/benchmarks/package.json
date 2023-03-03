@@ -27,7 +27,7 @@
     "express": "^4.17.1",
     "fastify": "^4.10.2",
     "kleur": "^4.1.4",
-    "minimist": "^1.2.5",
+    "minimist": "^1.2.8",
     "pancho": "^1.0.2",
     "polka": "^0.5.2",
     "rayo": "^1.4.0"
