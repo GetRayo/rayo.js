@@ -4,8 +4,8 @@
 import http from 'http';
 import { createReadStream } from 'fs';
 import { PassThrough } from 'stream';
-import rayo from '../../packages/rayo/index.js';
-import compress from '../../packages/compress/index.js';
+import rayo from 'rayo/index.js';
+import compress from '@rayo/compress/index.js';
 
 const payload = [
   {

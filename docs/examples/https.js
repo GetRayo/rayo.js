@@ -3,7 +3,7 @@
 
 import https from 'https';
 import { readFileSync } from 'fs';
-import rayo from '../../packages/rayo/index.js';
+import rayo from 'rayo/index.js';
 
 const server = https.createServer({
   key: readFileSync(`${__dirname}/localhost.key`),

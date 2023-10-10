@@ -1,7 +1,7 @@
 /* eslint import/extensions: 0 */
 
 import { cpus } from 'os';
-import { storm } from '../../../../packages/storm/index.js';
+import { storm } from '@rayo/storm/index.js';
 
 const [, , workers, , , , keepAsString] = process.argv;
 const toLoad = keepAsString === 'yes' ? cpus().length : parseInt(workers, 10);

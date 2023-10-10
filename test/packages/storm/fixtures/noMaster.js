@@ -1,6 +1,6 @@
 /* eslint import/extensions: 0 */
 
-import { storm } from '../../../../packages/storm/index.js';
+import { storm } from '@rayo/storm/index.js';
 
 storm(
   () => {

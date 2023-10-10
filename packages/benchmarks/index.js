@@ -28,8 +28,8 @@ const files = (() => {
 
 const argv = minimist(process.argv.slice(2));
 const workers = argv.w || cpus().length;
-const connections = argv.c || 500;
-const pipelining = argv.p || 10;
+const connections = argv.c || 1000;
+const pipelining = argv.p || 25;
 const duration = argv.d || 5;
 
 const cn = (title = null) =>
@@ -82,7 +82,8 @@ const benchmark = async (bench = { index: 0, results: [] }) => {
 };
 
 process.stdout.write(
-  `\n Running with ${connections} connections, ${pipelining} pipelines and on ${workers} CPU cores.\n\n`
+  `\n Running with ${connections} connections, ${pipelining} pipelines and on ${workers} CPU cores.\n
+  (One warm-up round, and one measure round)\n\n`
 );
 benchmark().then((results) => {
   const table = new Table({

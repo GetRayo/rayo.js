@@ -1,8 +1,16 @@
 {
   "private": true,
+  "name": "Rayo",
+  "workspaces": [
+    "packages/benchmarks",
+    "packages/compress",
+    "packages/rayo",
+    "packages/send",
+    "packages/storm"
+  ],
   "type": "module",
   "engines": {
-    "node": ">=14"
+    "node": ">=18"
   },
   "author": {
     "name": "Stefan Aichholzer",
@@ -16,7 +24,7 @@
   "homepage": "https://github.com/GetRayo/rayo.js",
   "scripts": {
     "eslint:fix": "eslint --quiet --fix .",
-    "pretest": "lerna bootstrap",
+    "pretest": "npm install",
     "test": "npm run eslint:fix && LOG_LEVEL=debug c8 --reporter=cobertura _mocha -R progress --timeout 10000 test/index.js",
     "unit": "LOG_LEVEL=debug _mocha -R spec --timeout 20000 test/index.js",
     "posttest": "c8 report --reporter=text",
@@ -27,20 +35,20 @@
     "update": "npm-check -u"
   },
   "devDependencies": {
-    "c8": "^7.12.0",
+    "c8": "^8.0.1",
     "codecov": "^3.8.1",
     "coveralls": "^3.1.0",
-    "eslint": "^8.28.0",
+    "eslint": "^8.51.0",
     "eslint-config-airbnb-base": "^15.0.0",
-    "eslint-config-prettier": "^8.3.0",
-    "eslint-plugin-import": "^2.22.1",
-    "eslint-plugin-prettier": "^4.0.0",
-    "lerna": "^6.0.3",
-    "mocha": "^10.1.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-import": "^2.28.1",
+    "eslint-plugin-prettier": "^5.0.0",
+    "lerna": "^7.3.0",
+    "mocha": "^10.2.0",
     "npm-check": "^6.0.1",
-    "prettier": "^2.8.0",
+    "prettier": "^3.0.3",
     "should": "^13.2.3",
-    "sinon": "^14.0.2",
-    "supertest": "^6.0.1"
+    "sinon": "^16.1.0",
+    "supertest": "^6.3.3"
   }
 }

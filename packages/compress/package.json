@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "engines": {
-    "node": ">14"
+    "node": ">=18"
   },
   "repository": {
     "type": "git",
@@ -20,5 +20,5 @@
   "publishConfig": {
     "access": "public"
   },
-  "gitHead": "5adcff052a33ae016b3bc3073125117ed1d936eb"
+  "gitHead": "9484f4df8529d7cca0b40cef41b92201c3a00fc3"
 }

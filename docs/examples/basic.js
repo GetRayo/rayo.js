@@ -1,9 +1,9 @@
 /* eslint import/extensions: 0 */
 /* eslint no-console: 0 */
 
-import rayo from '../../packages/rayo/index.js';
-import compress from '../../packages/compress/index.js';
-import send from '../../packages/send/index.js';
+import rayo from 'rayo/index.js';
+import compress from '@rayo/compress/index.js';
+import send from '@rayo/send/index.js';
 
 rayo({ port: 8080 })
   .through(compress({ chunkSize: 1024 }), send())

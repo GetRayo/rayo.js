@@ -1,7 +1,7 @@
 /* eslint import/extensions: 0 */
 
+import { storm } from '@rayo/storm/index.js';
 import helpers from '../../../utils/helpers.mjs';
-import { storm } from '../../../../packages/storm/index.js';
 
 const [, , workers, workerId, , service] = process.argv;
 storm(() => {}, {
