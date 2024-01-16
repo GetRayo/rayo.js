@@ -38,7 +38,7 @@
     "minimist": "^1.2.8",
     "pancho": "^1.0.2",
     "polka": "^0.5.2",
-    "rayo": "^1.4.6"
+    "rayo": "^1.4.5"
   },
   "bin": {
     "rayobench": "./index.js"
