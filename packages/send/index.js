@@ -14,10 +14,11 @@ const isJSON = (payload) => {
 /**
  * @TODO Extend this to support more content-types.
  */
-const sendIt = function sendIt(payload, statusCode = 200) {
+const sendIt = function sendIt(payload, statusCode = 200, statusText = '') {
   const { valid, json } = isJSON(payload);
   const response = valid ? json : payload;
   this.statusCode = statusCode;
+  this.statusText = statusText;
 
   if (!this.getHeader('content-type')) {
     this.setHeader('content-type', valid ? 'application/json; charset=utf-8' : 'text/plain; charset=utf-8');
