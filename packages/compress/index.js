@@ -20,7 +20,7 @@ const vary = function vary({ res, key }) {
 const types = /(text\/(css|csv|html|javascript|plain|xml))|(application\/(json|xml))/i;
 export default function compress({ preferBrotli = false, threshold = 1024, level = 6, chunkSize = 16 } = {}) {
   return (req, res, step) => {
-    let clientEncoding = req.headers['accept-encoding'];
+    let clientEncoding = req.headers['accept-encoding'] || '';
     const [br] = (createBrotliCompress && clientEncoding.match(/\bbr\b/i)) || [];
     const [gzip] = clientEncoding.match(/\bgzip\b/i) || [];
 
