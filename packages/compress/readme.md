@@ -4,6 +4,8 @@
 
 ## Install
 
+Requires Node.js 24 or newer.
+
 ```
 $> npm i @rayo/compress
 ```

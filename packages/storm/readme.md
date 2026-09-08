@@ -11,6 +11,8 @@ Harness the full power of multi-core CPUs.<br />
 
 ## Install
 
+Requires Node.js 24 or newer.
+
 ```
 $> npm i @rayo/storm
 ```

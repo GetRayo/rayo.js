@@ -36,6 +36,8 @@ There are examples 🔎 throughout the read.
 
 ## Install
 
+Requires Node.js 24 or newer. The same minimum applies to `@rayo/send`, `@rayo/compress`, and `@rayo/storm`.
+
 ```
 $> npm i rayo
 ```
@@ -84,7 +86,7 @@ rayo({ port: 5050 })
 
 #### A note on handlers
 
-`handler` functions accept an [IncomingMessage](https://nodejs.org/api/http.html#http_class_http_incomingmessage) (a.k.a `req`), a [ServerResponse](https://nodejs.org/dist/latest-v9.x/docs/api/http.html#http_class_http_serverresponse) (a.k.a `res`) and a `step through` (a.k.a `step`) function. `step()` is optional and may be used to move the program's execution logic to the next handler in the stack.
+`handler` functions accept an [IncomingMessage](https://nodejs.org/api/http.html#http_class_http_incomingmessage) (a.k.a `req`), a [ServerResponse](https://nodejs.org/api/http.html#http_class_http_serverresponse) (a.k.a `res`) and a `step through` (a.k.a `step`) function. `step()` is optional and may be used to move the program's execution logic to the next handler in the stack.
 
 `step()` may also be used to return an error at any time. See [error handling](#error-handling).
 
@@ -185,8 +187,8 @@ trailing-slash handling, and raw URL-encoded parameter values. A static route do
 route. Bridges are checked before direct routes, with later bridges checked first.
 
 Rayo compiles route patterns during registration using its own parser. The supported syntax remains `/users/:id`,
-`/users/:id?`, `/files/:name.json`, and `/files/*`; existing parsing behavior is checked against a pinned compatibility
-reference in the test suite. Pattern compilation happens before request handling and does not decode path segments.
+`/users/:id?`, `/files/:name.json`, and `/files/*`; existing parsing behavior is checked against recorded compatibility
+fixtures in the test suite. Pattern compilation happens before request handling and does not decode path segments.
 
 Global middleware and route handlers are combined once during preparation. Registration through `.get()`, `.route()`,
 `.through()`, and bridges automatically invalidates the index; the next request rebuilds it. `.prepare()` (or `.through()`

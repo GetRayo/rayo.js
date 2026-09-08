@@ -4,6 +4,8 @@
 
 ## Run
 
+Requires Node.js 24 or newer.
+
 From the repository root, install workspace dependencies with `npm install`, then:
 
 ```sh

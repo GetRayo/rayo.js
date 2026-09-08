@@ -1,5 +1,4 @@
 {
-  "lerna": "6.0.3",
   "npmClient": "npm",
   "packages": [
     "packages/*"
