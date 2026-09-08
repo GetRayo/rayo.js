@@ -2,11 +2,13 @@
 
 import https from 'https';
 import { readFileSync } from 'fs';
-import rayo from 'rayo/index.js';
+import rayo from 'rayo';
 
+// From the repository root, generate certificates with:
+// (cd docs/examples && bash certs.sh)
 const server = https.createServer({
-  key: readFileSync(`${__dirname}/localhost.key`),
-  cert: readFileSync(`${__dirname}/localhost.crt`)
+  key: readFileSync(new URL('./localhost.key', import.meta.url)),
+  cert: readFileSync(new URL('./localhost.crt', import.meta.url))
 });
 
 rayo({ port: 5050, server })

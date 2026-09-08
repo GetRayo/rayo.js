@@ -6,7 +6,7 @@
 
 Requires Node.js 24 or newer.
 
-From the repository root, install workspace dependencies with `npm install`, then:
+From the repository root, install workspace dependencies with `npm ci`, then:
 
 ```sh
 # Compare single-process servers with identical parameter-route responses.
@@ -27,6 +27,8 @@ npm run bench --workspace @rayo/benchmarks -- --mode cluster --server-workers 2
 # Quick validation, not a meaningful performance measurement.
 npm run bench --workspace @rayo/benchmarks -- --only Rayo --warmup 0 -d 1 -r 1 -c 2
 ```
+
+With the npm workspace commands above, relative output paths are resolved from `packages/benchmarks`.
 
 The package can also be installed with `npm install -g @rayo/benchmarks` and invoked as `rayobench`.
 Run `rayobench --help` for every option. Arguments go directly after `rayobench`; the extra `--` above belongs to npm.
@@ -66,7 +68,7 @@ The Rayo suite covers:
 - Raw text, automatic text detection, explicit `res.text()`, automatic object serialization, explicit `res.json()`, `res.jsonString()`, and serialized JSON with an existing content type.
 - Absent, ordinary, encoded and long query strings; the long case decodes 80 named fields.
 - Installed compression middleware skipped for missing Accept-Encoding, a HEAD request, or a response below the compression threshold. `stream/identity` remains the control with no compression middleware installed.
-- Streaming a 33,600-byte payload in 512-byte or 16-KiB chunks, with identity, gzip or Brotli encoding at package defaults. The producer uses stream backpressure.
+- Streaming a 36,000-byte payload in 512-byte or 16-KiB chunks, with identity, gzip or Brotli encoding at package defaults. The producer uses stream backpressure.
 
 The full matrix has 41 cases and takes roughly fifteen minutes with default timing; paired comparisons take about twice as long. Prefer a `--case` filter when investigating a particular change.
 New explicit response APIs require a version of `@rayo/send` that implements them.
@@ -102,7 +104,7 @@ A single local load process can become the bottleneck, especially for clustering
 
 ## Historical dependency measurements
 
-The one-off driver used to measure the `matchit` and `parseurl` replacements was removed after that work. Its source and invocation details remain in commit `9397437`. The [dependency performance report](../../docs/dependency-performance-2026-09-08.md) preserves the historical results, raw JSON and measurement method. The HTTP workloads and paired checkout comparisons above remain available for ongoing performance work.
+The one-off driver used to measure the `matchit` and `parseurl` replacements was removed after that work. Its source and invocation details remain in commit `9397437`. The [dependency performance report](https://github.com/GetRayo/rayo.js/blob/9397437/docs/dependency-performance-2026-09-08.md) preserves the historical results, raw JSON and measurement method. The HTTP workloads and paired checkout comparisons above remain available for ongoing performance work.
 
 ## License
 

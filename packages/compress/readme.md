@@ -22,7 +22,7 @@ import rayo from 'rayo';
 import compress from '@rayo/compress';
 
 rayo({ port: 5050 })
-  .through(compress())
+  .through(compress({ threshold: 0 }))
   .get('/hello/:user', (req, res) => {
     res.setHeader('content-type', 'application/json');
     res.end(JSON.stringify({
@@ -33,17 +33,22 @@ rayo({ port: 5050 })
   .start();
 ```
 
-> **Note:** You need to set the right response header, e.g. _application/json_ for `@rayo/compress` to be able to determine whether the payload can be compressed or not. Also keep in mind that not all types of content can be compressed.
+The example uses `threshold: 0` so this short response can be compressed when the client accepts gzip or Brotli.
+
+> **Note:** Set the response's `Content-Type`, e.g. _application/json_, to match the payload. If omitted, `@rayo/compress` treats the payload as _text/plain_ when deciding whether to compress; it does not set `Content-Type`. Also keep in mind that not all types of content can be compressed.
 
 `@rayo/compress` supports compression on these MIME types:
 
 * text/plain
+* text/css
 * text/csv
 * text/html
 * text/xml
 * text/javascript
 * application/json
 * application/xml
+* application/javascript
+* application types ending in `+json` or `+xml`
 
 
 ## API
@@ -97,8 +102,7 @@ This middleware falls back to an uncompressed response when neither supported co
 that require strict rejection of requests forbidding every available representation should handle that negotiation themselves.
 
 HEAD requests, bodyless statuses (204, 205, 304), responses already carrying `Content-Encoding`, partial responses
-with `Content-Range`, and responses with `Cache-Control: no-transform` are left uncompressed. Additional supported
-MIME types include `text/css`, `application/javascript`, and application types ending in `+json` or `+xml`.
+with `Content-Range`, and responses with `Cache-Control: no-transform` are left uncompressed.
 
 ## TypeScript
 

@@ -1,10 +1,9 @@
 /* eslint no-console: 0 */
 
-import http from 'http';
-import { createReadStream } from 'fs';
-import { PassThrough } from 'stream';
-import rayo from 'rayo/index.js';
-import compress from '@rayo/compress/index.js';
+import { PassThrough, Readable } from 'node:stream';
+import rayo from 'rayo';
+import compress from '@rayo/compress';
+import send from '@rayo/send';
 
 const payload = [
   {
@@ -303,7 +302,7 @@ const payload = [
   }
 ];
 
-const ray = rayo({ port: 5050 });
+const ray = rayo({ port: 5050 }).through(send());
 
 /**
  * No compression on this endpoint.
@@ -320,7 +319,7 @@ ray
   .through(compress())
   .get((req, res) => {
     res.setHeader('Content-Type', 'application/json');
-    createReadStream('/Users/Stefan/Downloads/Menu.json').pipe(res);
+    Readable.from([JSON.stringify(payload)]).pipe(res);
   });
 
 ray
@@ -369,46 +368,43 @@ ray
   });
 
 /**
- * No compression (since there's no header) on this endpoint.
- * written to the response and "ended".
+ * Without a Content-Type header, compression treats the body as text/plain.
+ * This unknown-length stream can compress from the first write.
  */
 ray
   .bridge('/write')
   .through(compress())
   .get((req, res) => {
-    res.write('Hello, I have not Content-Type.');
+    res.write('Hello, I have no Content-Type.');
     res.end();
   });
 
 /**
- * No compression (since there's no header) on this endpoint.
- * "ended" with the response.
+ * Without a Content-Type header, compression treats the body as text/plain.
+ * This complete body stays uncompressed because it is below the threshold.
  */
 ray
   .bridge('/end-plain')
   .through(compress())
   .get((req, res) => {
-    res.end('Hello, I have not Content-Type.');
+    res.end('Hello, I have no Content-Type.');
   });
 
 /**
- * No compression (images are not "compressible") on this endpoint.
- * piped with the response.
+ * PNG is excluded by the compression middleware's supported content types.
+ * Use a tiny embedded image so the example does not depend on a remote service.
  */
-ray.bridge('/img').get((req, res) => {
-  const image = http.request(
-    {
-      host: 'img-aws.ehowcdn.com',
-      path: '/600x600p/photos.demandstudios.com/getty/article/165/76/87490163.jpg'
-    },
-    (response) => {
-      res.setHeader('Content-Type', response.headers['content-type']);
-      response.pipe(res);
-    }
-  );
-
-  image.end();
-});
+const image = Buffer.from(
+  'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+ip1sAAAAASUVORK5CYII=',
+  'base64'
+);
+ray
+  .bridge('/img')
+  .through(compress())
+  .get((req, res) => {
+    res.setHeader('Content-Type', 'image/png');
+    Readable.from([image]).pipe(res);
+  });
 
 ray.start((address) => {
   console.log(`Up on port ${address.port}`);

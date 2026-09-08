@@ -31,7 +31,7 @@ rayo({ port: 5050 })
 
 `res.send()` will try to guess the _content-type_ based on the payload and send the appropriate headers. It will also send a status code and end the response.
 
-For known response formats, use an explicit helper to avoid content detection:
+For known response formats, use an explicit helper to avoid content detection. Each line below is a separate response example:
 
 ```js
 res.text('Hello');                       // Plain text, no JSON parsing
@@ -42,11 +42,17 @@ res.jsonString('{"message":"Hello"}');   // Already serialized; no parsing
 
 `jsonString` trusts the caller to supply valid JSON. All helpers preserve an existing `Content-Type`, calculate `Content-Length` in bytes, add `X-Powered-By`, and end the response. Each accepts optional `statusCode` (default `200`) and `statusText` (the HTTP reason phrase) arguments.
 
-`res.send(string)` skips detection when `Content-Type` is already set. Otherwise it detects valid JSON strings (including JSON primitives), serializes objects, sends Buffers unchanged as `application/octet-stream`, and converts other primitives to text. `send()` and `text()` send an empty body for `null` or `undefined`. `json(null)` sends `null`; `json(undefined)` sends an empty body, following `JSON.stringify` semantics.
+`res.send()` detects valid JSON strings (including JSON primitives), serializes objects, sends Buffers unchanged as `application/octet-stream`, and converts other primitives to text. For string payloads, it skips detection when `Content-Type` is already set. `send()` and `text()` send an empty body for `null` or `undefined`. `json(null)` sends `null`; `json(undefined)` sends an empty body, following `JSON.stringify` semantics.
 
 ```js
+const alreadySerializedJSON = '{"message":"Hello"}';
 res.setHeader('Content-Type', 'application/json');
 res.send(alreadySerializedJSON); // No parse-and-discard work
+```
+
+In a separate response, you can set an error status:
+
+```js
 res.text('Order not found', 404);
 ```
 

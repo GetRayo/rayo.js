@@ -1,6 +1,6 @@
 /* eslint no-console: 0 */
 
-import rayo from 'rayo/index.js';
+import rayo from 'rayo';
 
 rayo({ port: 5050, storm: {} })
   .get('/', (req, res) => res.end('Thunderstruck storm'))
