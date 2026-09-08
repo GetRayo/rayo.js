@@ -24,7 +24,7 @@ Your server will feel like it got hit by a lightning bolt...
 - similar API to Express¹,
 - compatible with (most) Express middleware²,
 - extensible & plugable,
-- < 85 LOC (with routing and all)
+- indexed routing with reusable middleware stacks
 
 > ¹ `Rayo` is not intended to be an Express replacement, thus the API is similar, inspired-by, but not identical.<br />
 > ² Some middleware rely on Express-specific features, which `Rayo` may or may not implement.
@@ -144,6 +144,47 @@ In the above example, the error will be returned on the `/` path, since `step()`
 If you don't have an error function, you may still call `step()` (with an argument), which will use Rayo's own error function.
 
 ## API
+
+### TypeScript
+
+The `rayo`, `@rayo/send`, `@rayo/compress`, and `@rayo/storm` packages include declarations.
+Install TypeScript and `@types/node` in a TypeScript application. Use NodeNext or Bundler module resolution.
+
+```ts
+import rayo, { type Request } from 'rayo';
+import send, { type SendResponse } from '@rayo/send';
+import compress from '@rayo/compress';
+
+interface AppRequest extends Request {
+  accountId: string;
+}
+
+const app = rayo<AppRequest, SendResponse>({ port: 5050 });
+app.through(send(), compress(), (req, res, next) => {
+  req.accountId = 'example';
+  next();
+});
+app.get('/hello/:name', (req, res) => {
+  res.json({ name: req.params.name, account: req.accountId });
+});
+app.start();
+```
+
+Request and response extensions describe what your middleware installs; install that middleware before handlers
+that use those fields. Without a response subtype, send helpers are optional on Node's `ServerResponse`.
+
+### Routing and middleware preparation
+
+Routes are indexed by method and path segments. Matches retain registration order, optional parameters, wildcards,
+trailing-slash handling, and raw URL-encoded parameter values. A static route does not override an earlier parameter
+route. Bridges are checked before direct routes, with later bridges checked first.
+
+Global middleware and route handlers are combined once during preparation. Registration through `.get()`, `.route()`,
+`.through()`, and bridges automatically invalidates the index; the next request rebuilds it. `.prepare()` (or `.through()`
+with no handlers) prepares eagerly and is safe to repeat. Do not mutate prepared arrays returned by `.fetch()`.
+
+Bridge middleware runs once before its handlers. When multiple bridges and direct registrations use the same literal
+method/path, their handlers are combined in bridge precedence order followed by the direct handlers.
 
 #### rayo(options = {})
 

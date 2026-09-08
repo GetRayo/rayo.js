@@ -1,0 +1,1143 @@
+{
+  "metadata": {
+    "node": "v24.16.0",
+    "platform": "darwin",
+    "architecture": "arm64",
+    "cpu": "Apple M1 Ultra",
+    "availableParallelism": 20,
+    "startedAt": "2026-09-08T10:40:30.552Z",
+    "options": {
+      "_": [],
+      "help": false,
+      "h": false,
+      "list": false,
+      "suite": "rayo",
+      "duration": 3,
+      "d": "3",
+      "warmup": 1,
+      "repeats": 3,
+      "r": "3",
+      "connections": 50,
+      "c": "50",
+      "pipelining": 1,
+      "p": "1",
+      "mode": "single",
+      "server-workers": 2,
+      "w": 2,
+      "seed": 1
+    },
+    "baseline": "Local working tree saved before implementation on 2026-09-08, including pre-existing user edits",
+    "baseGitCommit": "139fb9d4a5bbf5215e02d4cdfed2c837aa871470",
+    "sourceSha256": {
+      "baseline": {
+        "packages/rayo/index.js": "037208e7e45abc7cbb04cbd03f27d291844ce40c7f4ed7021686521bbbb84da4",
+        "packages/rayo/bridge.mjs": "519dcca0526491f577e5af4ee348a2e4f49ba103060b84941c475562fb5567a3",
+        "packages/send/index.js": "dd124446873ddbeb7caa818bcb9723292ac64492201fe48776babeccafab14c1",
+        "packages/compress/index.js": "8ee80b37314208d7622099dc8eb75471b9010b765279a196c14573276c109d1b",
+        "packages/storm/index.js": "ef676d31db133666092b9ab79846be9130c6c46d657aac79d60ec4e26ff7f3e3"
+      },
+      "current": {
+        "packages/rayo/index.js": "df9ea25982ac7301940f9627afe8710ead5981963ea9294ab7cc6f31970b722c",
+        "packages/rayo/bridge.mjs": "e4ea592898638c9861dcf073e822c5801b051d66aac676c45c5a4522bee82be0",
+        "packages/send/index.js": "860b87eac0137025d54dc9a75ae17f778b1410a40ae3ea37e26ee105c7d4b69f",
+        "packages/compress/index.js": "e327d83e1fd0f01a048719f0163a19baaa474b489270effaa2deaf48a98ebcfe",
+        "packages/storm/index.js": "197d347bca74593bdf62c16aeef0640d6d5de7885132bdd2b9160d3f9fe4a7de",
+        "packages/rayo/router.mjs": "1f713f566b698b18c98cdaece33f8652da602a8fd5e9c9d6c166f21766d6cded"
+      }
+    }
+  },
+  "runs": [
+    {
+      "round": 1,
+      "variant": "baseline",
+      "framework": "Rayo",
+      "case": "response/auto-text",
+      "mode": "single",
+      "versions": {
+        "rayo": "1.4.6",
+        "@rayo/send": "1.2.0"
+      },
+      "requestsPerSecond": 33690.67,
+      "latency": {
+        "p50": 1.418,
+        "p95": 1.766,
+        "p99": 2.845
+      },
+      "throughputBytesPerSecond": 7141376,
+      "cpuPercent": 101.5285257304495,
+      "peakRssBytes": 106545152,
+      "heapUsedBytes": 17561936,
+      "errors": 0,
+      "timeouts": 0,
+      "mismatches": 0,
+      "statusCodeStats": {
+        "200": {
+          "count": 101066
+        }
+      },
+      "requests": 101066,
+      "duration": 3
+    },
+    {
+      "round": 1,
+      "variant": "current",
+      "framework": "Rayo",
+      "case": "response/auto-text",
+      "mode": "single",
+      "versions": {
+        "rayo": "1.4.6",
+        "@rayo/send": "1.2.0"
+      },
+      "requestsPerSecond": 51066.67,
+      "latency": {
+        "p50": 0.924,
+        "p95": 1.633,
+        "p99": 1.98
+      },
+      "throughputBytesPerSecond": 10822997.34,
+      "cpuPercent": 101.07964733375752,
+      "peakRssBytes": 97828864,
+      "heapUsedBytes": 9331752,
+      "errors": 0,
+      "timeouts": 0,
+      "mismatches": 0,
+      "statusCodeStats": {
+        "200": {
+          "count": 153168
+        }
+      },
+      "requests": 153168,
+      "duration": 3
+    },
+    {
+      "round": 1,
+      "variant": "baseline",
+      "framework": "Rayo",
+      "case": "routes/static/1",
+      "mode": "single",
+      "versions": {
+        "rayo": "1.4.6"
+      },
+      "requestsPerSecond": 56890.67,
+      "latency": {
+        "p50": 0.819,
+        "p95": 1.463,
+        "p99": 1.773
+      },
+      "throughputBytesPerSecond": 7055360,
+      "cpuPercent": 100.67254159886201,
+      "peakRssBytes": 98238464,
+      "heapUsedBytes": 10849240,
+      "errors": 0,
+      "timeouts": 0,
+      "mismatches": 0,
+      "statusCodeStats": {
+        "200": {
+          "count": 170678
+        }
+      },
+      "requests": 170678,
+      "duration": 3
+    },
+    {
+      "round": 1,
+      "variant": "current",
+      "framework": "Rayo",
+      "case": "routes/static/1",
+      "mode": "single",
+      "versions": {
+        "rayo": "1.4.6"
+      },
+      "requestsPerSecond": 55173.34,
+      "latency": {
+        "p50": 0.844,
+        "p95": 1.522,
+        "p99": 1.825
+      },
+      "throughputBytesPerSecond": 6842368,
+      "cpuPercent": 101.11804030240974,
+      "peakRssBytes": 97173504,
+      "heapUsedBytes": 14500496,
+      "errors": 0,
+      "timeouts": 0,
+      "mismatches": 0,
+      "statusCodeStats": {
+        "200": {
+          "count": 165529
+        }
+      },
+      "requests": 165529,
+      "duration": 3
+    },
+    {
+      "round": 1,
+      "variant": "baseline",
+      "framework": "Rayo",
+      "case": "middleware/20",
+      "mode": "single",
+      "versions": {
+        "rayo": "1.4.6"
+      },
+      "requestsPerSecond": 54405.34,
+      "latency": {
+        "p50": 0.873,
+        "p95": 1.527,
+        "p99": 1.869
+      },
+      "throughputBytesPerSecond": 6745429.34,
+      "cpuPercent": 101.06667764899878,
+      "peakRssBytes": 98058240,
+      "heapUsedBytes": 9145208,
+      "errors": 0,
+      "timeouts": 0,
+      "mismatches": 0,
+      "statusCodeStats": {
+        "200": {
+          "count": 163200
+        }
+      },
+      "requests": 163200,
+      "duration": 3
+    },
+    {
+      "round": 1,
+      "variant": "current",
+      "framework": "Rayo",
+      "case": "middleware/20",
+      "mode": "single",
+      "versions": {
+        "rayo": "1.4.6"
+      },
+      "requestsPerSecond": 54373.34,
+      "latency": {
+        "p50": 0.868,
+        "p95": 1.511,
+        "p99": 1.849
+      },
+      "throughputBytesPerSecond": 6741333.34,
+      "cpuPercent": 101.44463003152507,
+      "peakRssBytes": 97550336,
+      "heapUsedBytes": 9251240,
+      "errors": 0,
+      "timeouts": 0,
+      "mismatches": 0,
+      "statusCodeStats": {
+        "200": {
+          "count": 163125
+        }
+      },
+      "requests": 163125,
+      "duration": 3
+    },
+    {
+      "round": 1,
+      "variant": "baseline",
+      "framework": "Rayo",
+      "case": "routes/param/1000",
+      "mode": "single",
+      "versions": {
+        "rayo": "1.4.6"
+      },
+      "requestsPerSecond": 36474.67,
+      "latency": {
+        "p50": 1.318,
+        "p95": 1.623,
+        "p99": 2.629
+      },
+      "throughputBytesPerSecond": 4634624,
+      "cpuPercent": 100.83452159472586,
+      "peakRssBytes": 90865664,
+      "heapUsedBytes": 10404344,
+      "errors": 0,
+      "timeouts": 0,
+      "mismatches": 0,
+      "statusCodeStats": {
+        "200": {
+          "count": 109444
+        }
+      },
+      "requests": 109444,
+      "duration": 3
+    },
+    {
+      "round": 1,
+      "variant": "current",
+      "framework": "Rayo",
+      "case": "routes/param/1000",
+      "mode": "single",
+      "versions": {
+        "rayo": "1.4.6"
+      },
+      "requestsPerSecond": 52954.67,
+      "latency": {
+        "p50": 0.873,
+        "p95": 1.578,
+        "p99": 1.975
+      },
+      "throughputBytesPerSecond": 6724949.34,
+      "cpuPercent": 100.67478555282096,
+      "peakRssBytes": 100450304,
+      "heapUsedBytes": 14749072,
+      "errors": 0,
+      "timeouts": 0,
+      "mismatches": 0,
+      "statusCodeStats": {
+        "200": {
+          "count": 158860
+        }
+      },
+      "requests": 158860,
+      "duration": 3
+    },
+    {
+      "round": 1,
+      "variant": "baseline",
+      "framework": "Rayo",
+      "case": "response/header-json",
+      "mode": "single",
+      "versions": {
+        "rayo": "1.4.6",
+        "@rayo/send": "1.2.0"
+      },
+      "requestsPerSecond": 45125.34,
+      "latency": {
+        "p50": 1.048,
+        "p95": 1.821,
+        "p99": 2.269
+      },
+      "throughputBytesPerSecond": 22552576,
+      "cpuPercent": 101.06808399468288,
+      "peakRssBytes": 98566144,
+      "heapUsedBytes": 11494392,
+      "errors": 0,
+      "timeouts": 0,
+      "mismatches": 0,
+      "statusCodeStats": {
+        "200": {
+          "count": 135342
+        }
+      },
+      "requests": 135342,
+      "duration": 3
+    },
+    {
+      "round": 1,
+      "variant": "current",
+      "framework": "Rayo",
+      "case": "response/header-json",
+      "mode": "single",
+      "versions": {
+        "rayo": "1.4.6",
+        "@rayo/send": "1.2.0"
+      },
+      "requestsPerSecond": 48442.67,
+      "latency": {
+        "p50": 0.966,
+        "p95": 1.746,
+        "p99": 2.121
+      },
+      "throughputBytesPerSecond": 24218282.67,
+      "cpuPercent": 101.2858500545127,
+      "peakRssBytes": 98942976,
+      "heapUsedBytes": 15287728,
+      "errors": 0,
+      "timeouts": 0,
+      "mismatches": 0,
+      "statusCodeStats": {
+        "200": {
+          "count": 145318
+        }
+      },
+      "requests": 145318,
+      "duration": 3
+    },
+    {
+      "round": 1,
+      "variant": "baseline",
+      "framework": "Rayo",
+      "case": "routes/static/1000",
+      "mode": "single",
+      "versions": {
+        "rayo": "1.4.6"
+      },
+      "requestsPerSecond": 36869.34,
+      "latency": {
+        "p50": 1.29,
+        "p95": 1.643,
+        "p99": 2.629
+      },
+      "throughputBytesPerSecond": 4571818.67,
+      "cpuPercent": 100.08127223964232,
+      "peakRssBytes": 89767936,
+      "heapUsedBytes": 12778920,
+      "errors": 0,
+      "timeouts": 0,
+      "mismatches": 0,
+      "statusCodeStats": {
+        "200": {
+          "count": 110614
+        }
+      },
+      "requests": 110614,
+      "duration": 3
+    },
+    {
+      "round": 1,
+      "variant": "current",
+      "framework": "Rayo",
+      "case": "routes/static/1000",
+      "mode": "single",
+      "versions": {
+        "rayo": "1.4.6"
+      },
+      "requestsPerSecond": 54693.34,
+      "latency": {
+        "p50": 0.849,
+        "p95": 1.53,
+        "p99": 1.867
+      },
+      "throughputBytesPerSecond": 6782293.34,
+      "cpuPercent": 101.14906204950051,
+      "peakRssBytes": 98762752,
+      "heapUsedBytes": 11031640,
+      "errors": 0,
+      "timeouts": 0,
+      "mismatches": 0,
+      "statusCodeStats": {
+        "200": {
+          "count": 164072
+        }
+      },
+      "requests": 164072,
+      "duration": 3
+    },
+    {
+      "round": 2,
+      "variant": "current",
+      "framework": "Rayo",
+      "case": "routes/static/1000",
+      "mode": "single",
+      "versions": {
+        "rayo": "1.4.6"
+      },
+      "requestsPerSecond": 54480,
+      "latency": {
+        "p50": 0.855,
+        "p95": 1.539,
+        "p99": 1.916
+      },
+      "throughputBytesPerSecond": 6754986.67,
+      "cpuPercent": 101.06615639051827,
+      "peakRssBytes": 98631680,
+      "heapUsedBytes": 11162232,
+      "errors": 0,
+      "timeouts": 0,
+      "mismatches": 0,
+      "statusCodeStats": {
+        "200": {
+          "count": 163442
+        }
+      },
+      "requests": 163442,
+      "duration": 3
+    },
+    {
+      "round": 2,
+      "variant": "baseline",
+      "framework": "Rayo",
+      "case": "routes/static/1000",
+      "mode": "single",
+      "versions": {
+        "rayo": "1.4.6"
+      },
+      "requestsPerSecond": 37232,
+      "latency": {
+        "p50": 1.286,
+        "p95": 1.624,
+        "p99": 2.595
+      },
+      "throughputBytesPerSecond": 4616874.67,
+      "cpuPercent": 100.68789707103008,
+      "peakRssBytes": 90243072,
+      "heapUsedBytes": 13413688,
+      "errors": 0,
+      "timeouts": 0,
+      "mismatches": 0,
+      "statusCodeStats": {
+        "200": {
+          "count": 111697
+        }
+      },
+      "requests": 111697,
+      "duration": 3
+    },
+    {
+      "round": 2,
+      "variant": "current",
+      "framework": "Rayo",
+      "case": "response/header-json",
+      "mode": "single",
+      "versions": {
+        "rayo": "1.4.6",
+        "@rayo/send": "1.2.0"
+      },
+      "requestsPerSecond": 50928,
+      "latency": {
+        "p50": 0.921,
+        "p95": 1.633,
+        "p99": 1.998
+      },
+      "throughputBytesPerSecond": 25463466.67,
+      "cpuPercent": 101.17519156850095,
+      "peakRssBytes": 98516992,
+      "heapUsedBytes": 10949088,
+      "errors": 0,
+      "timeouts": 0,
+      "mismatches": 0,
+      "statusCodeStats": {
+        "200": {
+          "count": 152774
+        }
+      },
+      "requests": 152774,
+      "duration": 3
+    },
+    {
+      "round": 2,
+      "variant": "baseline",
+      "framework": "Rayo",
+      "case": "response/header-json",
+      "mode": "single",
+      "versions": {
+        "rayo": "1.4.6",
+        "@rayo/send": "1.2.0"
+      },
+      "requestsPerSecond": 45744,
+      "latency": {
+        "p50": 1.033,
+        "p95": 1.773,
+        "p99": 2.241
+      },
+      "throughputBytesPerSecond": 22874794.67,
+      "cpuPercent": 101.26242346468707,
+      "peakRssBytes": 98467840,
+      "heapUsedBytes": 13209136,
+      "errors": 0,
+      "timeouts": 0,
+      "mismatches": 0,
+      "statusCodeStats": {
+        "200": {
+          "count": 137231
+        }
+      },
+      "requests": 137231,
+      "duration": 3
+    },
+    {
+      "round": 2,
+      "variant": "current",
+      "framework": "Rayo",
+      "case": "routes/param/1000",
+      "mode": "single",
+      "versions": {
+        "rayo": "1.4.6"
+      },
+      "requestsPerSecond": 53424,
+      "latency": {
+        "p50": 0.869,
+        "p95": 1.558,
+        "p99": 1.949
+      },
+      "throughputBytesPerSecond": 6783658.67,
+      "cpuPercent": 99.36421308817759,
+      "peakRssBytes": 99975168,
+      "heapUsedBytes": 14758160,
+      "errors": 0,
+      "timeouts": 0,
+      "mismatches": 0,
+      "statusCodeStats": {
+        "200": {
+          "count": 160256
+        }
+      },
+      "requests": 160256,
+      "duration": 3
+    },
+    {
+      "round": 2,
+      "variant": "baseline",
+      "framework": "Rayo",
+      "case": "routes/param/1000",
+      "mode": "single",
+      "versions": {
+        "rayo": "1.4.6"
+      },
+      "requestsPerSecond": 36837.34,
+      "latency": {
+        "p50": 1.304,
+        "p95": 1.597,
+        "p99": 2.609
+      },
+      "throughputBytesPerSecond": 4676949.34,
+      "cpuPercent": 100.55094228030734,
+      "peakRssBytes": 90308608,
+      "heapUsedBytes": 13487912,
+      "errors": 0,
+      "timeouts": 0,
+      "mismatches": 0,
+      "statusCodeStats": {
+        "200": {
+          "count": 110495
+        }
+      },
+      "requests": 110495,
+      "duration": 3
+    },
+    {
+      "round": 2,
+      "variant": "current",
+      "framework": "Rayo",
+      "case": "middleware/20",
+      "mode": "single",
+      "versions": {
+        "rayo": "1.4.6"
+      },
+      "requestsPerSecond": 54074.67,
+      "latency": {
+        "p50": 0.873,
+        "p95": 1.533,
+        "p99": 1.868
+      },
+      "throughputBytesPerSecond": 6704469.34,
+      "cpuPercent": 101.3630918335507,
+      "peakRssBytes": 97615872,
+      "heapUsedBytes": 12914240,
+      "errors": 0,
+      "timeouts": 0,
+      "mismatches": 0,
+      "statusCodeStats": {
+        "200": {
+          "count": 162205
+        }
+      },
+      "requests": 162205,
+      "duration": 3
+    },
+    {
+      "round": 2,
+      "variant": "baseline",
+      "framework": "Rayo",
+      "case": "middleware/20",
+      "mode": "single",
+      "versions": {
+        "rayo": "1.4.6"
+      },
+      "requestsPerSecond": 52186.67,
+      "latency": {
+        "p50": 0.888,
+        "p95": 1.613,
+        "p99": 1.998
+      },
+      "throughputBytesPerSecond": 6469632,
+      "cpuPercent": 101.09359286657609,
+      "peakRssBytes": 98680832,
+      "heapUsedBytes": 13144656,
+      "errors": 0,
+      "timeouts": 0,
+      "mismatches": 0,
+      "statusCodeStats": {
+        "200": {
+          "count": 156543
+        }
+      },
+      "requests": 156543,
+      "duration": 3
+    },
+    {
+      "round": 2,
+      "variant": "current",
+      "framework": "Rayo",
+      "case": "routes/static/1",
+      "mode": "single",
+      "versions": {
+        "rayo": "1.4.6"
+      },
+      "requestsPerSecond": 54992,
+      "latency": {
+        "p50": 0.855,
+        "p95": 1.523,
+        "p99": 1.83
+      },
+      "throughputBytesPerSecond": 6820522.67,
+      "cpuPercent": 101.38395984056822,
+      "peakRssBytes": 97812480,
+      "heapUsedBytes": 12321352,
+      "errors": 0,
+      "timeouts": 0,
+      "mismatches": 0,
+      "statusCodeStats": {
+        "200": {
+          "count": 164996
+        }
+      },
+      "requests": 164996,
+      "duration": 3
+    },
+    {
+      "round": 2,
+      "variant": "baseline",
+      "framework": "Rayo",
+      "case": "routes/static/1",
+      "mode": "single",
+      "versions": {
+        "rayo": "1.4.6"
+      },
+      "requestsPerSecond": 55674.67,
+      "latency": {
+        "p50": 0.846,
+        "p95": 1.486,
+        "p99": 1.812
+      },
+      "throughputBytesPerSecond": 6903808,
+      "cpuPercent": 101.46089542574556,
+      "peakRssBytes": 98271232,
+      "heapUsedBytes": 10559656,
+      "errors": 0,
+      "timeouts": 0,
+      "mismatches": 0,
+      "statusCodeStats": {
+        "200": {
+          "count": 167030
+        }
+      },
+      "requests": 167030,
+      "duration": 3
+    },
+    {
+      "round": 2,
+      "variant": "current",
+      "framework": "Rayo",
+      "case": "response/auto-text",
+      "mode": "single",
+      "versions": {
+        "rayo": "1.4.6",
+        "@rayo/send": "1.2.0"
+      },
+      "requestsPerSecond": 51610.67,
+      "latency": {
+        "p50": 0.918,
+        "p95": 1.603,
+        "p99": 1.944
+      },
+      "throughputBytesPerSecond": 10940416,
+      "cpuPercent": 101.36142980136395,
+      "peakRssBytes": 99270656,
+      "heapUsedBytes": 14044016,
+      "errors": 0,
+      "timeouts": 0,
+      "mismatches": 0,
+      "statusCodeStats": {
+        "200": {
+          "count": 154832
+        }
+      },
+      "requests": 154832,
+      "duration": 3
+    },
+    {
+      "round": 2,
+      "variant": "baseline",
+      "framework": "Rayo",
+      "case": "response/auto-text",
+      "mode": "single",
+      "versions": {
+        "rayo": "1.4.6",
+        "@rayo/send": "1.2.0"
+      },
+      "requestsPerSecond": 33733.34,
+      "latency": {
+        "p50": 1.413,
+        "p95": 1.782,
+        "p99": 2.831
+      },
+      "throughputBytesPerSecond": 7148202.67,
+      "cpuPercent": 101.63166499098664,
+      "peakRssBytes": 106397696,
+      "heapUsedBytes": 16384320,
+      "errors": 0,
+      "timeouts": 0,
+      "mismatches": 0,
+      "statusCodeStats": {
+        "200": {
+          "count": 101174
+        }
+      },
+      "requests": 101174,
+      "duration": 3
+    },
+    {
+      "round": 3,
+      "variant": "baseline",
+      "framework": "Rayo",
+      "case": "response/auto-text",
+      "mode": "single",
+      "versions": {
+        "rayo": "1.4.6",
+        "@rayo/send": "1.2.0"
+      },
+      "requestsPerSecond": 34074.67,
+      "latency": {
+        "p50": 1.396,
+        "p95": 1.788,
+        "p99": 2.809
+      },
+      "throughputBytesPerSecond": 7224661.34,
+      "cpuPercent": 101.45252106358672,
+      "peakRssBytes": 106430464,
+      "heapUsedBytes": 17469144,
+      "errors": 0,
+      "timeouts": 0,
+      "mismatches": 0,
+      "statusCodeStats": {
+        "200": {
+          "count": 102229
+        }
+      },
+      "requests": 102229,
+      "duration": 3
+    },
+    {
+      "round": 3,
+      "variant": "current",
+      "framework": "Rayo",
+      "case": "response/auto-text",
+      "mode": "single",
+      "versions": {
+        "rayo": "1.4.6",
+        "@rayo/send": "1.2.0"
+      },
+      "requestsPerSecond": 51504,
+      "latency": {
+        "p50": 0.911,
+        "p95": 1.642,
+        "p99": 2.004
+      },
+      "throughputBytesPerSecond": 10921301.34,
+      "cpuPercent": 101.30529318890883,
+      "peakRssBytes": 98222080,
+      "heapUsedBytes": 12229608,
+      "errors": 0,
+      "timeouts": 0,
+      "mismatches": 0,
+      "statusCodeStats": {
+        "200": {
+          "count": 154513
+        }
+      },
+      "requests": 154513,
+      "duration": 3
+    },
+    {
+      "round": 3,
+      "variant": "baseline",
+      "framework": "Rayo",
+      "case": "routes/static/1",
+      "mode": "single",
+      "versions": {
+        "rayo": "1.4.6"
+      },
+      "requestsPerSecond": 54096,
+      "latency": {
+        "p50": 0.86,
+        "p95": 1.539,
+        "p99": 1.9
+      },
+      "throughputBytesPerSecond": 6705834.67,
+      "cpuPercent": 100.7759961143004,
+      "peakRssBytes": 98156544,
+      "heapUsedBytes": 14893624,
+      "errors": 0,
+      "timeouts": 0,
+      "mismatches": 0,
+      "statusCodeStats": {
+        "200": {
+          "count": 162252
+        }
+      },
+      "requests": 162252,
+      "duration": 3
+    },
+    {
+      "round": 3,
+      "variant": "current",
+      "framework": "Rayo",
+      "case": "routes/static/1",
+      "mode": "single",
+      "versions": {
+        "rayo": "1.4.6"
+      },
+      "requestsPerSecond": 56016,
+      "latency": {
+        "p50": 0.839,
+        "p95": 1.489,
+        "p99": 1.809
+      },
+      "throughputBytesPerSecond": 6946133.34,
+      "cpuPercent": 101.3063137254951,
+      "peakRssBytes": 97615872,
+      "heapUsedBytes": 9175192,
+      "errors": 0,
+      "timeouts": 0,
+      "mismatches": 0,
+      "statusCodeStats": {
+        "200": {
+          "count": 168040
+        }
+      },
+      "requests": 168040,
+      "duration": 3
+    },
+    {
+      "round": 3,
+      "variant": "baseline",
+      "framework": "Rayo",
+      "case": "middleware/20",
+      "mode": "single",
+      "versions": {
+        "rayo": "1.4.6"
+      },
+      "requestsPerSecond": 53776,
+      "latency": {
+        "p50": 0.882,
+        "p95": 1.529,
+        "p99": 1.879
+      },
+      "throughputBytesPerSecond": 6667605.34,
+      "cpuPercent": 101.42650683303604,
+      "peakRssBytes": 98467840,
+      "heapUsedBytes": 14657512,
+      "errors": 0,
+      "timeouts": 0,
+      "mismatches": 0,
+      "statusCodeStats": {
+        "200": {
+          "count": 161345
+        }
+      },
+      "requests": 161345,
+      "duration": 3
+    },
+    {
+      "round": 3,
+      "variant": "current",
+      "framework": "Rayo",
+      "case": "middleware/20",
+      "mode": "single",
+      "versions": {
+        "rayo": "1.4.6"
+      },
+      "requestsPerSecond": 52218.67,
+      "latency": {
+        "p50": 0.886,
+        "p95": 1.599,
+        "p99": 1.934
+      },
+      "throughputBytesPerSecond": 6475093.34,
+      "cpuPercent": 100.82601484692147,
+      "peakRssBytes": 98091008,
+      "heapUsedBytes": 13472264,
+      "errors": 0,
+      "timeouts": 0,
+      "mismatches": 0,
+      "statusCodeStats": {
+        "200": {
+          "count": 156661
+        }
+      },
+      "requests": 156661,
+      "duration": 3
+    },
+    {
+      "round": 3,
+      "variant": "baseline",
+      "framework": "Rayo",
+      "case": "routes/param/1000",
+      "mode": "single",
+      "versions": {
+        "rayo": "1.4.6"
+      },
+      "requestsPerSecond": 36645.34,
+      "latency": {
+        "p50": 1.294,
+        "p95": 1.65,
+        "p99": 2.641
+      },
+      "throughputBytesPerSecond": 4653738.67,
+      "cpuPercent": 100.45841236935074,
+      "peakRssBytes": 90161152,
+      "heapUsedBytes": 10790928,
+      "errors": 0,
+      "timeouts": 0,
+      "mismatches": 0,
+      "statusCodeStats": {
+        "200": {
+          "count": 109932
+        }
+      },
+      "requests": 109932,
+      "duration": 3
+    },
+    {
+      "round": 3,
+      "variant": "current",
+      "framework": "Rayo",
+      "case": "routes/param/1000",
+      "mode": "single",
+      "versions": {
+        "rayo": "1.4.6"
+      },
+      "requestsPerSecond": 53402.67,
+      "latency": {
+        "p50": 0.888,
+        "p95": 1.551,
+        "p99": 1.892
+      },
+      "throughputBytesPerSecond": 6782293.34,
+      "cpuPercent": 101.04065743047363,
+      "peakRssBytes": 100237312,
+      "heapUsedBytes": 15274680,
+      "errors": 0,
+      "timeouts": 0,
+      "mismatches": 0,
+      "statusCodeStats": {
+        "200": {
+          "count": 160184
+        }
+      },
+      "requests": 160184,
+      "duration": 3
+    },
+    {
+      "round": 3,
+      "variant": "baseline",
+      "framework": "Rayo",
+      "case": "response/header-json",
+      "mode": "single",
+      "versions": {
+        "rayo": "1.4.6",
+        "@rayo/send": "1.2.0"
+      },
+      "requestsPerSecond": 43301.34,
+      "latency": {
+        "p50": 1.06,
+        "p95": 1.902,
+        "p99": 2.515
+      },
+      "throughputBytesPerSecond": 21651456,
+      "cpuPercent": 97.66034971141922,
+      "peakRssBytes": 98222080,
+      "heapUsedBytes": 14552640,
+      "errors": 0,
+      "timeouts": 0,
+      "mismatches": 0,
+      "statusCodeStats": {
+        "200": {
+          "count": 129921
+        }
+      },
+      "requests": 129921,
+      "duration": 3
+    },
+    {
+      "round": 3,
+      "variant": "current",
+      "framework": "Rayo",
+      "case": "response/header-json",
+      "mode": "single",
+      "versions": {
+        "rayo": "1.4.6",
+        "@rayo/send": "1.2.0"
+      },
+      "requestsPerSecond": 38800,
+      "latency": {
+        "p50": 1.196,
+        "p95": 2.351,
+        "p99": 3.205
+      },
+      "throughputBytesPerSecond": 19401386.67,
+      "cpuPercent": 88.94654561583039,
+      "peakRssBytes": 90505216,
+      "heapUsedBytes": 10064384,
+      "errors": 0,
+      "timeouts": 0,
+      "mismatches": 0,
+      "statusCodeStats": {
+        "200": {
+          "count": 116418
+        }
+      },
+      "requests": 116418,
+      "duration": 3
+    },
+    {
+      "round": 3,
+      "variant": "baseline",
+      "framework": "Rayo",
+      "case": "routes/static/1000",
+      "mode": "single",
+      "versions": {
+        "rayo": "1.4.6"
+      },
+      "requestsPerSecond": 40517.34,
+      "latency": {
+        "p50": 1.18,
+        "p95": 1.487,
+        "p99": 2.411
+      },
+      "throughputBytesPerSecond": 5023744,
+      "cpuPercent": 99.79266772481091,
+      "peakRssBytes": 89997312,
+      "heapUsedBytes": 10386816,
+      "errors": 0,
+      "timeouts": 0,
+      "mismatches": 0,
+      "statusCodeStats": {
+        "200": {
+          "count": 121562
+        }
+      },
+      "requests": 121562,
+      "duration": 3
+    },
+    {
+      "round": 3,
+      "variant": "current",
+      "framework": "Rayo",
+      "case": "routes/static/1000",
+      "mode": "single",
+      "versions": {
+        "rayo": "1.4.6"
+      },
+      "requestsPerSecond": 66933.34,
+      "latency": {
+        "p50": 0.688,
+        "p95": 1.324,
+        "p99": 1.519
+      },
+      "throughputBytesPerSecond": 8297130.67,
+      "cpuPercent": 100.83714666915643,
+      "peakRssBytes": 99450880,
+      "heapUsedBytes": 10695376,
+      "errors": 0,
+      "timeouts": 0,
+      "mismatches": 0,
+      "statusCodeStats": {
+        "200": {
+          "count": 200762
+        }
+      },
+      "requests": 200762,
+      "duration": 3
+    }
+  ]
+}

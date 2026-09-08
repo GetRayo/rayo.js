@@ -1,12 +1,14 @@
 import should from 'should';
-import { cpus } from 'os';
+import assert from 'node:assert/strict';
+import { availableParallelism } from 'node:os';
 import { spawn } from 'child_process';
+import { storm } from '../../../packages/storm/index.js';
 
 const exec = (file, options = {}) =>
   new Promise((yes) => {
     const res = [];
     const input = (buffer) => res.push(buffer.toString());
-    const path = `./test/packages/storm/${file}`;
+    const path = `./test/packages/storm/${file}.js`;
 
     if (options.workers === 'auto') {
       options.workers = 0;
@@ -14,14 +16,18 @@ const exec = (file, options = {}) =>
       options.workers = 1;
     }
 
-    const pcs = spawn('node', [
-      path,
-      options.workers,
-      options.workerId || 0,
-      options.command || '',
-      options.service || 'monitor',
-      options.keepAsString || 'no'
-    ]);
+    const pcs = spawn(
+      process.execPath,
+      [
+        path,
+        options.workers,
+        options.workerId || 0,
+        options.command || '',
+        options.service || 'monitor',
+        options.keepAsString || 'no'
+      ],
+      { env: { ...process.env, LOG_LEVEL: 'debug' } }
+    );
 
     pcs.stdout.on('data', (data) => {
       // process.stdout.write(data.toString());
@@ -79,14 +85,38 @@ export default function stormTest() {
     return filter(res, 'Master process: \\d+');
   });
 
-  it('CPU length workers', async () => {
-    const res = await exec('fixtures/worker', { workers: cpus().length });
+  it('available parallelism workers', async () => {
+    const res = await exec('fixtures/worker', { workers: availableParallelism() });
     return filter(res, 'Master process: \\d+');
   });
 
-  it('Invalid (string) length workers, defaults to `cpu cores`', async () => {
-    const res = await exec('fixtures/worker', { workers: 'strings_are_invalid', keepAsString: 'yes' });
+  it('zero workers selects available parallelism', async () => {
+    const res = await exec('fixtures/worker', { workers: 'auto' });
     return filter(res, 'Master process: \\d+');
+  });
+
+  it('rejects invalid worker counts before forking', () => {
+    for (const workers of [
+      -1,
+      '-2',
+      1.5,
+      '1.5',
+      NaN,
+      Infinity,
+      -Infinity,
+      Number.MAX_SAFE_INTEGER + 1,
+      'invalid',
+      '2workers',
+      '',
+      ' ',
+      null,
+      true,
+      Symbol('workers'),
+      {},
+      []
+    ]) {
+      assert.throws(() => storm(() => {}, { workers, monitor: false }), RangeError);
+    }
   });
 
   it('Without master function', async () => exec('fixtures/noMaster'));

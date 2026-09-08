@@ -1,0 +1,22 @@
+Usage: rayobench [options]
+
+  --suite compare|rayo      Framework hello-world comparison or Rayo workload matrix (default compare)
+  --mode single|cluster    Separate single-process and Storm cluster runs (default single)
+  --only, -o NAME          Express, Fastify, Polka, Rayo; RayoStorm in cluster mode
+  --case ID                Exact workload ID or prefix, e.g. routes/param, stream/gzip
+  --connections, -c N      Concurrent connections (default 50)
+  --pipelining, -p N       HTTP pipeline depth (default 1)
+  --duration, -d N         Measured seconds per run (default 5)
+  --warmup N               Warmup seconds per run (default 2, 0 disables)
+  --repeats, -r N          Independent runs per workload (default 3)
+  --server-workers, -w N   Storm server workers in cluster mode (default 2)
+  --seed N                Reproducible initial shuffle seed (default 1)
+  --output FILE           Save metadata and each validated run as JSON
+  --list                  List selected workloads without opening servers
+  --rayo-path FILE         Override Rayo entry point for checkout comparisons
+  --send-path FILE         Override @rayo/send entry point
+  --compress-path FILE     Override @rayo/compress entry point
+  --help, -h              Show this help
+
+Servers use ephemeral loopback ports. The load generator is one process.
+Body/status failures abort the run. Server CPU and RSS exclude the load generator.

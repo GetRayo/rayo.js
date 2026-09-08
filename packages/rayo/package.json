@@ -3,16 +3,18 @@
   "version": "1.4.6",
   "description": "⚡️ Rayo, an extremely fast micro-framework for Nodejs.",
   "main": "index.js",
+  "types": "index.d.ts",
+  "files": ["index.js", "index.d.ts", "bridge.mjs", "router.mjs", "readme.md", "LICENSE"],
   "exports": {
     ".": {
+      "types": "./index.d.ts",
       "require": "./index.js",
       "import": "./index.js"
-    },
-    "./": "./"
+    }
   },
   "type": "module",
   "engines": {
-    "node": ">=18"
+    "node": ">=22"
   },
   "repository": {
     "type": "git",

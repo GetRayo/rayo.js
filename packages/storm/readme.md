@@ -44,12 +44,12 @@ In the above example, the monitor service will be available at `http://localhost
 ```
 @param   {function} Called when starting a worker process.
 @param   {object}   [options]
-@returns {void}
+@returns {Storm} Event emitter for the cluster.
 ```
 
-- `options.workers` _{number}_
-  - Number of workers to spawn.
-  - `Default:` Number of available [CPU cores](https://nodejs.org/api/os.html#os_os_cpus).
+- `options.workers` _{number|string}_
+  - Positive integer number of workers to spawn. Numeric strings are accepted. Invalid counts throw a `RangeError` before any workers are created.
+  - `Default:` [`os.availableParallelism()`](https://nodejs.org/api/os.html#osavailableparallelism), which estimates the parallelism available to this process. `0` also selects this default.
 
 - `options.master` _{function}_
   - Called when starting the master process.
@@ -67,6 +67,30 @@ In the above example, the monitor service will be available at `http://localhost
 - `options.monitorPort` _{number}_
   - Listen on this port for incoming `/monitor` connections.
   - If port is omitted or is 0, the operating system will assign an arbitrary, unused port.
+
+- `options.server` _{http.Server}_
+  - Optional server for the monitoring service. Storm starts listening on `monitorPort`.
+
+The returned `Storm` instance emits `worker` and `exit` with the worker process ID, and `offline` when stopped. It exposes `workers` (the resolved worker count), `keepAlive`, and `monitor`. Calling `stop()` terminates the cluster and exits the primary process.
+
+### TypeScript
+
+Declarations for the default `Storm` class, the `storm()` factory, and `StormOptions` are included:
+
+```ts
+import { storm, type StormOptions } from '@rayo/storm';
+
+const options: StormOptions = {
+  workers: 2,
+  monitor: false,
+  master(cluster) {
+    console.log(cluster.masterPid, this.workers);
+  }
+};
+
+storm(() => startApplication(), options)
+  .on('worker', (pid) => console.log(`Worker ${pid} is online`));
+```
 
 
 ## Contribute

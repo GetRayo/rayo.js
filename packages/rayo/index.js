@@ -4,18 +4,18 @@ import { parse } from 'querystring';
 import { storm } from '@rayo/storm';
 import Bridge from './bridge.mjs';
 
-const ip = (req) => {
-  const { headers = {}, connection = {}, socket = {} } = req;
-  const remoteAddress = connection.remoteAddress || socket.remoteAddress;
-  const socketAddress = connection.socket ? connection.socket.remoteAddress : null;
+const ip = (req) =>
+  req.headers?.['x-forwarded-for'] ||
+  req.connection?.remoteAddress ||
+  req.socket?.remoteAddress ||
+  req.connection?.socket?.remoteAddress;
 
-  return headers['x-forwarded-for'] || remoteAddress || socketAddress;
-};
 const end = (req, res, status, message) => {
+  const body = message instanceof Error ? message.message : String(message);
   res.statusCode = status;
-  res.setHeader('Content-Length', message.length);
+  res.setHeader('Content-Length', Buffer.byteLength(body, 'utf8'));
   res.setHeader('Content-Type', 'text/plain; charset=utf-8');
-  res.end(message);
+  res.end(body);
 };
 
 class Rayo extends Bridge {
@@ -30,19 +30,21 @@ class Rayo extends Bridge {
       server: this.server = null
     } = options);
     this.dispatch = this.dispatch.bind(this);
+    this._defaultNotFound = (req, res) => end(req, res, 404, `${req.method} ${req.pathname} is undefined.`);
+    this._fallbackStack = null;
   }
 
   start(callback = function cb() {}) {
     const work = () => {
+      this.prepare();
       this.server = this.server || http.createServer();
-      this.server.listen(this.port, this.host);
       this.server.on('request', this.dispatch);
       this.server.once('listening', () => {
-        this.through();
         const address = this.server.address();
         address.workerPid = process.pid;
         callback(address);
       });
+      this.server.listen(this.port, this.host);
     };
 
     if (this.stormOptions) {
@@ -58,28 +60,39 @@ class Rayo extends Bridge {
     const parsedUrl = parseurl(req);
     req.ip = ip(req);
     req.pathname = parsedUrl.pathname;
-    req.query = parse(parsedUrl.query);
+    req.query = parsedUrl.query ? parse(parsedUrl.query) : {};
 
     let stack;
     const route = this.fetch(req.method, parsedUrl.pathname);
     if (!route) {
-      stack = [this.notFound || (() => end(req, res, 404, `${req.method} ${parsedUrl.pathname} is undefined.`))];
+      req.params = {};
+      const handler = this.notFound || this._defaultNotFound;
+      if (this._fallbackGates !== this.gates || this._fallbackHandler !== handler) {
+        this._fallbackGates = this.gates;
+        this._fallbackHandler = handler;
+        this._fallbackStack = this.gates.concat(handler);
+      }
+      stack = this._fallbackStack;
     } else {
       req.params = route.params;
-      ({ stack } = route);
+      stack = route.dispatchStack;
     }
 
-    return this.step(req, res, this.gates.concat(stack));
+    return this.step(req, res, stack);
   }
 
-  step(req, res, stack, error = null, statusCode = 400) {
-    const fn = stack.shift();
+  step(req, res, stack, index = 0, error = null, statusCode = 400) {
+    const fn = stack[index];
+
     if (error) {
       return this.onError ? this.onError(error, req, res, fn) : end(req, res, statusCode, error);
     }
 
     if (fn) {
-      return fn(req, res, this.step.bind(this, req, res, stack));
+      return fn(req, res, (err) => {
+        if (err) return this.step(req, res, stack, index, err, statusCode);
+        return this.step(req, res, stack, index + 1);
+      });
     }
 
     throw new Error('No handler to move to, the stack is empty.');
