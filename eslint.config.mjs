@@ -1,32 +1,13 @@
 import { defineConfig } from 'eslint/config';
-import _import from 'eslint-plugin-import';
-import prettier from 'eslint-plugin-prettier';
-import { fixupPluginRules } from '@eslint/compat';
+import prettierRecommended from 'eslint-plugin-prettier/recommended';
 import globals from 'globals';
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
-import js from '@eslint/js';
-import { FlatCompat } from '@eslint/eslintrc';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-  recommendedConfig: js.configs.recommended,
-  allConfig: js.configs.all
-});
 
 export default defineConfig([
   {
     ignores: ['**/node_modules/**', '**/dist/**', '**/build/**', 'coverage/**', 'docs/**', '**/*.old.*', '**/* copy.*']
   },
   {
-    extends: compat.extends('plugin:prettier/recommended'),
-
-    plugins: {
-      import: fixupPluginRules(_import),
-      prettier
-    },
+    extends: [prettierRecommended],
 
     languageOptions: {
       globals: {
@@ -38,19 +19,7 @@ export default defineConfig([
       sourceType: 'module'
     },
 
-    settings: {
-      'import/extensions': ['.js', '.mjs'],
-
-      'import/resolver': {
-        node: {
-          extensions: ['.js']
-        }
-      }
-    },
-
     rules: {
-      'import/no-named-as-default-member': 0,
-      'import/no-named-as-default': 0,
       'arrow-parens': ['error', 'always'],
 
       'prettier/prettier': [

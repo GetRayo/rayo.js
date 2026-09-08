@@ -1,5 +1,3 @@
-/* eslint import/extensions: 0 */
-
 import { availableParallelism } from 'node:os';
 import { storm } from '@rayo/storm';
 

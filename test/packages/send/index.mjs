@@ -1,5 +1,3 @@
-/* eslint import/extensions: 0 */
-
 import { readFileSync } from 'fs';
 import assert from 'node:assert/strict';
 import sinon from 'sinon';

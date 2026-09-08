@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { parse, match, exec } from 'matchit';
+import routingCases from './fixtures/routing.json' with { type: 'json' };
 import rayo from '../../../packages/rayo/index.js';
 import Bridge from '../../../packages/rayo/bridge.mjs';
 
@@ -15,7 +15,7 @@ const response = () => ({
 });
 
 export default function performanceTest() {
-  it('keeps matchit precedence and raw parameters across an overlapping route matrix', () => {
+  it('keeps registration precedence and raw parameters across an overlapping route matrix', () => {
     const patterns = [
       '/',
       '/users/:id',
@@ -37,47 +37,23 @@ export default function performanceTest() {
       '/trailing/',
       '/x/:x.:ext'
     ];
-    const paths = [
-      '/',
-      '',
-      '//',
-      '///',
-      '/users',
-      '/users/',
-      '/users/me',
-      '/users/a%20b',
-      '/users/%ZZ',
-      '/users/a/b',
-      '/files/x.json',
-      '/files/x.json.json',
-      '/files/a.txt',
-      '/a',
-      '/a/',
-      '/a/b',
-      '/a/b/c',
-      '/a//b',
-      '/a//x',
-      '/trailing',
-      '/trailing/',
-      '/missing/a/b',
-      '/x/thing.txt'
-    ];
+    // Each fixture lists the patterns that match a path and their exact params,
+    // recorded from matchit 1.1.0 before removing the development dependency.
     // Rotate and reverse registrations so every pattern takes different
     // precedence against static, parameter, optional and wildcard alternatives.
     for (let offset = 0; offset < patterns.length; offset += 1) {
       const rotated = patterns.slice(offset).concat(patterns.slice(0, offset));
       for (const order of [rotated, [...rotated].reverse()]) {
         const bridge = new Bridge();
-        const parsed = order.map(parse);
         const handlers = order.map((pattern) => () => pattern);
         order.forEach((pattern, index) => bridge.get(pattern, handlers[index]));
-        for (const path of paths) {
-          const expected = match(path, parsed);
+        for (const [path, matches] of routingCases) {
+          const expected = order.find((pattern) => Object.hasOwn(matches, pattern));
           const actual = bridge.fetch('GET', path);
-          if (!expected.length) assert.equal(actual, null, `${order[0]} / ${path}`);
+          if (expected === undefined) assert.equal(actual, null, `${order[0]} / ${path}`);
           else {
-            assert.deepEqual(actual.params, exec(path, expected), path);
-            assert.equal(actual.stack[0](), expected[0].old, path);
+            assert.deepEqual(actual.params, matches[expected], path);
+            assert.equal(actual.stack[0](), expected, path);
           }
         }
       }

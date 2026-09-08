@@ -1,4 +1,3 @@
-/* eslint import/extensions: 0 */
 /* eslint no-console: 0 */
 
 import rayo from 'rayo/index.js';

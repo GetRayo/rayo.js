@@ -1,5 +1,3 @@
-/* eslint import/extensions: 0 */
-
 import { storm } from '@rayo/storm';
 import helpers from '../../../utils/helpers.mjs';
 

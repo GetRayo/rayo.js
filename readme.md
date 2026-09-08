@@ -471,8 +471,8 @@ Can be found [here](https://github.com/GetRayo/rayo.js/tree/master/docs/examples
 ## Contribute
 
 Run `npm ci` and `npm test` from the repository root. The npm workspaces share the root `package-lock.json`;
-individual package lockfiles are not used. `matchit@1.1.0` and `parseurl@1.3.3` are pinned development references
-for compatibility tests. Rayo and Storm do not depend on them at runtime.
+individual package lockfiles are not used. Parser compatibility tests keep fixed expectations from the former
+dependencies, so neither `matchit` nor `parseurl` is a direct dependency of this project.
 
 See our [contributing](https://github.com/GetRayo/rayo.js/blob/master/CONTRIBUTING.md) notes.
 

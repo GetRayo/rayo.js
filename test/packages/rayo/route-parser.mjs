@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { parse, match, exec } from 'matchit';
+import { createHash } from 'node:crypto';
 import parseRoute from '../../../packages/rayo/route-parser.mjs';
 import Bridge from '../../../packages/rayo/bridge.mjs';
 
@@ -13,6 +13,16 @@ const random = (initial) => {
   };
 };
 const select = (values, next) => values[next(values.length)];
+
+// Frozen from matchit 1.1.0 before removing that development dependency. Each
+// SHA-256 digest covers newline-delimited JSON output, in corpus traversal order.
+// Keep these independent baselines fixed: do not regenerate them from Rayo.
+const legacyDigests = {
+  short: '4fad7d141ae9abe4ac8cdabe88c74da6f6b840f56b52ed90bc0cf3e29d8d288c',
+  long: 'ce8cc5cb278d997fb92f4b8c1bc1629aadb4f690bde241b96a22732ef40ca735',
+  routes: 'b62a5a7036c08db4fcc62a9e07010ca6118d0ef440c22fe1b184bc163d3a0fe2'
+};
+const record = (digest, value) => digest.update(`${JSON.stringify(value)}\n`);
 
 export default function routeParserTests() {
   it('compiles the supported route grammar into stable registration records', () => {
@@ -157,27 +167,32 @@ export default function routeParserTests() {
     }
   });
 
-  it('matches the pinned compiler on every short combination of grammar characters', () => {
+  it('preserves the recorded legacy output for every short combination of grammar characters', () => {
+    const digest = createHash('sha256');
     const alphabet = ['/', ':', '*', '?', '.', 'a'];
     const compare = (pattern, remaining) => {
-      assert.deepEqual(parseRoute(pattern), parse(pattern), JSON.stringify(pattern));
+      record(digest, parseRoute(pattern));
       if (remaining) for (const character of alphabet) compare(pattern + character, remaining - 1);
     };
     compare('', 5); // 9,331 patterns, including malformed and repeated separators.
+    assert.equal(digest.digest('hex'), legacyDigests.short);
   });
 
-  it('matches the pinned compiler on a reproducible corpus of longer and Unicode patterns', () => {
+  it('preserves the recorded legacy output for a reproducible longer and Unicode corpus', () => {
+    const digest = createHash('sha256');
     const next = random(0x8ad71903);
     const alphabet = ['/', ':', '*', '?', '.', 'a', 'b', '%', '2', 'F', 'é', '雪', '\ud800', '\udfff'];
     for (let sample = 0; sample < 10000; sample += 1) {
       let pattern = '';
       const length = next(80);
       for (let index = 0; index < length; index += 1) pattern += select(alphabet, next);
-      assert.deepEqual(parseRoute(pattern), parse(pattern), `sample ${sample}: ${JSON.stringify(pattern)}`);
+      record(digest, parseRoute(pattern));
     }
+    assert.equal(digest.digest('hex'), legacyDigests.long);
   });
 
-  it('keeps generated route precedence and parameter extraction identical to the pinned matcher', () => {
+  it('keeps generated route precedence and parameter extraction identical to recorded legacy output', () => {
+    const digest = createHash('sha256');
     const next = random(0x617259e3);
     const parts = ['', 'a', 'b', 'café', '%2F', ':id', ':name', ':last?', ':file.json', '*'];
     const values = ['', 'a', 'b', 'café', '%2F', '%ZZ', 'x.json', 'x.json.json'];
@@ -194,25 +209,21 @@ export default function routeParserTests() {
         }
         if (next(2)) pattern += '/';
         if (next(2)) path += '/';
-        // Empty compiled patterns cannot be matched by matchit itself.
-        if (parse(pattern).length) patterns.add(pattern);
+        // This generator's only empty compiled pattern is two slashes. It was
+        // excluded from the original oracle corpus because that matcher threw.
+        if (pattern !== '//') patterns.add(pattern);
         paths.push(path);
       }
       const bridge = new Bridge();
-      const reference = [...patterns].map(parse);
       for (const pattern of patterns) bridge.get(pattern, () => pattern);
       bridge.prepare();
-      assert.deepEqual(bridge.routes.GET, reference);
+      record(digest, bridge.routes.GET);
       for (const path of paths) {
-        const expected = match(path, reference);
         const actual = bridge.fetch('GET', path);
-        const context = `sample ${sample}, path ${JSON.stringify(path)}, routes ${JSON.stringify([...patterns])}`;
-        if (expected.length) {
-          assert.equal(actual?.stack[0](), expected[0].old, context);
-          assert.deepEqual(actual.params, exec(path, expected), context);
-        } else assert.equal(actual, null, context);
+        record(digest, [path, actual ? { route: actual.stack[0](), params: actual.params } : null]);
       }
     }
+    assert.equal(digest.digest('hex'), legacyDigests.routes);
   });
 
   it('preserves parameter names and raw values without assigning the object prototype', () => {

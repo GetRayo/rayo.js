@@ -6,6 +6,8 @@ baseline; its percentages must not be added to these results.
 This report records the implementation, verification and measurements preserved in commit `9397437`.
 The one-off dependency microbenchmark driver was subsequently removed; its historical source and invocation
 details remain in that commit. The measurements and raw JSON below are retained as the record of that work.
+The former dependencies were subsequently removed from development dependencies as well; parser regression
+tests now use fixed compatibility expectations without loading those packages.
 
 ## Implementation
 

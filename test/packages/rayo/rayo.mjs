@@ -1,5 +1,3 @@
-/* eslint import/extensions: 0 */
-
 import should from 'should';
 import sinon from 'sinon';
 import Storm from '../../../packages/storm/index.js';

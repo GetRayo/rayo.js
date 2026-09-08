@@ -1,5 +1,3 @@
-/* eslint import/extensions: 0 */
-
 import path from 'path';
 import should from 'should';
 import request from 'supertest';

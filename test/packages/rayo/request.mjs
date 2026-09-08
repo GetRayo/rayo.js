@@ -1,31 +1,43 @@
 import assert from 'node:assert/strict';
+import { createHash } from 'node:crypto';
 import { once } from 'node:events';
 import { request } from 'node:http';
-import { parse as parseQuery } from 'node:querystring';
-import parseurl from 'parseurl';
 import rayo from '../../../packages/rayo/index.js';
 import parseRequest from '../../../packages/rayo/request.mjs';
 import pathnameOf from '../../../packages/storm/pathname.mjs';
 
-const previous = (req) => {
-  const parsed = parseurl(req);
-  return { pathname: parsed.pathname, query: parsed.query ? parseQuery(parsed.query) : {} };
-};
-const current = (req) => {
-  parseRequest(req);
-  return { pathname: req.pathname, query: req.query };
-};
-const compare = (url) => {
-  let expected;
-  try {
-    expected = previous({ url });
-  } catch (error) {
-    assert.throws(() => current({ url }), error.constructor, JSON.stringify(url));
-    assert.throws(() => pathnameOf(url), error.constructor, JSON.stringify(url));
-    return;
-  }
-  assert.deepEqual(current({ url }), expected, JSON.stringify(url));
-  assert.equal(pathnameOf(url), expected.pathname, JSON.stringify(url));
+// Frozen output fingerprints were captured independently from parseurl 1.3.3
+// plus node:querystring on Node 24.16.0 before removing the development oracle;
+// verified unchanged on Node 22.16.0. Include input, query-object prototype and
+// error name/code, but not Node-specific error text. Keep these legacy digests
+// fixed: regenerating them from Rayo would replace the independent expectation.
+const compatibilityDigest = () => {
+  const hash = createHash('sha256');
+  return {
+    add(url) {
+      const req = { url };
+      let error;
+      try {
+        parseRequest(req);
+      } catch (cause) {
+        error = cause;
+      }
+      assert.equal(req.url, url);
+      if (error) {
+        assert.throws(() => pathnameOf(url), { name: error.name, code: error.code });
+        hash.update(`${JSON.stringify([url, { error: error.name, code: error.code || null }])}\n`);
+      } else {
+        assert.equal(pathnameOf(url), req.pathname);
+        const result = {
+          pathname: req.pathname,
+          query: req.query,
+          nullPrototype: Object.getPrototypeOf(req.query) === null
+        };
+        hash.update(`${JSON.stringify([url, result])}\n`);
+      }
+    },
+    value: () => hash.digest('hex')
+  };
 };
 
 export default function requestTests() {
@@ -74,48 +86,56 @@ export default function requestTests() {
     assert.equal(many.query.k1000, undefined);
   });
 
-  it('agrees with parseurl on supported request forms and legacy fallback cases', () => {
-    for (const url of [
-      '',
-      '/',
-      '//',
-      '///',
-      '////',
-      '*',
-      '*?x=y',
-      '?x=y',
-      'relative/path?x=y',
-      '/x?first=1?second=2',
-      '/x#fragment?ignored=yes',
-      '/x?yes=1#fragment',
-      '/x%23y?value=%3F%23%2F',
-      '/x\\y',
-      '/x\\y?x=1',
-      '/x\v?x=1',
-      '/caf\u00e9/\ud83d\ude80?q=%F0%9F%9A%80',
-      '/%ZZ?bad=%ZZ',
-      '/%00?zero=%00',
-      'http://example.test/a/../b?x=1#fragment',
-      'https://user:pw@example.test:8080/a?x=1',
-      '//example.test/path?x=1',
-      'http://[::1]:8080/path?x=1',
-      'http://[invalid',
-      'http://example.test',
-      'example.test:443',
-      'mailto:user@example.test?subject=Hi',
-      '/x\t?x=y',
-      '/x\n?x=y',
-      '/x\r?x=y',
-      '/x\f?x=y',
-      '/x y?x=y',
-      '/x\u00a0?x=y',
-      '/x\ufeff?x=y',
-      '\t/path?x=y\r\n'
-    ])
-      compare(url);
+  it('preserves explicit request forms, query boundaries and legacy fallback results', () => {
+    for (const [url, pathname, query = {}] of [
+      ['', null],
+      ['/', '/'],
+      ['//', '//'],
+      ['///', '///'],
+      ['////', '////'],
+      ['*', '*'],
+      ['*?x=y', '*', { x: 'y' }],
+      ['?x=y', null, { x: 'y' }],
+      ['relative/path?x=y', 'relative/path', { x: 'y' }],
+      ['/x?first=1?second=2', '/x', { first: '1?second=2' }],
+      ['/x#fragment?ignored=yes', '/x'],
+      ['/x?yes=1#fragment', '/x', { yes: '1' }],
+      ['/x%23y?value=%3F%23%2F', '/x%23y', { value: '?#/' }],
+      ['/x\\y', '/x\\y'],
+      ['/x\\y?x=1', '/x\\y', { x: '1' }],
+      ['/x\v?x=1', '/x\v', { x: '1' }],
+      ['/caf\u00e9/\ud83d\ude80?q=%F0%9F%9A%80', '/caf\u00e9/\ud83d\ude80', { q: '\ud83d\ude80' }],
+      ['/%ZZ?bad=%ZZ', '/%ZZ', { bad: '%ZZ' }],
+      ['/%00?zero=%00', '/%00', { zero: '\0' }],
+      ['http://example.test/a/../b?x=1#fragment', '/a/../b', { x: '1' }],
+      ['https://user:pw@example.test:8080/a?x=1', '/a', { x: '1' }],
+      ['//example.test/path?x=1', '//example.test/path', { x: '1' }],
+      ['http://[::1]:8080/path?x=1', '/path', { x: '1' }],
+      ['http://example.test', '/'],
+      ['example.test:443', null],
+      ['mailto:user@example.test?subject=Hi', null, { subject: 'Hi' }],
+      ['/x\t?x=y', '/x%09', { x: 'y' }],
+      ['/x\n?x=y', '/x%0A', { x: 'y' }],
+      ['/x\r?x=y', '/x%0D', { x: 'y' }],
+      ['/x\f?x=y', '/x\f', { x: 'y' }],
+      ['/x y?x=y', '/x%20y', { x: 'y' }],
+      ['/x\u00a0?x=y', '/x\u00a0', { x: 'y' }],
+      ['/x\ufeff?x=y', '/x\ufeff', { x: 'y' }],
+      ['\t/path?x=y\r\n', '/path', { x: 'y' }]
+    ]) {
+      const req = { url };
+      parseRequest(req);
+      assert.equal(req.pathname, pathname, url);
+      assert.deepEqual({ ...req.query }, query, url);
+      assert.equal(pathnameOf(url), pathname, url);
+      assert.equal(req.url, url);
+    }
+    assert.throws(() => parseRequest({ url: 'http://[invalid' }), { name: 'TypeError', code: 'ERR_INVALID_URL' });
+    assert.throws(() => pathnameOf('http://[invalid'), { name: 'TypeError', code: 'ERR_INVALID_URL' });
   });
 
-  it('matches a deterministic varied URL corpus without changing either input', () => {
+  it('preserves recorded compatibility results for varied URLs without changing the input', () => {
+    const digest = compatibilityDigest();
     let seed = 0x51a7;
     const pick = (length) => {
       seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0;
@@ -155,35 +175,38 @@ export default function requestTests() {
       let url = beginnings[pick(beginnings.length)];
       const count = pick(20);
       for (let j = 0; j < count; j += 1) url += pieces[pick(pieces.length)];
-      compare(url);
+      digest.add(url);
     }
+    assert.equal(digest.value(), 'a2780968d9f11bbdebe80d2e973490462f0219c7f2d0b3396054708bed436dfa');
   });
 
   it('classifies every UTF-16 code unit consistently in path and query positions', () => {
     // A broader whitespace regex would change legacy handling of some control
     // characters. Exhaustively cover the fast-path boundary, including surrogates.
+    const digest = compatibilityDigest();
     for (let code = 0; code <= 0xffff; code += 1) {
       const character = String.fromCharCode(code);
-      compare(`/a${character}b?x=y`);
-      compare(`/a?x=${character}&end=z`);
+      digest.add(`/a${character}b?x=y`);
+      digest.add(`/a?x=${character}&end=z`);
     }
+    assert.equal(digest.value(), 'edb7eda30bf188e3ffac80e5165b5c15360102d5413bb7f93f0682f12885ef02');
   });
 
   it('rereads changed URLs on redispatch and leaves middleware caches untouched', () => {
-    const req = { url: '/before?x=1' };
-    const cache = parseurl(req);
+    const cache = { pathname: '/middleware-owned' };
+    const req = { url: '/before?x=1', _parsedUrl: cache };
     parseRequest(req);
     req.url = '/after?x=2&x=3';
     parseRequest(req);
     assert.equal(req.pathname, '/after');
     assert.deepEqual({ ...req.query }, { x: ['2', '3'] });
     assert.equal(req._parsedUrl, cache);
-    assert.equal(parseurl(req).pathname, '/after');
+    assert.deepEqual(cache, { pathname: '/middleware-owned' });
   });
 
   it('rebuilds query values on same-target redispatch without sharing middleware mutations', () => {
-    const req = { url: '/same?tag=a&tag=b&value=original' };
-    const cache = parseurl(req);
+    const cache = { pathname: '/middleware-owned' };
+    const req = { url: '/same?tag=a&tag=b&value=original', _parsedUrl: cache };
     parseRequest(req);
     const first = req.query;
     first.tag.push('changed');
