@@ -1,8 +1,7 @@
 import http from 'http';
-import parseurl from 'parseurl';
-import { parse } from 'querystring';
 import { storm } from '@rayo/storm';
 import Bridge from './bridge.mjs';
+import parseRequest from './request.mjs';
 
 const ip = (req) =>
   req.headers?.['x-forwarded-for'] ||
@@ -57,13 +56,11 @@ class Rayo extends Bridge {
   }
 
   dispatch(req, res) {
-    const parsedUrl = parseurl(req);
+    parseRequest(req);
     req.ip = ip(req);
-    req.pathname = parsedUrl.pathname;
-    req.query = parsedUrl.query ? parse(parsedUrl.query) : {};
 
     let stack;
-    const route = this.fetch(req.method, parsedUrl.pathname);
+    const route = this.fetch(req.method, req.pathname);
     if (!route) {
       req.params = {};
       const handler = this.notFound || this._defaultNotFound;

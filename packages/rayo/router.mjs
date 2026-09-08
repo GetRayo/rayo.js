@@ -1,4 +1,4 @@
-// Patterns are parsed once by matchit. The index preserves its registration
+// Patterns are compiled once at registration. The index preserves registration
 // precedence and matching rules, including raw (not decoded) parameters.
 const node = () => ({ fixed: new Map(), dynamic: new Map(), route: null, order: Infinity });
 

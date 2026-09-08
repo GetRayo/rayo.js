@@ -24,7 +24,9 @@ if (config.mode === 'cluster') {
 const app = rayo(options);
 const workload = config.workload;
 
-if (['static', 'param', 'wildcard', 'miss'].includes(workload.kind)) {
+if (workload.kind === 'route-mix') {
+  for (const route of workload.routes) app.get(route.path, (req, res) => res.end(route.body));
+} else if (['static', 'param', 'wildcard', 'miss'].includes(workload.kind)) {
   for (let index = 0; index < workload.count; index += 1) {
     const suffix = workload.kind === 'param' ? '/:name' : workload.kind === 'wildcard' ? '/*' : '';
     app.get(`/route-${index}${suffix}`, (req, res) => res.end(workload.kind === 'param' ? req.params.name : 'ok'));
@@ -66,6 +68,18 @@ if (['static', 'param', 'wildcard', 'miss'].includes(workload.kind)) {
   });
 } else if (workload.kind === 'query') {
   app.get('/hello', (req, res) => res.end(JSON.stringify(req.query)));
+} else if (workload.kind === 'compression-skip') {
+  const { default: compress } = await loadPackage('@rayo/compress', config['compress-path']);
+  versions['@rayo/compress'] = versionOf('@rayo/compress', config['compress-path']);
+  app.through(compress({ threshold: workload.mode === 'below-threshold' ? 1024 : 0 }));
+  app.route(workload.method, '/hello', (req, res) => {
+    // Autocannon's parser does not special-case HEAD with a nonzero length.
+    // An empty representation still measures middleware's HEAD exclusion.
+    const body = workload.mode === 'head' ? '' : payloads.text;
+    res.setHeader('content-type', 'text/plain; charset=utf-8');
+    res.setHeader('content-length', Buffer.byteLength(body));
+    res.end(body);
+  });
 } else if (workload.kind === 'stream') {
   if (workload.encoding) {
     const { default: compress } = await loadPackage('@rayo/compress', config['compress-path']);

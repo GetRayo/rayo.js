@@ -1,4 +1,4 @@
-import { parse } from 'matchit';
+import parseRoute from './route-parser.mjs';
 import Router from './router.mjs';
 
 const METHODS = ['GET', 'HEAD', 'POST', 'PUT', 'DELETE', 'CONNECT', 'OPTIONS', 'TRACE', 'PATCH'];
@@ -49,7 +49,7 @@ export default class Bridge {
       const routes = this._registrations.get(method);
       const existing = routes.get(path);
       routes.set(path, {
-        segments: existing ? existing.segments : parse(path),
+        segments: existing ? existing.segments : parseRoute(path),
         stack: existing ? existing.stack.concat(handlers) : handlers
       });
     }

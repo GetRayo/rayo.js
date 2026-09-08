@@ -1,9 +1,10 @@
 #!/usr/bin/env node
 
-import { fork } from 'node:child_process';
+import { fork, execFileSync } from 'node:child_process';
+import { createHash } from 'node:crypto';
 import { once } from 'node:events';
 import { request } from 'node:http';
-import { readFileSync, realpathSync, writeFileSync } from 'node:fs';
+import { readFileSync, readdirSync, realpathSync, writeFileSync } from 'node:fs';
 import { availableParallelism, arch, cpus, platform } from 'node:os';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -38,6 +39,8 @@ export function parseOptions(args) {
       'rayo-path',
       'send-path',
       'compress-path',
+      'baseline',
+      'candidate',
       'connections',
       'pipelining',
       'duration',
@@ -71,6 +74,13 @@ export function parseOptions(args) {
   if (!['compare', 'rayo'].includes(options.suite)) throw new Error('--suite must be compare or rayo');
   if (!['single', 'cluster'].includes(options.mode)) throw new Error('--mode must be single or cluster');
   if (options.only) options.only = options.only.replace(/\.js$/, '');
+  if (options.candidate && !options.baseline) throw new Error('--candidate requires --baseline');
+  if (options.baseline) {
+    if (options.suite !== 'rayo' || options.mode !== 'single')
+      throw new Error('Paired checkouts require --suite rayo --mode single');
+    if (['rayo-path', 'send-path', 'compress-path'].some((key) => options[key]))
+      throw new Error('Checkout comparison cannot be combined with entry-point overrides');
+  }
   return options;
 }
 
@@ -108,13 +118,16 @@ export function runOrder(plan, seed, round) {
 }
 
 export function validateResult(result, expectedStatus) {
+  const allowed = new Set(Array.isArray(expectedStatus) ? expectedStatus : [expectedStatus]);
   const unexpected = Object.entries(result.statusCodeStats || {})
-    .filter(([status]) => Number(status) !== expectedStatus)
+    .filter(([status]) => !allowed.has(Number(status)))
     .reduce((total, [, stats]) => total + stats.count, 0);
-  if (result.errors || result.timeouts || result.mismatches || unexpected || !result.requests.total) {
+  const missing = [...allowed].filter((status) => !result.statusCodeStats?.[status]?.count);
+  if (result.errors || result.timeouts || result.mismatches || unexpected || missing.length || !result.requests.total) {
     throw new Error(
       `Invalid run: ${result.errors} errors, ${result.timeouts} timeouts, ` +
-        `${result.mismatches} body mismatches, ${unexpected} unexpected statuses, ${result.requests.total} responses`
+        `${result.mismatches} body mismatches, ${unexpected} unexpected statuses, ` +
+        `${missing.length} missing statuses, ${result.requests.total} responses`
     );
   }
 }
@@ -176,7 +189,7 @@ async function sample(child, action) {
 
 export async function probe(url, workload) {
   const response = await new Promise((yes, no) => {
-    const req = request(url, { headers: workload.headers, agent: false }, (res) => {
+    const req = request(url, { method: workload.method || 'GET', headers: workload.headers, agent: false }, (res) => {
       const chunks = [];
       res.on('data', (chunk) => chunks.push(chunk));
       res.on('error', no);
@@ -200,28 +213,51 @@ export async function probe(url, workload) {
   return response;
 }
 
+export function requestsFor(workload) {
+  return workload.requests || [workload];
+}
+
+// Autocannon associates each callback with its pipelined request, so mixed 200 /
+// 404 traffic cannot hide a response delivered by the wrong route.
+export function loadRequests(workload, invalid) {
+  return requestsFor(workload).map((entry) => ({
+    path: entry.path,
+    method: entry.method || 'GET',
+    headers: entry.headers,
+    onResponse: (status, body) => {
+      if (status !== entry.status || (!entry.encoding && body !== entry.body)) invalid();
+    }
+  }));
+}
+
 async function load(url, workload, options, duration) {
   const latency = build({
     lowestDiscernibleValue: 1,
     highestTrackableValue: 60000000,
     numberOfSignificantValueDigits: 3
   });
+  let mismatches = 0;
   try {
     const result = await autocannon({
       url,
       connections: options.connections,
       pipelining: options.pipelining,
       duration,
-      headers: workload.headers,
+      requests: loadRequests(workload, () => {
+        mismatches += 1;
+      }),
       // Autocannon converts compressed bytes to UTF-8 before this hook; validate
       // compressed bodies in binary-aware probes around each timed interval.
-      ...(workload.encoding ? {} : { verifyBody: (body) => body === workload.body }),
       setupClient: (client) =>
         client.on('response', (status, bytes, milliseconds) => {
           latency.recordValue(Math.max(1, Math.round(milliseconds * 1000)));
         })
     });
-    validateResult(result, workload.status);
+    result.mismatches += mismatches;
+    validateResult(
+      result,
+      requestsFor(workload).map((entry) => entry.status)
+    );
     return {
       ...result,
       latency: {
@@ -252,16 +288,19 @@ export async function runBenchmark(workload, options) {
   process.on('SIGINT', interrupted).on('SIGTERM', interrupted);
   try {
     const ready = await waitMessage(child, (message) => message.type === 'ready');
-    const url = `http://127.0.0.1:${ready.port}${workload.path}`;
-    await probe(url, workload);
+    const url = `http://127.0.0.1:${ready.port}`;
+    const validate = async () => {
+      for (const entry of requestsFor(workload)) await probe(`${url}${entry.path}`, entry);
+    };
+    await validate();
     if (options.warmup) {
       await load(url, workload, options, options.warmup);
-      await probe(url, workload);
+      await validate();
     }
     const start = await sample(child, 'start');
     const result = await load(url, workload, options, options.duration);
     const finish = await sample(child, 'finish');
-    await probe(url, workload);
+    await validate();
     const elapsedMicros = (finish.time - start.time) / 1000;
     const cpuMicros = finish.cpu - start.cpu;
     return {
@@ -296,6 +335,128 @@ export function median(values) {
   const sorted = [...values].sort((a, b) => a - b);
   const middle = Math.floor(sorted.length / 2);
   return sorted.length % 2 ? sorted[middle] : (sorted[middle - 1] + sorted[middle]) / 2;
+}
+
+export function spread(values) {
+  if (!values.length || values.some((value) => !Number.isFinite(value)))
+    throw new Error('Statistics require finite samples');
+  return { median: median(values), min: Math.min(...values), max: Math.max(...values) };
+}
+
+export function pairResult(baseline, candidate) {
+  if (baseline.case !== candidate.case || baseline.mode !== candidate.mode)
+    throw new Error('Paired runs must measure the same case and mode');
+  const difference = (before, after) => (before === 0 ? null : (after / before - 1) * 100);
+  return {
+    case: baseline.case,
+    changePercent: {
+      requestsPerSecond: difference(baseline.requestsPerSecond, candidate.requestsPerSecond),
+      latencyP50: difference(baseline.latency.p50, candidate.latency.p50),
+      latencyP95: difference(baseline.latency.p95, candidate.latency.p95),
+      latencyP99: difference(baseline.latency.p99, candidate.latency.p99),
+      cpuPercent: difference(baseline.cpuPercent, candidate.cpuPercent),
+      peakRssBytes: difference(baseline.peakRssBytes, candidate.peakRssBytes)
+    }
+  };
+}
+
+export function summarizePairs(pairs) {
+  return [...new Set(pairs.map((pair) => pair.case))].map((id) => {
+    const group = pairs.filter((pair) => pair.case === id);
+    return {
+      case: id,
+      pairs: group.length,
+      changePercent: Object.fromEntries(
+        Object.keys(group[0].changePercent).map((metric) => {
+          const values = group.map((pair) => pair.changePercent[metric]).filter((value) => value !== null);
+          return [metric, values.length ? spread(values) : null];
+        })
+      )
+    };
+  });
+}
+
+export function checkoutOptions(directory, options) {
+  const root = realpathSync(resolve(directory));
+  return {
+    ...options,
+    'rayo-path': resolve(root, 'packages/rayo/index.js'),
+    'send-path': resolve(root, 'packages/send/index.js'),
+    'compress-path': resolve(root, 'packages/compress/index.js')
+  };
+}
+
+export function sourceMetadata(directory) {
+  const root = realpathSync(resolve(directory));
+  let commit = null;
+  let trackedChanges = null;
+  try {
+    commit = execFileSync('git', ['-C', root, 'rev-parse', 'HEAD'], {
+      encoding: 'utf8',
+      stdio: ['ignore', 'pipe', 'ignore']
+    }).trim();
+    trackedChanges = execFileSync('git', ['-C', root, 'status', '--porcelain', '--untracked-files=no'], {
+      encoding: 'utf8'
+    }).trim();
+  } catch {
+    /* A source snapshot can be measured without Git metadata. */
+  }
+  const files = {};
+  for (const pkg of ['rayo', 'send', 'compress', 'storm']) {
+    const directory = resolve(root, 'packages', pkg);
+    for (const name of readdirSync(directory).sort()) {
+      if (!/\.(?:m?js|json)$/.test(name) || /\.old\.| copy\./.test(name)) continue;
+      files[`packages/${pkg}/${name}`] = createHash('sha256')
+        .update(readFileSync(resolve(directory, name)))
+        .digest('hex');
+    }
+  }
+  return { directory: root, commit, trackedChanges, sha256: files };
+}
+
+export async function compareCheckouts(
+  plan,
+  options,
+  { run = runBenchmark, progress = () => {}, save = () => {} } = {}
+) {
+  if (options.suite !== 'rayo' || options.mode !== 'single') {
+    throw new Error('Paired checkouts require --suite rayo --mode single');
+  }
+  const variants = {
+    baseline: checkoutOptions(options.baseline, options),
+    candidate: checkoutOptions(options.candidate || resolve(base, '../..'), options)
+  };
+  const report = { complete: false, runs: [], pairs: [], summary: [] };
+  for (let round = 0; round < options.repeats; round += 1) {
+    for (const workload of runOrder(plan, options.seed, round)) {
+      const measured = {};
+      const order = round % 2 ? ['candidate', 'baseline'] : ['baseline', 'candidate'];
+      for (const variant of order) {
+        progress(`Pair ${round + 1}/${options.repeats}: ${workload.id} / ${variant}`);
+        measured[variant] = { round: round + 1, variant, ...(await run(workload, variants[variant])) };
+        report.runs.push(measured[variant]);
+        save(report);
+      }
+      report.pairs.push({ round: round + 1, order, ...pairResult(measured.baseline, measured.candidate) });
+      report.summary = summarizePairs(report.pairs);
+      save(report);
+    }
+  }
+  report.complete = true;
+  save(report);
+  return report;
+}
+
+export function machineMetadata(options) {
+  return {
+    node: process.version,
+    platform: platform(),
+    architecture: arch(),
+    cpu: cpus()[0]?.model,
+    availableParallelism: availableParallelism(),
+    startedAt: new Date().toISOString(),
+    options
+  };
 }
 
 function printResults(runs, plan) {
@@ -335,19 +496,41 @@ async function main() {
     process.stdout.write(`${plan.map((entry) => `${entry.framework}\t${entry.id}`).join('\n')}\n`);
     return;
   }
-  const metadata = {
-    node: process.version,
-    platform: platform(),
-    architecture: arch(),
-    cpu: cpus()[0]?.model,
-    availableParallelism: availableParallelism(),
-    startedAt: new Date().toISOString(),
-    options
-  };
+  const metadata = machineMetadata(options);
   process.stdout.write(
     `${options.mode} servers; ${options.connections} connections; pipelining ${options.pipelining}; ` +
       `one load process; ${options.repeats} repeats (${options.warmup}s warmup + ${options.duration}s measured each).\n`
   );
+  if (options.baseline) {
+    metadata.sources = {
+      baseline: sourceMetadata(options.baseline),
+      candidate: sourceMetadata(options.candidate || resolve(base, '../..'))
+    };
+    metadata.workloads = plan;
+    const report = await compareCheckouts(plan, options, {
+      progress: (message) => process.stdout.write(`${message}\n`),
+      save: (report) => {
+        if (options.output)
+          writeFileSync(resolve(options.output), `${JSON.stringify({ metadata, ...report }, null, 2)}\n`);
+      }
+    });
+    const table = new Table({ head: ['Case', 'Pairs', 'Req/sec change %', 'Pair range %', 'p99 change %'] });
+    for (const summary of report.summary) {
+      const throughput = summary.changePercent.requestsPerSecond;
+      table.push([
+        summary.case,
+        summary.pairs,
+        throughput.median.toFixed(2),
+        `${throughput.min.toFixed(2)} to ${throughput.max.toFixed(2)}`,
+        summary.changePercent.latencyP99?.median.toFixed(2) || 'n/a'
+      ]);
+    }
+    process.stdout.write(
+      `\n${table}\nChanges are candidate relative to baseline, paired within each round. ` +
+        'Ranges are observed samples, not confidence intervals.\n'
+    );
+    return;
+  }
   const runs = [];
   for (let round = 0; round < options.repeats; round += 1) {
     for (const workload of runOrder(plan, options.seed, round)) {

@@ -1,0 +1,1177 @@
+{
+  "reports": [
+    {
+      "metadata": {
+        "node": "v24.16.0",
+        "platform": "darwin",
+        "architecture": "arm64",
+        "cpu": "Apple M1 Ultra",
+        "availableParallelism": 20,
+        "startedAt": "2026-09-08T11:09:17.368Z",
+        "options": {
+          "_": [],
+          "help": false,
+          "list": false,
+          "worker": false,
+          "case": "route-parse",
+          "iterations": 1000000,
+          "warmup": 200000,
+          "repeats": 5,
+          "output": "/private/tmp/rayo-micro-route-20260908.json",
+          "seed": 1
+        },
+        "source": {
+          "directory": "/Users/stefan/Development/Rayo/rayo.js",
+          "commit": "3d53df3c726efaf782524e750760effe78035846",
+          "trackedChanges": "M .gitignore\n M package-lock.json\n M package.json\n M packages/benchmarks/compare/Rayo.js\n M packages/benchmarks/help.txt\n M packages/benchmarks/index.js\n D packages/benchmarks/package-lock.json\n M packages/benchmarks/readme.md\n M packages/benchmarks/workloads.js\n M packages/compress/index.js\n D packages/compress/package-lock.json\n M packages/rayo/bridge.mjs\n M packages/rayo/index.js\n D packages/rayo/package-lock.json\n M packages/rayo/package.json\n M packages/rayo/router.mjs\n D packages/send/package-lock.json\n M packages/storm/monitor.mjs\n D packages/storm/package-lock.json\n M packages/storm/package.json\n M readme.md\n M test/benchmarks/index.js\n M test/index.js\n M test/packages/compress/regressions.mjs",
+          "sha256": {
+            "packages/rayo/bridge.mjs": "becb39f41d62e0e34507f53d807121999ec21e1db9f761fa80516780cfdfeb45",
+            "packages/rayo/index.js": "8ee77f11d6af4a84437b34108573c1218e6c78168b2603bf71192cac8460bda2",
+            "packages/rayo/package.json": "b924fa282c881d31cb49ef417f24774c3a22b678ae796ad83966d3389a4b406d",
+            "packages/rayo/request.mjs": "d22b49cec22da076434832384ee23255dfb411da24a45e77fa8442f2234368c2",
+            "packages/rayo/route-parser.mjs": "28cbd3164680d918a561831aec0a7348b003f57a5067fa0dd7ff7a8fe54d7867",
+            "packages/rayo/router.mjs": "d8a1c84b2bf080aacc66e8a18d84c4f05a602ae0d5443eb8df0c6b2d2d6c958c",
+            "packages/send/index.js": "860b87eac0137025d54dc9a75ae17f778b1410a40ae3ea37e26ee105c7d4b69f",
+            "packages/send/package.json": "a5150baf2788ac4a3bfffa78d42c23d95966ccc0c473433deb6eb8d1d7b7c95d",
+            "packages/compress/index.js": "b33d38d5337d0e808aed24e4a47ed2dacb27545dc2e2bf6d6e2a203ad8f12f81",
+            "packages/compress/package.json": "bac28bc98a3b71f999ae352576d3abd4373ad1dee1fc8caec83e367e34f050a1",
+            "packages/storm/index.js": "197d347bca74593bdf62c16aeef0640d6d5de7885132bdd2b9160d3f9fe4a7de",
+            "packages/storm/log.mjs": "dfbbba458389664bdbd76675e59156be9fb9fcef7faae6b4905770eebe5343a4",
+            "packages/storm/monitor.mjs": "53655f767a6d3391c64d9e87274c56c274005cecf75b8ba84ce28abb3596154f",
+            "packages/storm/package.json": "7631dad72b3bfb2b5ce90465901b15d2db69067a241df90f6c171e01c0079d6a",
+            "packages/storm/pathname.mjs": "71b72da09a4dfc452fa0ade6ac169614606b3e85f48200b02002670cfba1026a"
+          }
+        },
+        "versions": {
+          "matchit": "1.1.0",
+          "parseurl": "1.3.3"
+        },
+        "inputs": [
+          {
+            "id": "route-parse",
+            "inputs": [
+              "/",
+              "/users",
+              "/users/:id",
+              "/:file.json",
+              "/users/:id?",
+              "/files/*",
+              "/a/b/c",
+              "/api/route-0/:id/items/:item.json",
+              "/api/route-1/:id/items/:item.json",
+              "/api/route-2/:id/items/:item.json",
+              "/api/route-3/:id/items/:item.json",
+              "/api/route-4/:id/items/:item.json",
+              "/api/route-5/:id/items/:item.json",
+              "/api/route-6/:id/items/:item.json",
+              "/api/route-7/:id/items/:item.json",
+              "/api/route-8/:id/items/:item.json",
+              "/api/route-9/:id/items/:item.json",
+              "/api/route-10/:id/items/:item.json",
+              "/api/route-11/:id/items/:item.json",
+              "/api/route-12/:id/items/:item.json",
+              "/api/route-13/:id/items/:item.json",
+              "/api/route-14/:id/items/:item.json",
+              "/api/route-15/:id/items/:item.json",
+              "/api/route-16/:id/items/:item.json",
+              "/api/route-17/:id/items/:item.json",
+              "/api/route-18/:id/items/:item.json",
+              "/api/route-19/:id/items/:item.json",
+              "/api/route-20/:id/items/:item.json",
+              "/api/route-21/:id/items/:item.json",
+              "/api/route-22/:id/items/:item.json",
+              "/api/route-23/:id/items/:item.json",
+              "/api/route-24/:id/items/:item.json",
+              "/api/route-25/:id/items/:item.json",
+              "/api/route-26/:id/items/:item.json",
+              "/api/route-27/:id/items/:item.json",
+              "/api/route-28/:id/items/:item.json",
+              "/api/route-29/:id/items/:item.json"
+            ]
+          }
+        ],
+        "gcBeforeEachMeasurement": true
+      },
+      "runs": [
+        {
+          "round": 1,
+          "case": "route-parse",
+          "variant": "baseline",
+          "iterations": 1000000,
+          "checksum": 24459436,
+          "retainedCount": 256,
+          "retainedChecksum": 6312,
+          "nsPerOperation": 201.328,
+          "operationsPerSecond": 4967018.993880632
+        },
+        {
+          "round": 1,
+          "case": "route-parse",
+          "variant": "candidate",
+          "iterations": 1000000,
+          "checksum": 24459436,
+          "retainedCount": 256,
+          "retainedChecksum": 6312,
+          "nsPerOperation": 154.559959,
+          "operationsPerSecond": 6469981.012352624
+        },
+        {
+          "round": 2,
+          "case": "route-parse",
+          "variant": "candidate",
+          "iterations": 1000000,
+          "checksum": 24459436,
+          "retainedCount": 256,
+          "retainedChecksum": 6312,
+          "nsPerOperation": 154.325917,
+          "operationsPerSecond": 6479793.0214145435
+        },
+        {
+          "round": 2,
+          "case": "route-parse",
+          "variant": "baseline",
+          "iterations": 1000000,
+          "checksum": 24459436,
+          "retainedCount": 256,
+          "retainedChecksum": 6312,
+          "nsPerOperation": 201.649333,
+          "operationsPerSecond": 4959103.931179381
+        },
+        {
+          "round": 3,
+          "case": "route-parse",
+          "variant": "baseline",
+          "iterations": 1000000,
+          "checksum": 24459436,
+          "retainedCount": 256,
+          "retainedChecksum": 6312,
+          "nsPerOperation": 198.0745,
+          "operationsPerSecond": 5048605.448959861
+        },
+        {
+          "round": 3,
+          "case": "route-parse",
+          "variant": "candidate",
+          "iterations": 1000000,
+          "checksum": 24459436,
+          "retainedCount": 256,
+          "retainedChecksum": 6312,
+          "nsPerOperation": 151.275125,
+          "operationsPerSecond": 6610472.144709846
+        },
+        {
+          "round": 4,
+          "case": "route-parse",
+          "variant": "candidate",
+          "iterations": 1000000,
+          "checksum": 24459436,
+          "retainedCount": 256,
+          "retainedChecksum": 6312,
+          "nsPerOperation": 152.804875,
+          "operationsPerSecond": 6544293.825704186
+        },
+        {
+          "round": 4,
+          "case": "route-parse",
+          "variant": "baseline",
+          "iterations": 1000000,
+          "checksum": 24459436,
+          "retainedCount": 256,
+          "retainedChecksum": 6312,
+          "nsPerOperation": 199.052083,
+          "operationsPerSecond": 5023810.778207229
+        },
+        {
+          "round": 5,
+          "case": "route-parse",
+          "variant": "baseline",
+          "iterations": 1000000,
+          "checksum": 24459436,
+          "retainedCount": 256,
+          "retainedChecksum": 6312,
+          "nsPerOperation": 201.346709,
+          "operationsPerSecond": 4966557.461835644
+        },
+        {
+          "round": 5,
+          "case": "route-parse",
+          "variant": "candidate",
+          "iterations": 1000000,
+          "checksum": 24459436,
+          "retainedCount": 256,
+          "retainedChecksum": 6312,
+          "nsPerOperation": 153.342041,
+          "operationsPerSecond": 6521368.787572091
+        }
+      ],
+      "pairs": [
+        {
+          "round": 1,
+          "case": "route-parse",
+          "order": [
+            "baseline",
+            "candidate"
+          ],
+          "changePercent": 30.258833725492916
+        },
+        {
+          "round": 2,
+          "case": "route-parse",
+          "order": [
+            "candidate",
+            "baseline"
+          ],
+          "changePercent": 30.664594074629736
+        },
+        {
+          "round": 3,
+          "case": "route-parse",
+          "order": [
+            "baseline",
+            "candidate"
+          ],
+          "changePercent": 30.936596482733037
+        },
+        {
+          "round": 4,
+          "case": "route-parse",
+          "order": [
+            "candidate",
+            "baseline"
+          ],
+          "changePercent": 30.265531777045716
+        },
+        {
+          "round": 5,
+          "case": "route-parse",
+          "order": [
+            "baseline",
+            "candidate"
+          ],
+          "changePercent": 31.305614355296065
+        }
+      ],
+      "summary": [
+        {
+          "case": "route-parse",
+          "operationsPerSecondChangePercent": {
+            "median": 30.664594074629736,
+            "min": 30.258833725492916,
+            "max": 31.305614355296065
+          }
+        }
+      ]
+    },
+    {
+      "metadata": {
+        "node": "v24.16.0",
+        "platform": "darwin",
+        "architecture": "arm64",
+        "cpu": "Apple M1 Ultra",
+        "availableParallelism": 20,
+        "startedAt": "2026-09-08T11:09:21.249Z",
+        "options": {
+          "_": [],
+          "help": false,
+          "list": false,
+          "worker": false,
+          "case": "url/absent",
+          "iterations": 1000000,
+          "warmup": 200000,
+          "repeats": 5,
+          "output": "/private/tmp/rayo-micro-url-absent-20260908.json",
+          "seed": 1
+        },
+        "source": {
+          "directory": "/Users/stefan/Development/Rayo/rayo.js",
+          "commit": "3d53df3c726efaf782524e750760effe78035846",
+          "trackedChanges": "M .gitignore\n M package-lock.json\n M package.json\n M packages/benchmarks/compare/Rayo.js\n M packages/benchmarks/help.txt\n M packages/benchmarks/index.js\n D packages/benchmarks/package-lock.json\n M packages/benchmarks/readme.md\n M packages/benchmarks/workloads.js\n M packages/compress/index.js\n D packages/compress/package-lock.json\n M packages/rayo/bridge.mjs\n M packages/rayo/index.js\n D packages/rayo/package-lock.json\n M packages/rayo/package.json\n M packages/rayo/router.mjs\n D packages/send/package-lock.json\n M packages/storm/monitor.mjs\n D packages/storm/package-lock.json\n M packages/storm/package.json\n M readme.md\n M test/benchmarks/index.js\n M test/index.js\n M test/packages/compress/regressions.mjs",
+          "sha256": {
+            "packages/rayo/bridge.mjs": "becb39f41d62e0e34507f53d807121999ec21e1db9f761fa80516780cfdfeb45",
+            "packages/rayo/index.js": "8ee77f11d6af4a84437b34108573c1218e6c78168b2603bf71192cac8460bda2",
+            "packages/rayo/package.json": "b924fa282c881d31cb49ef417f24774c3a22b678ae796ad83966d3389a4b406d",
+            "packages/rayo/request.mjs": "d22b49cec22da076434832384ee23255dfb411da24a45e77fa8442f2234368c2",
+            "packages/rayo/route-parser.mjs": "28cbd3164680d918a561831aec0a7348b003f57a5067fa0dd7ff7a8fe54d7867",
+            "packages/rayo/router.mjs": "d8a1c84b2bf080aacc66e8a18d84c4f05a602ae0d5443eb8df0c6b2d2d6c958c",
+            "packages/send/index.js": "860b87eac0137025d54dc9a75ae17f778b1410a40ae3ea37e26ee105c7d4b69f",
+            "packages/send/package.json": "a5150baf2788ac4a3bfffa78d42c23d95966ccc0c473433deb6eb8d1d7b7c95d",
+            "packages/compress/index.js": "b33d38d5337d0e808aed24e4a47ed2dacb27545dc2e2bf6d6e2a203ad8f12f81",
+            "packages/compress/package.json": "bac28bc98a3b71f999ae352576d3abd4373ad1dee1fc8caec83e367e34f050a1",
+            "packages/storm/index.js": "197d347bca74593bdf62c16aeef0640d6d5de7885132bdd2b9160d3f9fe4a7de",
+            "packages/storm/log.mjs": "dfbbba458389664bdbd76675e59156be9fb9fcef7faae6b4905770eebe5343a4",
+            "packages/storm/monitor.mjs": "53655f767a6d3391c64d9e87274c56c274005cecf75b8ba84ce28abb3596154f",
+            "packages/storm/package.json": "7631dad72b3bfb2b5ce90465901b15d2db69067a241df90f6c171e01c0079d6a",
+            "packages/storm/pathname.mjs": "71b72da09a4dfc452fa0ade6ac169614606b3e85f48200b02002670cfba1026a"
+          }
+        },
+        "versions": {
+          "matchit": "1.1.0",
+          "parseurl": "1.3.3"
+        },
+        "inputs": [
+          {
+            "id": "url/absent",
+            "inputs": [
+              "/hello",
+              "/api/users/42",
+              "/a/longer/path/to/a/resource",
+              "/"
+            ]
+          }
+        ],
+        "gcBeforeEachMeasurement": true
+      },
+      "runs": [
+        {
+          "round": 1,
+          "case": "url/absent",
+          "variant": "baseline",
+          "iterations": 1000000,
+          "checksum": 12000000,
+          "retainedCount": 256,
+          "retainedChecksum": 3072,
+          "nsPerOperation": 48.088084,
+          "operationsPerSecond": 20795172.45894014
+        },
+        {
+          "round": 1,
+          "case": "url/absent",
+          "variant": "candidate",
+          "iterations": 1000000,
+          "checksum": 12000000,
+          "retainedCount": 256,
+          "retainedChecksum": 3072,
+          "nsPerOperation": 39.267375,
+          "operationsPerSecond": 25466433.64879878
+        },
+        {
+          "round": 2,
+          "case": "url/absent",
+          "variant": "candidate",
+          "iterations": 1000000,
+          "checksum": 12000000,
+          "retainedCount": 256,
+          "retainedChecksum": 3072,
+          "nsPerOperation": 39.407125,
+          "operationsPerSecond": 25376121.70387969
+        },
+        {
+          "round": 2,
+          "case": "url/absent",
+          "variant": "baseline",
+          "iterations": 1000000,
+          "checksum": 12000000,
+          "retainedCount": 256,
+          "retainedChecksum": 3072,
+          "nsPerOperation": 49.09,
+          "operationsPerSecond": 20370747.606437158
+        },
+        {
+          "round": 3,
+          "case": "url/absent",
+          "variant": "baseline",
+          "iterations": 1000000,
+          "checksum": 12000000,
+          "retainedCount": 256,
+          "retainedChecksum": 3072,
+          "nsPerOperation": 48.939792,
+          "operationsPerSecond": 20433270.33347424
+        },
+        {
+          "round": 3,
+          "case": "url/absent",
+          "variant": "candidate",
+          "iterations": 1000000,
+          "checksum": 12000000,
+          "retainedCount": 256,
+          "retainedChecksum": 3072,
+          "nsPerOperation": 39.332,
+          "operationsPerSecond": 25424590.66409031
+        },
+        {
+          "round": 4,
+          "case": "url/absent",
+          "variant": "candidate",
+          "iterations": 1000000,
+          "checksum": 12000000,
+          "retainedCount": 256,
+          "retainedChecksum": 3072,
+          "nsPerOperation": 39.0905,
+          "operationsPerSecond": 25581663.063915785
+        },
+        {
+          "round": 4,
+          "case": "url/absent",
+          "variant": "baseline",
+          "iterations": 1000000,
+          "checksum": 12000000,
+          "retainedCount": 256,
+          "retainedChecksum": 3072,
+          "nsPerOperation": 48.058459,
+          "operationsPerSecond": 20807991.367347006
+        },
+        {
+          "round": 5,
+          "case": "url/absent",
+          "variant": "baseline",
+          "iterations": 1000000,
+          "checksum": 12000000,
+          "retainedCount": 256,
+          "retainedChecksum": 3072,
+          "nsPerOperation": 47.684708,
+          "operationsPerSecond": 20971083.64383819
+        },
+        {
+          "round": 5,
+          "case": "url/absent",
+          "variant": "candidate",
+          "iterations": 1000000,
+          "checksum": 12000000,
+          "retainedCount": 256,
+          "retainedChecksum": 3072,
+          "nsPerOperation": 39.035416,
+          "operationsPerSecond": 25617762.085589148
+        }
+      ],
+      "pairs": [
+        {
+          "round": 1,
+          "case": "url/absent",
+          "order": [
+            "baseline",
+            "candidate"
+          ],
+          "changePercent": 22.4632000483862
+        },
+        {
+          "round": 2,
+          "case": "url/absent",
+          "order": [
+            "candidate",
+            "baseline"
+          ],
+          "changePercent": 24.571381444345384
+        },
+        {
+          "round": 3,
+          "case": "url/absent",
+          "order": [
+            "baseline",
+            "candidate"
+          ],
+          "changePercent": 24.427417878572165
+        },
+        {
+          "round": 4,
+          "case": "url/absent",
+          "order": [
+            "candidate",
+            "baseline"
+          ],
+          "changePercent": 22.941530550901113
+        },
+        {
+          "round": 5,
+          "case": "url/absent",
+          "order": [
+            "baseline",
+            "candidate"
+          ],
+          "changePercent": 22.157550466478938
+        }
+      ],
+      "summary": [
+        {
+          "case": "url/absent",
+          "operationsPerSecondChangePercent": {
+            "median": 22.941530550901113,
+            "min": 22.157550466478938,
+            "max": 24.571381444345384
+          }
+        }
+      ]
+    },
+    {
+      "metadata": {
+        "node": "v24.16.0",
+        "platform": "darwin",
+        "architecture": "arm64",
+        "cpu": "Apple M1 Ultra",
+        "availableParallelism": 20,
+        "startedAt": "2026-09-08T11:09:23.472Z",
+        "options": {
+          "_": [],
+          "help": false,
+          "list": false,
+          "worker": false,
+          "case": "url/present",
+          "iterations": 300000,
+          "warmup": 100000,
+          "repeats": 5,
+          "output": "/private/tmp/rayo-micro-url-present-20260908.json",
+          "seed": 1
+        },
+        "source": {
+          "directory": "/Users/stefan/Development/Rayo/rayo.js",
+          "commit": "3d53df3c726efaf782524e750760effe78035846",
+          "trackedChanges": "M .gitignore\n M package-lock.json\n M package.json\n M packages/benchmarks/compare/Rayo.js\n M packages/benchmarks/help.txt\n M packages/benchmarks/index.js\n D packages/benchmarks/package-lock.json\n M packages/benchmarks/readme.md\n M packages/benchmarks/workloads.js\n M packages/compress/index.js\n D packages/compress/package-lock.json\n M packages/rayo/bridge.mjs\n M packages/rayo/index.js\n D packages/rayo/package-lock.json\n M packages/rayo/package.json\n M packages/rayo/router.mjs\n D packages/send/package-lock.json\n M packages/storm/monitor.mjs\n D packages/storm/package-lock.json\n M packages/storm/package.json\n M readme.md\n M test/benchmarks/index.js\n M test/index.js\n M test/packages/compress/regressions.mjs",
+          "sha256": {
+            "packages/rayo/bridge.mjs": "becb39f41d62e0e34507f53d807121999ec21e1db9f761fa80516780cfdfeb45",
+            "packages/rayo/index.js": "8ee77f11d6af4a84437b34108573c1218e6c78168b2603bf71192cac8460bda2",
+            "packages/rayo/package.json": "b924fa282c881d31cb49ef417f24774c3a22b678ae796ad83966d3389a4b406d",
+            "packages/rayo/request.mjs": "d22b49cec22da076434832384ee23255dfb411da24a45e77fa8442f2234368c2",
+            "packages/rayo/route-parser.mjs": "28cbd3164680d918a561831aec0a7348b003f57a5067fa0dd7ff7a8fe54d7867",
+            "packages/rayo/router.mjs": "d8a1c84b2bf080aacc66e8a18d84c4f05a602ae0d5443eb8df0c6b2d2d6c958c",
+            "packages/send/index.js": "860b87eac0137025d54dc9a75ae17f778b1410a40ae3ea37e26ee105c7d4b69f",
+            "packages/send/package.json": "a5150baf2788ac4a3bfffa78d42c23d95966ccc0c473433deb6eb8d1d7b7c95d",
+            "packages/compress/index.js": "b33d38d5337d0e808aed24e4a47ed2dacb27545dc2e2bf6d6e2a203ad8f12f81",
+            "packages/compress/package.json": "bac28bc98a3b71f999ae352576d3abd4373ad1dee1fc8caec83e367e34f050a1",
+            "packages/storm/index.js": "197d347bca74593bdf62c16aeef0640d6d5de7885132bdd2b9160d3f9fe4a7de",
+            "packages/storm/log.mjs": "dfbbba458389664bdbd76675e59156be9fb9fcef7faae6b4905770eebe5343a4",
+            "packages/storm/monitor.mjs": "53655f767a6d3391c64d9e87274c56c274005cecf75b8ba84ce28abb3596154f",
+            "packages/storm/package.json": "7631dad72b3bfb2b5ce90465901b15d2db69067a241df90f6c171e01c0079d6a",
+            "packages/storm/pathname.mjs": "71b72da09a4dfc452fa0ade6ac169614606b3e85f48200b02002670cfba1026a"
+          }
+        },
+        "versions": {
+          "matchit": "1.1.0",
+          "parseurl": "1.3.3"
+        },
+        "inputs": [
+          {
+            "id": "url/present",
+            "inputs": [
+              "/hello?name=Rayo&tag=a&tag=b",
+              "/users?page=2&limit=20",
+              "/hello?empty=&flag"
+            ]
+          }
+        ],
+        "gcBeforeEachMeasurement": true
+      },
+      "runs": [
+        {
+          "round": 1,
+          "case": "url/present",
+          "variant": "baseline",
+          "iterations": 300000,
+          "checksum": 2400000,
+          "retainedCount": 256,
+          "retainedChecksum": 2048,
+          "nsPerOperation": 372.83986,
+          "operationsPerSecond": 2682116.6599515406
+        },
+        {
+          "round": 1,
+          "case": "url/present",
+          "variant": "candidate",
+          "iterations": 300000,
+          "checksum": 2400000,
+          "retainedCount": 256,
+          "retainedChecksum": 2048,
+          "nsPerOperation": 324.0225,
+          "operationsPerSecond": 3086205.4332646653
+        },
+        {
+          "round": 2,
+          "case": "url/present",
+          "variant": "candidate",
+          "iterations": 300000,
+          "checksum": 2400000,
+          "retainedCount": 256,
+          "retainedChecksum": 2048,
+          "nsPerOperation": 329.5525,
+          "operationsPerSecond": 3034417.8848590134
+        },
+        {
+          "round": 2,
+          "case": "url/present",
+          "variant": "baseline",
+          "iterations": 300000,
+          "checksum": 2400000,
+          "retainedCount": 256,
+          "retainedChecksum": 2048,
+          "nsPerOperation": 371.82486,
+          "operationsPerSecond": 2689438.2478890736
+        },
+        {
+          "round": 3,
+          "case": "url/present",
+          "variant": "baseline",
+          "iterations": 300000,
+          "checksum": 2400000,
+          "retainedCount": 256,
+          "retainedChecksum": 2048,
+          "nsPerOperation": 375.41486,
+          "operationsPerSecond": 2663719.8111976706
+        },
+        {
+          "round": 3,
+          "case": "url/present",
+          "variant": "candidate",
+          "iterations": 300000,
+          "checksum": 2400000,
+          "retainedCount": 256,
+          "retainedChecksum": 2048,
+          "nsPerOperation": 328.71861,
+          "operationsPerSecond": 3042115.5650420887
+        },
+        {
+          "round": 4,
+          "case": "url/present",
+          "variant": "candidate",
+          "iterations": 300000,
+          "checksum": 2400000,
+          "retainedCount": 256,
+          "retainedChecksum": 2048,
+          "nsPerOperation": 319.28014,
+          "operationsPerSecond": 3132045.732628406
+        },
+        {
+          "round": 4,
+          "case": "url/present",
+          "variant": "baseline",
+          "iterations": 300000,
+          "checksum": 2400000,
+          "retainedCount": 256,
+          "retainedChecksum": 2048,
+          "nsPerOperation": 373.36278,
+          "operationsPerSecond": 2678360.17291279
+        },
+        {
+          "round": 5,
+          "case": "url/present",
+          "variant": "baseline",
+          "iterations": 300000,
+          "checksum": 2400000,
+          "retainedCount": 256,
+          "retainedChecksum": 2048,
+          "nsPerOperation": 377.3572233333333,
+          "operationsPerSecond": 2650008.8991715517
+        },
+        {
+          "round": 5,
+          "case": "url/present",
+          "variant": "candidate",
+          "iterations": 300000,
+          "checksum": 2400000,
+          "retainedCount": 256,
+          "retainedChecksum": 2048,
+          "nsPerOperation": 328.05764,
+          "operationsPerSecond": 3048244.8145392984
+        }
+      ],
+      "pairs": [
+        {
+          "round": 1,
+          "case": "url/present",
+          "order": [
+            "baseline",
+            "candidate"
+          ],
+          "changePercent": 15.066040166963713
+        },
+        {
+          "round": 2,
+          "case": "url/present",
+          "order": [
+            "candidate",
+            "baseline"
+          ],
+          "changePercent": 12.82720052191988
+        },
+        {
+          "round": 3,
+          "case": "url/present",
+          "order": [
+            "baseline",
+            "candidate"
+          ],
+          "changePercent": 14.205538895409674
+        },
+        {
+          "round": 4,
+          "case": "url/present",
+          "order": [
+            "candidate",
+            "baseline"
+          ],
+          "changePercent": 16.93893018212784
+        },
+        {
+          "round": 5,
+          "case": "url/present",
+          "order": [
+            "baseline",
+            "candidate"
+          ],
+          "changePercent": 15.027719925478134
+        }
+      ],
+      "summary": [
+        {
+          "case": "url/present",
+          "operationsPerSecondChangePercent": {
+            "median": 15.027719925478134,
+            "min": 12.82720052191988,
+            "max": 16.93893018212784
+          }
+        }
+      ]
+    },
+    {
+      "metadata": {
+        "node": "v24.16.0",
+        "platform": "darwin",
+        "architecture": "arm64",
+        "cpu": "Apple M1 Ultra",
+        "availableParallelism": 20,
+        "startedAt": "2026-09-08T11:09:26.586Z",
+        "options": {
+          "_": [],
+          "help": false,
+          "list": false,
+          "worker": false,
+          "case": "url/encoded",
+          "iterations": 300000,
+          "warmup": 100000,
+          "repeats": 5,
+          "output": "/private/tmp/rayo-micro-url-encoded-20260908.json",
+          "seed": 1
+        },
+        "source": {
+          "directory": "/Users/stefan/Development/Rayo/rayo.js",
+          "commit": "3d53df3c726efaf782524e750760effe78035846",
+          "trackedChanges": "M .gitignore\n M package-lock.json\n M package.json\n M packages/benchmarks/compare/Rayo.js\n M packages/benchmarks/help.txt\n M packages/benchmarks/index.js\n D packages/benchmarks/package-lock.json\n M packages/benchmarks/readme.md\n M packages/benchmarks/workloads.js\n M packages/compress/index.js\n D packages/compress/package-lock.json\n M packages/rayo/bridge.mjs\n M packages/rayo/index.js\n D packages/rayo/package-lock.json\n M packages/rayo/package.json\n M packages/rayo/router.mjs\n D packages/send/package-lock.json\n M packages/storm/monitor.mjs\n D packages/storm/package-lock.json\n M packages/storm/package.json\n M readme.md\n M test/benchmarks/index.js\n M test/index.js\n M test/packages/compress/regressions.mjs",
+          "sha256": {
+            "packages/rayo/bridge.mjs": "becb39f41d62e0e34507f53d807121999ec21e1db9f761fa80516780cfdfeb45",
+            "packages/rayo/index.js": "8ee77f11d6af4a84437b34108573c1218e6c78168b2603bf71192cac8460bda2",
+            "packages/rayo/package.json": "b924fa282c881d31cb49ef417f24774c3a22b678ae796ad83966d3389a4b406d",
+            "packages/rayo/request.mjs": "d22b49cec22da076434832384ee23255dfb411da24a45e77fa8442f2234368c2",
+            "packages/rayo/route-parser.mjs": "28cbd3164680d918a561831aec0a7348b003f57a5067fa0dd7ff7a8fe54d7867",
+            "packages/rayo/router.mjs": "d8a1c84b2bf080aacc66e8a18d84c4f05a602ae0d5443eb8df0c6b2d2d6c958c",
+            "packages/send/index.js": "860b87eac0137025d54dc9a75ae17f778b1410a40ae3ea37e26ee105c7d4b69f",
+            "packages/send/package.json": "a5150baf2788ac4a3bfffa78d42c23d95966ccc0c473433deb6eb8d1d7b7c95d",
+            "packages/compress/index.js": "b33d38d5337d0e808aed24e4a47ed2dacb27545dc2e2bf6d6e2a203ad8f12f81",
+            "packages/compress/package.json": "bac28bc98a3b71f999ae352576d3abd4373ad1dee1fc8caec83e367e34f050a1",
+            "packages/storm/index.js": "197d347bca74593bdf62c16aeef0640d6d5de7885132bdd2b9160d3f9fe4a7de",
+            "packages/storm/log.mjs": "dfbbba458389664bdbd76675e59156be9fb9fcef7faae6b4905770eebe5343a4",
+            "packages/storm/monitor.mjs": "53655f767a6d3391c64d9e87274c56c274005cecf75b8ba84ce28abb3596154f",
+            "packages/storm/package.json": "7631dad72b3bfb2b5ce90465901b15d2db69067a241df90f6c171e01c0079d6a",
+            "packages/storm/pathname.mjs": "71b72da09a4dfc452fa0ade6ac169614606b3e85f48200b02002670cfba1026a"
+          }
+        },
+        "versions": {
+          "matchit": "1.1.0",
+          "parseurl": "1.3.3"
+        },
+        "inputs": [
+          {
+            "id": "url/encoded",
+            "inputs": [
+              "/hello?name=Rayo%20server&path=%2Fhello%3Fx%3D1&unicode=%E2%9A%A1",
+              "/a%2Fb?plus=a+b&percent=%25&tag=a&tag=b"
+            ]
+          }
+        ],
+        "gcBeforeEachMeasurement": true
+      },
+      "runs": [
+        {
+          "round": 1,
+          "case": "url/encoded",
+          "variant": "baseline",
+          "iterations": 300000,
+          "checksum": 2700000,
+          "retainedCount": 256,
+          "retainedChecksum": 2304,
+          "nsPerOperation": 855.3063866666666,
+          "operationsPerSecond": 1169171.6741380114
+        },
+        {
+          "round": 1,
+          "case": "url/encoded",
+          "variant": "candidate",
+          "iterations": 300000,
+          "checksum": 2700000,
+          "retainedCount": 256,
+          "retainedChecksum": 2304,
+          "nsPerOperation": 747.8194466666666,
+          "operationsPerSecond": 1337221.1761240014
+        },
+        {
+          "round": 2,
+          "case": "url/encoded",
+          "variant": "candidate",
+          "iterations": 300000,
+          "checksum": 2700000,
+          "retainedCount": 256,
+          "retainedChecksum": 2304,
+          "nsPerOperation": 763.22611,
+          "operationsPerSecond": 1310227.7122044475
+        },
+        {
+          "round": 2,
+          "case": "url/encoded",
+          "variant": "baseline",
+          "iterations": 300000,
+          "checksum": 2700000,
+          "retainedCount": 256,
+          "retainedChecksum": 2304,
+          "nsPerOperation": 851.7551366666667,
+          "operationsPerSecond": 1174046.3390845964
+        },
+        {
+          "round": 3,
+          "case": "url/encoded",
+          "variant": "baseline",
+          "iterations": 300000,
+          "checksum": 2700000,
+          "retainedCount": 256,
+          "retainedChecksum": 2304,
+          "nsPerOperation": 859.85639,
+          "operationsPerSecond": 1162984.9026300777
+        },
+        {
+          "round": 3,
+          "case": "url/encoded",
+          "variant": "candidate",
+          "iterations": 300000,
+          "checksum": 2700000,
+          "retainedCount": 256,
+          "retainedChecksum": 2304,
+          "nsPerOperation": 754.08639,
+          "operationsPerSecond": 1326108.0073332181
+        },
+        {
+          "round": 4,
+          "case": "url/encoded",
+          "variant": "candidate",
+          "iterations": 300000,
+          "checksum": 2700000,
+          "retainedCount": 256,
+          "retainedChecksum": 2304,
+          "nsPerOperation": 764.3427766666666,
+          "operationsPerSecond": 1308313.5348790043
+        },
+        {
+          "round": 4,
+          "case": "url/encoded",
+          "variant": "baseline",
+          "iterations": 300000,
+          "checksum": 2700000,
+          "retainedCount": 256,
+          "retainedChecksum": 2304,
+          "nsPerOperation": 854.46472,
+          "operationsPerSecond": 1170323.3341219751
+        },
+        {
+          "round": 5,
+          "case": "url/encoded",
+          "variant": "baseline",
+          "iterations": 300000,
+          "checksum": 2700000,
+          "retainedCount": 256,
+          "retainedChecksum": 2304,
+          "nsPerOperation": 863.3316666666667,
+          "operationsPerSecond": 1158303.3944080973
+        },
+        {
+          "round": 5,
+          "case": "url/encoded",
+          "variant": "candidate",
+          "iterations": 300000,
+          "checksum": 2700000,
+          "retainedCount": 256,
+          "retainedChecksum": 2304,
+          "nsPerOperation": 775.97014,
+          "operationsPerSecond": 1288709.382554334
+        }
+      ],
+      "pairs": [
+        {
+          "round": 1,
+          "case": "url/encoded",
+          "order": [
+            "baseline",
+            "candidate"
+          ],
+          "changePercent": 14.373381232477001
+        },
+        {
+          "round": 2,
+          "case": "url/encoded",
+          "order": [
+            "candidate",
+            "baseline"
+          ],
+          "changePercent": 11.599318407315318
+        },
+        {
+          "round": 3,
+          "case": "url/encoded",
+          "order": [
+            "baseline",
+            "candidate"
+          ],
+          "changePercent": 14.026244393563436
+        },
+        {
+          "round": 4,
+          "case": "url/encoded",
+          "order": [
+            "candidate",
+            "baseline"
+          ],
+          "changePercent": 11.79077582525987
+        },
+        {
+          "round": 5,
+          "case": "url/encoded",
+          "order": [
+            "baseline",
+            "candidate"
+          ],
+          "changePercent": 11.258361908960413
+        }
+      ],
+      "summary": [
+        {
+          "case": "url/encoded",
+          "operationsPerSecondChangePercent": {
+            "median": 11.79077582525987,
+            "min": 11.258361908960413,
+            "max": 14.373381232477001
+          }
+        }
+      ]
+    },
+    {
+      "metadata": {
+        "node": "v24.16.0",
+        "platform": "darwin",
+        "architecture": "arm64",
+        "cpu": "Apple M1 Ultra",
+        "availableParallelism": 20,
+        "startedAt": "2026-09-08T11:09:31.549Z",
+        "options": {
+          "_": [],
+          "help": false,
+          "list": false,
+          "worker": false,
+          "case": "url/long",
+          "iterations": 50000,
+          "warmup": 10000,
+          "repeats": 5,
+          "output": "/private/tmp/rayo-micro-url-long-20260908.json",
+          "seed": 1
+        },
+        "source": {
+          "directory": "/Users/stefan/Development/Rayo/rayo.js",
+          "commit": "3d53df3c726efaf782524e750760effe78035846",
+          "trackedChanges": "M .gitignore\n M package-lock.json\n M package.json\n M packages/benchmarks/compare/Rayo.js\n M packages/benchmarks/help.txt\n M packages/benchmarks/index.js\n D packages/benchmarks/package-lock.json\n M packages/benchmarks/readme.md\n M packages/benchmarks/workloads.js\n M packages/compress/index.js\n D packages/compress/package-lock.json\n M packages/rayo/bridge.mjs\n M packages/rayo/index.js\n D packages/rayo/package-lock.json\n M packages/rayo/package.json\n M packages/rayo/router.mjs\n D packages/send/package-lock.json\n M packages/storm/monitor.mjs\n D packages/storm/package-lock.json\n M packages/storm/package.json\n M readme.md\n M test/benchmarks/index.js\n M test/index.js\n M test/packages/compress/regressions.mjs",
+          "sha256": {
+            "packages/rayo/bridge.mjs": "becb39f41d62e0e34507f53d807121999ec21e1db9f761fa80516780cfdfeb45",
+            "packages/rayo/index.js": "8ee77f11d6af4a84437b34108573c1218e6c78168b2603bf71192cac8460bda2",
+            "packages/rayo/package.json": "b924fa282c881d31cb49ef417f24774c3a22b678ae796ad83966d3389a4b406d",
+            "packages/rayo/request.mjs": "d22b49cec22da076434832384ee23255dfb411da24a45e77fa8442f2234368c2",
+            "packages/rayo/route-parser.mjs": "28cbd3164680d918a561831aec0a7348b003f57a5067fa0dd7ff7a8fe54d7867",
+            "packages/rayo/router.mjs": "d8a1c84b2bf080aacc66e8a18d84c4f05a602ae0d5443eb8df0c6b2d2d6c958c",
+            "packages/send/index.js": "860b87eac0137025d54dc9a75ae17f778b1410a40ae3ea37e26ee105c7d4b69f",
+            "packages/send/package.json": "a5150baf2788ac4a3bfffa78d42c23d95966ccc0c473433deb6eb8d1d7b7c95d",
+            "packages/compress/index.js": "b33d38d5337d0e808aed24e4a47ed2dacb27545dc2e2bf6d6e2a203ad8f12f81",
+            "packages/compress/package.json": "bac28bc98a3b71f999ae352576d3abd4373ad1dee1fc8caec83e367e34f050a1",
+            "packages/storm/index.js": "197d347bca74593bdf62c16aeef0640d6d5de7885132bdd2b9160d3f9fe4a7de",
+            "packages/storm/log.mjs": "dfbbba458389664bdbd76675e59156be9fb9fcef7faae6b4905770eebe5343a4",
+            "packages/storm/monitor.mjs": "53655f767a6d3391c64d9e87274c56c274005cecf75b8ba84ce28abb3596154f",
+            "packages/storm/package.json": "7631dad72b3bfb2b5ce90465901b15d2db69067a241df90f6c171e01c0079d6a",
+            "packages/storm/pathname.mjs": "71b72da09a4dfc452fa0ade6ac169614606b3e85f48200b02002670cfba1026a"
+          }
+        },
+        "versions": {
+          "matchit": "1.1.0",
+          "parseurl": "1.3.3"
+        },
+        "inputs": [
+          {
+            "id": "url/long",
+            "inputs": [
+              "/hello?key0=value%200&key1=value%201&key2=value%202&key3=value%203&key4=value%204&key5=value%205&key6=value%206&key7=value%207&key8=value%208&key9=value%209&key10=value%2010&key11=value%2011&key12=value%2012&key13=value%2013&key14=value%2014&key15=value%2015&key16=value%2016&key17=value%2017&key18=value%2018&key19=value%2019&key20=value%2020&key21=value%2021&key22=value%2022&key23=value%2023&key24=value%2024&key25=value%2025&key26=value%2026&key27=value%2027&key28=value%2028&key29=value%2029&key30=value%2030&key31=value%2031&key32=value%2032&key33=value%2033&key34=value%2034&key35=value%2035&key36=value%2036&key37=value%2037&key38=value%2038&key39=value%2039&key40=value%2040&key41=value%2041&key42=value%2042&key43=value%2043&key44=value%2044&key45=value%2045&key46=value%2046&key47=value%2047&key48=value%2048&key49=value%2049&key50=value%2050&key51=value%2051&key52=value%2052&key53=value%2053&key54=value%2054&key55=value%2055&key56=value%2056&key57=value%2057&key58=value%2058&key59=value%2059&key60=value%2060&key61=value%2061&key62=value%2062&key63=value%2063&key64=value%2064&key65=value%2065&key66=value%2066&key67=value%2067&key68=value%2068&key69=value%2069&key70=value%2070&key71=value%2071&key72=value%2072&key73=value%2073&key74=value%2074&key75=value%2075&key76=value%2076&key77=value%2077&key78=value%2078&key79=value%2079",
+              "/api/users?tag=encoded%2Fvalue%200&tag=encoded%2Fvalue%201&tag=encoded%2Fvalue%202&tag=encoded%2Fvalue%203&tag=encoded%2Fvalue%204&tag=encoded%2Fvalue%205&tag=encoded%2Fvalue%206&tag=encoded%2Fvalue%207&tag=encoded%2Fvalue%208&tag=encoded%2Fvalue%209&tag=encoded%2Fvalue%2010&tag=encoded%2Fvalue%2011&tag=encoded%2Fvalue%2012&tag=encoded%2Fvalue%2013&tag=encoded%2Fvalue%2014&tag=encoded%2Fvalue%2015&tag=encoded%2Fvalue%2016&tag=encoded%2Fvalue%2017&tag=encoded%2Fvalue%2018&tag=encoded%2Fvalue%2019&tag=encoded%2Fvalue%2020&tag=encoded%2Fvalue%2021&tag=encoded%2Fvalue%2022&tag=encoded%2Fvalue%2023&tag=encoded%2Fvalue%2024&tag=encoded%2Fvalue%2025&tag=encoded%2Fvalue%2026&tag=encoded%2Fvalue%2027&tag=encoded%2Fvalue%2028&tag=encoded%2Fvalue%2029&tag=encoded%2Fvalue%2030&tag=encoded%2Fvalue%2031&tag=encoded%2Fvalue%2032&tag=encoded%2Fvalue%2033&tag=encoded%2Fvalue%2034&tag=encoded%2Fvalue%2035&tag=encoded%2Fvalue%2036&tag=encoded%2Fvalue%2037&tag=encoded%2Fvalue%2038&tag=encoded%2Fvalue%2039&tag=encoded%2Fvalue%2040&tag=encoded%2Fvalue%2041&tag=encoded%2Fvalue%2042&tag=encoded%2Fvalue%2043&tag=encoded%2Fvalue%2044&tag=encoded%2Fvalue%2045&tag=encoded%2Fvalue%2046&tag=encoded%2Fvalue%2047&tag=encoded%2Fvalue%2048&tag=encoded%2Fvalue%2049&tag=encoded%2Fvalue%2050&tag=encoded%2Fvalue%2051&tag=encoded%2Fvalue%2052&tag=encoded%2Fvalue%2053&tag=encoded%2Fvalue%2054&tag=encoded%2Fvalue%2055&tag=encoded%2Fvalue%2056&tag=encoded%2Fvalue%2057&tag=encoded%2Fvalue%2058&tag=encoded%2Fvalue%2059"
+            ]
+          }
+        ],
+        "gcBeforeEachMeasurement": true
+      },
+      "runs": [
+        {
+          "round": 1,
+          "case": "url/long",
+          "variant": "baseline",
+          "iterations": 50000,
+          "checksum": 2425000,
+          "retainedCount": 256,
+          "retainedChecksum": 12416,
+          "nsPerOperation": 24022.87,
+          "operationsPerSecond": 41626.999604959776
+        },
+        {
+          "round": 1,
+          "case": "url/long",
+          "variant": "candidate",
+          "iterations": 50000,
+          "checksum": 2425000,
+          "retainedCount": 256,
+          "retainedChecksum": 12416,
+          "nsPerOperation": 21723.03332,
+          "operationsPerSecond": 46034.08673499194
+        },
+        {
+          "round": 2,
+          "case": "url/long",
+          "variant": "candidate",
+          "iterations": 50000,
+          "checksum": 2425000,
+          "retainedCount": 256,
+          "retainedChecksum": 12416,
+          "nsPerOperation": 21295.2275,
+          "operationsPerSecond": 46958.878462322136
+        },
+        {
+          "round": 2,
+          "case": "url/long",
+          "variant": "baseline",
+          "iterations": 50000,
+          "checksum": 2425000,
+          "retainedCount": 256,
+          "retainedChecksum": 12416,
+          "nsPerOperation": 23824.715,
+          "operationsPerSecond": 41973.219826554065
+        },
+        {
+          "round": 3,
+          "case": "url/long",
+          "variant": "baseline",
+          "iterations": 50000,
+          "checksum": 2425000,
+          "retainedCount": 256,
+          "retainedChecksum": 12416,
+          "nsPerOperation": 24072.75418,
+          "operationsPerSecond": 41540.73906635971
+        },
+        {
+          "round": 3,
+          "case": "url/long",
+          "variant": "candidate",
+          "iterations": 50000,
+          "checksum": 2425000,
+          "retainedCount": 256,
+          "retainedChecksum": 12416,
+          "nsPerOperation": 21026.425,
+          "operationsPerSecond": 47559.2022895
+        },
+        {
+          "round": 4,
+          "case": "url/long",
+          "variant": "candidate",
+          "iterations": 50000,
+          "checksum": 2425000,
+          "retainedCount": 256,
+          "retainedChecksum": 12416,
+          "nsPerOperation": 20847.585,
+          "operationsPerSecond": 47967.186606985895
+        },
+        {
+          "round": 4,
+          "case": "url/long",
+          "variant": "baseline",
+          "iterations": 50000,
+          "checksum": 2425000,
+          "retainedCount": 256,
+          "retainedChecksum": 12416,
+          "nsPerOperation": 23947.62834,
+          "operationsPerSecond": 41757.78852930035
+        },
+        {
+          "round": 5,
+          "case": "url/long",
+          "variant": "baseline",
+          "iterations": 50000,
+          "checksum": 2425000,
+          "retainedCount": 256,
+          "retainedChecksum": 12416,
+          "nsPerOperation": 24015.23834,
+          "operationsPerSecond": 41640.22800200117
+        },
+        {
+          "round": 5,
+          "case": "url/long",
+          "variant": "candidate",
+          "iterations": 50000,
+          "checksum": 2425000,
+          "retainedCount": 256,
+          "retainedChecksum": 12416,
+          "nsPerOperation": 21092.5925,
+          "operationsPerSecond": 47410.00898775245
+        }
+      ],
+      "pairs": [
+        {
+          "round": 1,
+          "case": "url/long",
+          "order": [
+            "baseline",
+            "candidate"
+          ],
+          "changePercent": 10.58708812034359
+        },
+        {
+          "round": 2,
+          "case": "url/long",
+          "order": [
+            "candidate",
+            "baseline"
+          ],
+          "changePercent": 11.87818960844631
+        },
+        {
+          "round": 3,
+          "case": "url/long",
+          "order": [
+            "baseline",
+            "candidate"
+          ],
+          "changePercent": 14.488098571202656
+        },
+        {
+          "round": 4,
+          "case": "url/long",
+          "order": [
+            "candidate",
+            "baseline"
+          ],
+          "changePercent": 14.870035737952382
+        },
+        {
+          "round": 5,
+          "case": "url/long",
+          "order": [
+            "baseline",
+            "candidate"
+          ],
+          "changePercent": 13.856266554241724
+        }
+      ],
+      "summary": [
+        {
+          "case": "url/long",
+          "operationsPerSecondChangePercent": {
+            "median": 13.856266554241724,
+            "min": 10.58708812034359,
+            "max": 14.870035737952382
+          }
+        }
+      ]
+    }
+  ]
+}

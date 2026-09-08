@@ -13,6 +13,7 @@ const vary = (res) => {
 };
 
 const negotiate = (header, preferBrotli) => {
+  if (!header) return null;
   const quality = new Map();
   for (const item of String(header || '').split(',')) {
     const [name, ...parameters] = item.trim().toLowerCase().split(';');
@@ -47,57 +48,16 @@ export default function compress({ preferBrotli = false, threshold = 1024, level
   return (req, res, step) => {
     // Install before headers are sent; never switch representation halfway through a response.
     if (res.headersSent || res.destroyed || res.writableEnded) return step();
-    const clientEncoding = negotiate(req.headers['accept-encoding'], preferBrotli);
-    const { write, end, writeHead, emit } = res;
+    const { write, end, writeHead } = res;
     let press;
     let decided = false;
     let outputBlocked = false;
     let awaitingDrain = false;
     let ending = false;
     let cleaned = false;
-    let streamProperties;
-    const callbacks = [];
-
-    const complete = (error) => {
-      for (const callback of callbacks.splice(0)) callback.call(res, error);
-    };
-    const cleanup = () => {
-      if (cleaned) return;
-      cleaned = true;
-      res.removeListener('close', onClose);
-      res.removeListener('error', onError);
-      res.removeListener('finish', onFinish);
-      res.emit = emit;
-      for (const [name, descriptor] of streamProperties || []) {
-        if (descriptor) Object.defineProperty(res, name, descriptor);
-        else delete res[name];
-      }
-      if (press) press.destroy();
-    };
-    const onFinish = () => {
-      cleanup();
-      complete();
-    };
-    const onClose = () => {
-      cleanup();
-      complete(Object.assign(new Error('Response closed before completion'), { code: 'ERR_STREAM_PREMATURE_CLOSE' }));
-    };
-    const onError = (error) => {
-      cleanup();
-      complete(error);
-      // The error has already been delivered to pending callbacks. Destroy without
-      // re-emitting it after removing our response error listener.
-      res.destroy();
-    };
-    const drain = () => {
-      if (awaitingDrain && !outputBlocked && !press.writableNeedDrain && !ending && !cleaned) {
-        awaitingDrain = false;
-        emit.call(res, 'drain');
-      }
-    };
+    let callbacks;
 
     const decide = (data, encoding, final = false) => {
-      if (decided) return;
       decided = true;
       if (res.headersSent || res.destroyed) return;
       const status = res.statusCode;
@@ -106,7 +66,9 @@ export default function compress({ preferBrotli = false, threshold = 1024, level
       if (noTransform.test(String(res.getHeader('cache-control') || ''))) return;
       if (!types.test(res.getHeader('content-type') || 'text/plain')) return;
       vary(res);
-      if (!clientEncoding || req.method === 'HEAD') return;
+      if (req.method === 'HEAD') return;
+      const clientEncoding = negotiate(req.headers['accept-encoding'], preferBrotli);
+      if (!clientEncoding) return;
       const length = res.getHeader('content-length');
       const hint =
         length === undefined ? (final ? (data ? Buffer.byteLength(data, encoding) : 0) : null) : Number(length);
@@ -126,10 +88,39 @@ export default function compress({ preferBrotli = false, threshold = 1024, level
       res.setHeader('x-powered-by', ['@rayo/compress', res.getHeader('x-powered-by')].filter(Boolean).join(', '));
       res.setHeader('content-encoding', clientEncoding);
       res.removeHeader('content-length');
-      streamProperties = ['writableEnded', 'writableNeedDrain'].map((name) => [
+      // Only compressed responses need a stream lifecycle and response-state bridge.
+      const { emit } = res;
+      callbacks = [];
+      const streamProperties = ['writableEnded', 'writableNeedDrain'].map((name) => [
         name,
         Object.getOwnPropertyDescriptor(res, name)
       ]);
+      const complete = (error) => {
+        if (cleaned) return;
+        cleaned = true;
+        const failure =
+          error ||
+          (!res.writableFinished &&
+            Object.assign(new Error('Response closed before completion'), { code: 'ERR_STREAM_PREMATURE_CLOSE' }));
+        for (const event of ['close', 'error', 'finish']) res.removeListener(event, complete);
+        res.emit = emit;
+        for (const [name, descriptor] of streamProperties) {
+          if (descriptor) Object.defineProperty(res, name, descriptor);
+          else delete res[name];
+        }
+        press.destroy();
+        if (!res.writableFinished) {
+          // Pending callbacks receive the error; do not re-emit it after removing our listener.
+          res.destroy();
+        }
+        for (const callback of callbacks.splice(0)) callback.call(res, failure || undefined);
+      };
+      const drain = () => {
+        if (awaitingDrain && !outputBlocked && !press.writableNeedDrain && !ending && !cleaned) {
+          awaitingDrain = false;
+          emit.call(res, 'drain');
+        }
+      };
       Object.defineProperties(res, {
         writableEnded: { configurable: true, get: () => ending },
         writableNeedDrain: {
@@ -137,10 +128,8 @@ export default function compress({ preferBrotli = false, threshold = 1024, level
           get: () => !ending && !cleaned && (awaitingDrain || outputBlocked || press.writableNeedDrain)
         }
       });
-      res.on('close', onClose);
-      res.on('error', onError);
-      res.on('finish', onFinish);
-      press.on('error', onError);
+      for (const event of ['close', 'error', 'finish']) res.on(event, complete);
+      press.on('error', complete);
       press.on('drain', drain);
       press.on('data', (data) => {
         if (cleaned) return;
@@ -181,15 +170,18 @@ export default function compress({ preferBrotli = false, threshold = 1024, level
         }
       }
       res.statusCode = statusCode;
-      decide();
+      if (!decided) decide();
       return typeof statusMessage === 'string'
         ? writeHead.call(this, statusCode, statusMessage)
         : writeHead.call(this, statusCode);
     };
 
     res.write = function compressionWrite(data, encoding, callback) {
-      decide(data, typeof encoding === 'string' ? encoding : undefined);
-      if (!press || cleaned) return write.apply(this, arguments);
+      if (!decided) decide(data, typeof encoding === 'string' ? encoding : undefined);
+      if (!press || cleaned) {
+        if (res.write === compressionWrite) res.write = write;
+        return write.apply(this, arguments);
+      }
       if (!res.headersSent) res.writeHead(res.statusCode);
       const ready = press.write(data, encoding, callback);
       if (!ready || outputBlocked) awaitingDrain = true;
@@ -200,7 +192,7 @@ export default function compress({ preferBrotli = false, threshold = 1024, level
       const payload = typeof data === 'function' ? undefined : data;
       const charset = typeof encoding === 'string' ? encoding : undefined;
       const done = typeof data === 'function' ? data : typeof encoding === 'function' ? encoding : callback;
-      decide(payload, charset, true);
+      if (!decided) decide(payload, charset, true);
       if (!press || cleaned) return end.apply(this, arguments);
       if (!res.headersSent) res.writeHead(res.statusCode);
       if (typeof done === 'function') {

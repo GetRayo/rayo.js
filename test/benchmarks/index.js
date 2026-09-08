@@ -7,7 +7,21 @@ import { mkdtempSync, symlinkSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { parseOptions, createPlan, runOrder, validateResult, median, probe } from '../../packages/benchmarks/index.js';
+import {
+  parseOptions,
+  createPlan,
+  runOrder,
+  validateResult,
+  median,
+  probe,
+  loadRequests,
+  compareCheckouts,
+  pairResult,
+  summarizePairs,
+  sourceMetadata,
+  spread
+} from '../../packages/benchmarks/index.js';
+import { routeMix } from '../../packages/benchmarks/workloads.js';
 
 export default function benchmarkTests() {
   it('runs the installed command through a bin symlink independently of the current directory', () => {
@@ -49,9 +63,9 @@ export default function benchmarkTests() {
     const options = parseOptions(['--suite', 'rayo']);
     const plan = createPlan(options);
     assert.equal(new Set(plan.map((entry) => entry.id)).size, plan.length);
-    assert.equal(createPlan({ ...options, case: 'routes' }).length, 12);
+    assert.equal(createPlan({ ...options, case: 'routes' }).length, 18);
     assert.equal(createPlan({ ...options, case: 'routes/param/1000' }).length, 1);
-    for (const prefix of ['middleware', 'response', 'query', 'stream']) {
+    for (const prefix of ['middleware', 'response', 'query', 'stream', 'compression-skip']) {
       assert.ok(createPlan({ ...options, case: prefix }).length > 1);
     }
   });
@@ -81,8 +95,114 @@ export default function benchmarkTests() {
     assert.throws(() => validateResult(result, 404), /unexpected statuses/);
     assert.throws(() => validateResult({ ...result, requests: { total: 0 } }, 200), /Invalid run/);
     validateResult({ ...result, statusCodeStats: { 404: { count: 20 } } }, 404);
+    validateResult({ ...result, statusCodeStats: { 200: { count: 10 }, 404: { count: 10 } } }, [200, 404]);
+    assert.throws(() => validateResult(result, [200, 404]), /missing statuses/);
     assert.equal(median([5, 1, 3]), 3);
     assert.equal(median([5, 1, 3, 9]), 4);
+  });
+
+  it('validates mixed requests against their own expected route, status and body', () => {
+    for (const count of [1, 100, 1000]) {
+      const mix = routeMix(count);
+      assert.equal(mix.routes.length, count);
+      assert.ok(mix.requests.some((request) => request.status === 404));
+      assert.ok(mix.requests.some((request) => request.path.startsWith(`/route-${count - 1}`)));
+      assert.equal(routeMix(count, true).routes.length, count * 3);
+    }
+    let failures = 0;
+    const mix = routeMix(100, true);
+    const requests = loadRequests(mix, () => {
+      failures += 1;
+    });
+    for (const [index, request] of requests.entries()) {
+      assert.equal(request.path, mix.requests[index].path);
+      request.onResponse(mix.requests[index].status, mix.requests[index].body);
+    }
+    assert.equal(failures, 0);
+    requests[0].onResponse(404, mix.requests[0].body);
+    requests[0].onResponse(200, mix.requests[1].body);
+    assert.equal(failures, 2);
+    const compressed = loadRequests({ path: '/', body: 'text', encoding: 'gzip', status: 200 }, () => {
+      failures += 1;
+    });
+    compressed[0].onResponse(200, 'compressed bytes are validated by binary probes');
+    assert.equal(failures, 2);
+  });
+
+  it('alternates paired source runs and computes changes within each pair', async () => {
+    const directory = fileURLToPath(new URL('../../', import.meta.url));
+    const options = parseOptions([
+      '--suite',
+      'rayo',
+      '--baseline',
+      directory,
+      '--candidate',
+      directory,
+      '--repeats',
+      '2'
+    ]);
+    const plan = createPlan({ ...options, case: 'query/absent' });
+    const progress = [];
+    let calls = 0;
+    let saved = 0;
+    const report = await compareCheckouts(plan, options, {
+      progress: (message) => progress.push(message),
+      save: () => {
+        saved += 1;
+      },
+      run: async (workload, settings) => {
+        assert.equal(settings['rayo-path'], `${directory}packages/rayo/index.js`);
+        const throughput = [100, 120, 330, 300][calls++];
+        return {
+          case: workload.id,
+          mode: settings.mode,
+          requestsPerSecond: throughput,
+          latency: { p50: 1, p95: 2, p99: 3 },
+          cpuPercent: 90,
+          peakRssBytes: 1000
+        };
+      }
+    });
+    assert.deepEqual(
+      report.runs.map((run) => run.variant),
+      ['baseline', 'candidate', 'candidate', 'baseline']
+    );
+    assert.equal(progress.length, 4);
+    assert.equal(saved, 7);
+    assert.equal(report.complete, true);
+    assert.equal(report.pairs.length, 2);
+    assert.ok(Math.abs(report.pairs[0].changePercent.requestsPerSecond - 20) < 1e-10);
+    assert.ok(Math.abs(report.pairs[1].changePercent.requestsPerSecond - 10) < 1e-10);
+    assert.ok(Math.abs(report.summary[0].changePercent.requestsPerSecond.median - 15) < 1e-10);
+    assert.deepEqual(summarizePairs([]), []);
+    assert.deepEqual(spread([2, 8, 5]), { median: 5, min: 2, max: 8 });
+    assert.throws(() => spread([]), /finite samples/);
+    assert.throws(() => pairResult({ case: 'a' }, { case: 'b' }), /same case/);
+    assert.throws(() => parseOptions(['--candidate', directory]), /requires --baseline/);
+    assert.throws(() => parseOptions(['--baseline', directory]), /require --suite rayo/);
+    assert.throws(
+      () => parseOptions(['--suite', 'rayo', '--baseline', directory, '--rayo-path', 'file']),
+      /entry-point overrides/
+    );
+    assert.ok(sourceMetadata(directory).sha256['packages/rayo/index.js']);
+    await assert.rejects(compareCheckouts(plan, { ...options, mode: 'cluster' }), /require --suite rayo/);
+  });
+
+  it('probes HEAD with the configured method and an empty response body', async () => {
+    let method;
+    const server = createServer((req, res) => {
+      method = req.method;
+      res.setHeader('content-length', 4);
+      res.end('body');
+    });
+    server.listen(0, '127.0.0.1');
+    await once(server, 'listening');
+    try {
+      await probe(`http://127.0.0.1:${server.address().port}/`, { method: 'HEAD', status: 200, body: '' });
+      assert.equal(method, 'HEAD');
+    } finally {
+      await new Promise((yes) => server.close(yes));
+    }
   });
 
   it('validates decompressed probe bodies and rejects incorrect encoding, content and status', async () => {

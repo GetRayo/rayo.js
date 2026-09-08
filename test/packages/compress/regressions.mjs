@@ -150,6 +150,37 @@ export default function regressionTests() {
       .expect(200, 'x'.repeat(2048));
   });
 
+  it('preserves later response wrappers when a stream remains uncompressed', async () => {
+    const res = new Response();
+    res.setHeader('content-length', 9);
+    install(res);
+    const { write, end, writeHead } = res;
+    const calls = [];
+    res.write = function observedWrite(...args) {
+      calls.push('write');
+      return write.apply(this, args);
+    };
+    res.end = function observedEnd(...args) {
+      calls.push('end');
+      return end.apply(this, args);
+    };
+    res.writeHead = function observedHeaders(...args) {
+      calls.push('headers');
+      return writeHead.apply(this, args);
+    };
+    const finished = once(res, 'finish');
+    res.writeHead(200);
+    res.write('one');
+    res.write('two');
+    res.end('end');
+    await finished;
+    assert.deepEqual(calls, ['headers', 'write', 'write', 'end']);
+    assert.equal(Buffer.concat(res.chunks).toString(), 'onetwoend');
+    assert.equal(res.getHeader('content-encoding'), undefined);
+    assert.equal(res.getHeader('vary'), 'Accept-Encoding');
+    assert.equal(res.listenerCount('close'), 0);
+  });
+
   for (const [accept, expected] of [
     ['gzip;q=0, br;q=0', null],
     ['GZip;Q=1, br;q=0', 'gzip'],
@@ -247,6 +278,13 @@ export default function regressionTests() {
     const finished = once(res, 'finish');
     assert.equal(res.write(body), false);
     assert.equal(res.writableNeedDrain, true);
+    let drains = 0;
+    res.on('drain', () => {
+      drains += 1;
+    });
+    // A socket notification must not release a producer while compressor input is full.
+    res.emit('drain');
+    assert.equal(drains, 0);
     await once(res, 'drain');
     res.end('tail');
     await finished;
@@ -296,6 +334,36 @@ export default function regressionTests() {
     await completed;
     assert.equal(calls, 1);
     assert.equal(gunzipSync(Buffer.concat(res.chunks)).toString(), 'payload');
+  });
+
+  it('restores existing response state and keeps event observers through completion', async () => {
+    const res = new Response();
+    const getter = () => res._writableState.ending;
+    Object.defineProperty(res, 'writableEnded', { configurable: true, get: getter });
+    install(res, { threshold: 0 });
+    // Other middleware can add event observation after compression is installed.
+    const emitted = [];
+    const observer = function observedEvent(event, ...args) {
+      emitted.push(event);
+      return EventEmitter.prototype.emit.call(this, event, ...args);
+    };
+    res.emit = observer;
+    let completions = 0;
+    await new Promise((resolve, reject) => {
+      res.end('payload', (error) => {
+        completions += 1;
+        if (error) reject(error);
+        else resolve();
+      });
+      assert.equal(res.writableEnded, true);
+    });
+    res.emit('close');
+    assert.equal(completions, 1);
+    assert.ok(emitted.includes('finish'));
+    assert.ok(emitted.includes('close'));
+    assert.equal(res.emit, observer);
+    assert.equal(Object.getOwnPropertyDescriptor(res, 'writableEnded').get, getter);
+    assert.equal(Object.hasOwn(res, 'writableNeedDrain'), false);
   });
 
   it('supports end(callback) and end(data, callback) overloads', async () => {

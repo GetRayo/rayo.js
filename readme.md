@@ -175,9 +175,18 @@ that use those fields. Without a response subtype, send helpers are optional on 
 
 ### Routing and middleware preparation
 
+Rayo extracts the pathname and query directly from ordinary HTTP request targets. Encoded separators, backslashes,
+and dot segments remain unchanged for routing. Unusual forms use Node's legacy URL parser to preserve existing
+behavior. Query values retain Node's `querystring.parse` decoding, repeated keys, and default 1,000-key limit.
+Every dispatch reads `req.url` again; Rayo does not read or overwrite middleware's private `req._parsedUrl` cache.
+
 Routes are indexed by method and path segments. Matches retain registration order, optional parameters, wildcards,
 trailing-slash handling, and raw URL-encoded parameter values. A static route does not override an earlier parameter
 route. Bridges are checked before direct routes, with later bridges checked first.
+
+Rayo compiles route patterns during registration using its own parser. The supported syntax remains `/users/:id`,
+`/users/:id?`, `/files/:name.json`, and `/files/*`; existing parsing behavior is checked against a pinned compatibility
+reference in the test suite. Pattern compilation happens before request handling and does not decode path segments.
 
 Global middleware and route handlers are combined once during preparation. Registration through `.get()`, `.route()`,
 `.through()`, and bridges automatically invalidates the index; the next request rebuilds it. `.prepare()` (or `.through()`
@@ -460,6 +469,10 @@ rayo({ port: 5050 })
 Can be found [here](https://github.com/GetRayo/rayo.js/tree/master/docs/examples).
 
 ## Contribute
+
+Run `npm ci` and `npm test` from the repository root. The npm workspaces share the root `package-lock.json`;
+individual package lockfiles are not used. `matchit@1.1.0` and `parseurl@1.3.3` are pinned development references
+for compatibility tests. Rayo and Storm do not depend on them at runtime.
 
 See our [contributing](https://github.com/GetRayo/rayo.js/blob/master/CONTRIBUTING.md) notes.
 

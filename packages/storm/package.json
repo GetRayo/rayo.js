@@ -8,6 +8,7 @@
     "index.js",
     "index.d.ts",
     "monitor.mjs",
+    "pathname.mjs",
     "log.mjs",
     "readme.md",
     "LICENSE"
@@ -35,9 +36,6 @@
   "license": "MIT",
   "publishConfig": {
     "access": "public"
-  },
-  "dependencies": {
-    "parseurl": "^1.3.3"
   },
   "gitHead": "9484f4df8529d7cca0b40cef41b92201c3a00fc3"
 }
