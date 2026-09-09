@@ -519,8 +519,8 @@ rayo({ port: 5050 })
 ## Performance
 
 [@rayo/benchmarks] measures complete HTTP requests, with route-count, middleware, query, payload, and streaming
-workloads. It also supports paired comparisons between checkouts. Follow its guide to reproduce measurements;
-results depend on the workload, hardware, and Node version.
+workloads. It also supports paired comparisons between checkouts. Its README includes published comparison results
+and a guide to reproducing measurements; results depend on the workload, hardware, and Node version.
 
 The [September 2026 dependency report](https://github.com/GetRayo/rayo.js/blob/master/docs/dependency-performance-2026-09-08.md)
 records the parser replacement measurements and their limitations. Those historical results predate the latest
@@ -572,7 +572,7 @@ synchronizes the root README into `packages/rayo` and the root license into all 
 </p>
 
 
-[@rayo/benchmarks]: https://github.com/GetRayo/rayo.js/tree/master/packages/benchmarks
+[@rayo/benchmarks]: https://github.com/GetRayo/rayo.js/tree/master/packages/benchmarks#comparison
 [@rayo/compress]: https://github.com/GetRayo/rayo.js/tree/master/packages/compress
 [@rayo/send]: https://github.com/GetRayo/rayo.js/tree/master/packages/send
 [@rayo/storm]: https://github.com/GetRayo/rayo.js/tree/master/packages/storm

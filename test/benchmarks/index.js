@@ -3,10 +3,11 @@ import { createServer } from 'node:http';
 import { once } from 'node:events';
 import { gzipSync } from 'node:zlib';
 import { execFileSync } from 'node:child_process';
-import { mkdtempSync, symlinkSync, rmSync } from 'node:fs';
+import { mkdirSync, mkdtempSync, symlinkSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { stripVTControlCharacters } from 'node:util';
 import {
   parseOptions,
   createPlan,
@@ -19,11 +20,43 @@ import {
   pairResult,
   summarizePairs,
   sourceMetadata,
-  spread
+  spread,
+  comparisonTable
 } from '../../packages/benchmarks/index.js';
 import { routeMix } from '../../packages/benchmarks/workloads.js';
+import { dependencyVersion, loadPackage } from '../../packages/benchmarks/runtime.js';
 
 export default function benchmarkTests() {
+  it('reports Storm resolved by an overridden Rayo entry, including a symlinked entry', async () => {
+    const temporary = mkdtempSync(join(tmpdir(), 'rayo-benchmark-version-'));
+    try {
+      const parent = join(temporary, 'checkout', 'rayo');
+      for (const [directory, version] of [
+        [parent, '9.8.7'],
+        [temporary, '0.0.0-wrong-link-root']
+      ]) {
+        const dependency = join(directory, 'node_modules', '@rayo', 'storm');
+        mkdirSync(dependency, { recursive: true });
+        writeFileSync(
+          join(dependency, 'package.json'),
+          JSON.stringify({ name: '@rayo/storm', version, type: 'module', exports: './index.js' })
+        );
+        writeFileSync(join(dependency, 'index.js'), `export default ${JSON.stringify(version)};\n`);
+      }
+      const entry = join(parent, 'index.mjs');
+      const symlink = join(temporary, 'linked-rayo.mjs');
+      writeFileSync(entry, "export { default } from '@rayo/storm';\n");
+      symlinkSync(entry, symlink);
+      for (const override of [entry, symlink]) {
+        const actual = await loadPackage('rayo', override);
+        assert.equal(actual.default, '9.8.7');
+        assert.equal(dependencyVersion('@rayo/storm', 'rayo', override), actual.default);
+      }
+    } finally {
+      rmSync(temporary, { recursive: true, force: true });
+    }
+  });
+
   it('runs the installed command through a bin symlink independently of the current directory', () => {
     const temporary = mkdtempSync(join(tmpdir(), 'rayo-benchmark-cli-'));
     try {
@@ -51,6 +84,76 @@ export default function benchmarkTests() {
     assert.throws(() => createPlan(parseOptions(['--only', 'RayoStorm'])), /No benchmarks match/);
   });
 
+  it('plans an explicit combined comparison without changing individual server modes', () => {
+    const options = parseOptions(['--mode', 'all', '--server-workers', '7']);
+    const plan = createPlan(options);
+    assert.equal(options['server-workers'], 7);
+    assert.deepEqual(
+      plan.map(({ framework, serverMode }) => [framework, serverMode]),
+      [
+        ['Express', 'single'],
+        ['Fastify', 'single'],
+        ['Polka', 'single'],
+        ['Rayo', 'single'],
+        ['RayoStorm', 'cluster']
+      ]
+    );
+    for (const [only, serverMode] of [
+      ['Rayo', 'single'],
+      ['RayoStorm', 'cluster']
+    ]) {
+      assert.deepEqual(
+        createPlan(parseOptions(['--mode', 'all', '--only', only])).map((entry) => [entry.framework, entry.serverMode]),
+        [[only, serverMode]]
+      );
+    }
+    assert.ok(createPlan(parseOptions([])).every((entry) => entry.serverMode === 'single'));
+    assert.ok(createPlan(parseOptions(['--mode', 'cluster'])).every((entry) => entry.serverMode === 'cluster'));
+    assert.throws(() => parseOptions(['--suite', 'rayo', '--mode', 'all']), /compare/);
+    assert.throws(() => parseOptions(['--mode', 'all', '--baseline', '/unused']), /single/);
+  });
+
+  it('reports true peaks, arithmetic means and worker counts in the combined comparison table', () => {
+    const samples = (framework, requests, peaks, latency, throughput, versions, serverWorkers = 1) =>
+      requests.map((requestsPerSecond, index) => ({
+        framework,
+        case: 'hello',
+        mode: serverWorkers === 1 ? 'single' : 'cluster',
+        serverWorkers,
+        versions,
+        requestsPerSecond,
+        peakRequestsPerSecond: peaks[index],
+        latency: { mean: latency[index], p50: 99, p95: 99, p99: 99 },
+        throughputBytesPerSecond: throughput[index] * 1048576
+      }));
+    const runs = [
+      ...samples('Polka', [50, 50, 50], [70, 70, 70], [1, 1, 1], [1, 1, 1], { polka: '0.5.2' }),
+      ...samples('Rayo', [100, 100, 700], [150, 200, 900], [1, 1, 7], [1, 1, 7], { rayo: '1.4.6' }),
+      ...samples('Fastify', [150, 150, 150], [180, 180, 180], [1, 1, 1], [1, 1, 1], { fastify: '5.0.0' }),
+      ...samples(
+        'RayoStorm',
+        [200, 200, 1400],
+        [300, 400, 1600],
+        [2, 2, 8],
+        [2, 2, 8],
+        { rayo: '1.4.6', '@rayo/storm': '9.8.7' },
+        4
+      ),
+      ...samples('Express', [450, 450, 450], [500, 500, 500], [1, 1, 1], [1, 1, 1], { express: '5.1.0' })
+    ];
+    const output = stripVTControlCharacters(comparisonTable(runs));
+    const row = (framework) => output.split('\n').find((line) => new RegExp(`\\b${framework}\\b`).test(line));
+    // Skewed triples distinguish arithmetic means from medians, and latency.mean
+    // from the percentile fields. Peak columns must use the maximum sampled peak.
+    assert.match(row('Rayo'), /Rayo\b.*1\.4\.6.*\b1\b.*\b900\b.*300\.0.*3\.00 ms.*3\.00 MiB\/s/);
+    assert.match(row('Storm'), /Storm\b.*9\.8\.7.*\b4\b.*\b1600\b.*600\.0.*4\.00 ms.*4\.00 MiB\/s/);
+    const order = ['Storm', 'Express', 'Rayo', 'Fastify', 'Polka'].map((framework) => output.indexOf(row(framework)));
+    assert.ok(order.every((position, index) => position >= 0 && (!index || position > order[index - 1])));
+    assert.match(output, /Framework.*Version.*Workers.*Reqs\/sec \^.*Reqs\/sec \*.*Latency \*.*Throughput \*/);
+    assert.match(output, /\^.*(?:peak|maximum|highest)/i);
+    assert.match(output, /\*.*(?:arithmetic mean|average)/i);
+  });
+
   it('rejects invalid settings and unknown filters instead of silently benchmarking defaults', () => {
     for (const args of [['-d', '0'], ['-c', '-1'], ['-r', '1.5'], ['--mode', 'both'], ['--typo'], ['--wat=2']]) {
       assert.throws(() => parseOptions(args));
@@ -67,6 +170,33 @@ export default function benchmarkTests() {
     assert.equal(createPlan({ ...options, case: 'routes/param/1000' }).length, 1);
     for (const prefix of ['middleware', 'response', 'query', 'stream', 'compression-skip']) {
       assert.ok(createPlan({ ...options, case: prefix }).length > 1);
+    }
+  });
+
+  it('preserves response and compression behavior when selecting the server process mode', () => {
+    const modesByCase = {
+      'response/raw': 'raw',
+      'response/auto-text': 'auto-text',
+      'response/text': 'text',
+      'response/object': 'object',
+      'response/json': 'json',
+      'response/json-string': 'json-string',
+      'response/header-json': 'header-json',
+      'compression-skip/no-accept': 'no-accept',
+      'compression-skip/head': 'head',
+      'compression-skip/below-threshold': 'below-threshold'
+    };
+    for (const serverMode of ['single', 'cluster']) {
+      const plan = createPlan(parseOptions(['--suite', 'rayo', '--mode', serverMode]));
+      for (const [id, mode] of Object.entries(modesByCase)) {
+        const workload = plan.find((entry) => entry.id === id);
+        assert.equal(workload.mode, mode, id);
+        assert.equal(workload.serverMode, serverMode, id);
+        assert.equal(workload.framework, serverMode === 'single' ? 'Rayo' : 'RayoStorm', id);
+      }
+      const head = plan.find((entry) => entry.id === 'compression-skip/head');
+      assert.equal(head.method, 'HEAD');
+      assert.equal(head.body, '');
     }
   });
 
@@ -171,9 +301,11 @@ export default function benchmarkTests() {
     assert.equal(saved, 7);
     assert.equal(report.complete, true);
     assert.equal(report.pairs.length, 2);
-    assert.ok(Math.abs(report.pairs[0].changePercent.requestsPerSecond - 20) < 1e-10);
-    assert.ok(Math.abs(report.pairs[1].changePercent.requestsPerSecond - 10) < 1e-10);
-    assert.ok(Math.abs(report.summary[0].changePercent.requestsPerSecond.median - 15) < 1e-10);
+    // Allow floating-point rounding from the ratio calculation and conversion to percent.
+    const percentageTolerance = 100 * Number.EPSILON;
+    assert.ok(Math.abs(report.pairs[0].changePercent.requestsPerSecond - 20) < percentageTolerance);
+    assert.ok(Math.abs(report.pairs[1].changePercent.requestsPerSecond - 10) < percentageTolerance);
+    assert.ok(Math.abs(report.summary[0].changePercent.requestsPerSecond.median - 15) < percentageTolerance);
     assert.deepEqual(summarizePairs([]), []);
     assert.deepEqual(spread([2, 8, 5]), { median: 5, min: 2, max: 8 });
     assert.throws(() => spread([]), /finite samples/);
@@ -185,7 +317,9 @@ export default function benchmarkTests() {
       /entry-point overrides/
     );
     assert.ok(sourceMetadata(directory).sha256['packages/rayo/index.js']);
-    await assert.rejects(compareCheckouts(plan, { ...options, mode: 'cluster' }), /require --suite rayo/);
+    for (const mode of ['cluster', 'all']) {
+      await assert.rejects(compareCheckouts(plan, { ...options, mode }), /require --suite rayo/);
+    }
   });
 
   it('probes HEAD with the configured method and an empty response body', async () => {

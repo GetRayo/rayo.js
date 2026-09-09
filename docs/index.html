@@ -51,7 +51,7 @@ I needed something that could be an <em>almost</em> out-of-the-box replacement f
 </code></pre>
 <h3 id="in-a-nutshell">In a nutshell</h3>
 <ul>
-<li>Really fast (Like, <em>really</em> fast. See <a href="https://github.com/GetRayo/rayo.js/tree/master/packages/benchmarks">@rayo/benchmarks</a>),</li>
+<li>Really fast (Like, <em>really</em> fast. See <a href="https://github.com/GetRayo/rayo.js/tree/master/packages/benchmarks#comparison">@rayo/benchmarks</a>),</li>
 <li>similar API to Express¹,</li>
 <li>compatible with (most) Express middleware²,</li>
 <li>extensible &amp; pluggable,</li>
@@ -490,9 +490,9 @@ rayo({ port: 5050 })
 </ul>
 <span id="how-does-it-compare"></span>
 <h3 id="performance">Performance</h3>
-<p><a href="https://github.com/GetRayo/rayo.js/tree/master/packages/benchmarks">@rayo/benchmarks</a> measures complete HTTP requests, with route-count, middleware, query, payload, and streaming
-workloads. It also supports paired comparisons between checkouts. Follow its guide to reproduce measurements;
-results depend on the workload, hardware, and Node version.</p>
+<p><a href="https://github.com/GetRayo/rayo.js/tree/master/packages/benchmarks#comparison">@rayo/benchmarks</a> measures complete HTTP requests, with route-count, middleware, query, payload, and streaming
+workloads. It also supports paired comparisons between checkouts. Its README includes published comparison results
+and a guide to reproducing measurements; results depend on the workload, hardware, and Node version.</p>
 <p>The <a href="https://github.com/GetRayo/rayo.js/blob/master/docs/dependency-performance-2026-09-08.md">September 2026 dependency report</a>
 records the parser replacement measurements and their limitations. Those historical results predate the latest
 dependency upgrades and do not establish a current framework ranking.</p>

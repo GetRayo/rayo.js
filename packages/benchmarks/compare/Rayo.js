@@ -1,5 +1,5 @@
 import { Readable } from 'node:stream';
-import { config, loadPackage, versionOf, ready, readyCluster } from '../runtime.js';
+import { config, loadPackage, versionOf, dependencyVersion, ready, readyCluster } from '../runtime.js';
 import { payloads } from '../workloads.js';
 
 const { default: rayo } = await loadPackage('rayo', config['rayo-path']);
@@ -13,7 +13,7 @@ const options = {
   }
 };
 if (config.mode === 'cluster') {
-  versions['@rayo/storm'] = versionOf('@rayo/storm');
+  versions['@rayo/storm'] = dependencyVersion('@rayo/storm', 'rayo', config['rayo-path']);
   options.storm = {
     workers: config['server-workers'],
     monitor: false,

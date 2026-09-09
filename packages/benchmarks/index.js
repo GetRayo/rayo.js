@@ -72,7 +72,8 @@ export function parseOptions(args) {
     }
   }
   if (!['compare', 'rayo'].includes(options.suite)) throw new Error('--suite must be compare or rayo');
-  if (!['single', 'cluster'].includes(options.mode)) throw new Error('--mode must be single or cluster');
+  if (!['single', 'cluster', 'all'].includes(options.mode)) throw new Error('--mode must be single, cluster, or all');
+  if (options.mode === 'all' && options.suite !== 'compare') throw new Error('--mode all requires --suite compare');
   if (options.only) options.only = options.only.replace(/\.js$/, '');
   if (options.candidate && !options.baseline) throw new Error('--candidate requires --baseline');
   if (options.baseline) {
@@ -87,16 +88,22 @@ export function parseOptions(args) {
 export function createPlan(options) {
   let plan;
   if (options.suite === 'compare') {
-    const names = options.mode === 'cluster' ? ['RayoStorm'] : frameworks;
+    const names =
+      options.mode === 'cluster' ? ['RayoStorm'] : options.mode === 'all' ? [...frameworks, 'RayoStorm'] : frameworks;
     plan = names.map((framework) => ({
       framework,
+      serverMode: framework === 'RayoStorm' ? 'cluster' : 'single',
       id: 'hello',
       path: '/hello',
       body: 'Thunderstruck... hello',
       status: 200
     }));
   } else {
-    plan = workloads.map((workload) => ({ ...workload, framework: options.mode === 'cluster' ? 'RayoStorm' : 'Rayo' }));
+    plan = workloads.map((workload) => ({
+      ...workload,
+      framework: options.mode === 'cluster' ? 'RayoStorm' : 'Rayo',
+      serverMode: options.mode
+    }));
   }
   if (options.only) plan = plan.filter((entry) => entry.framework === options.only);
   if (options.case) plan = plan.filter((entry) => entry.id === options.case || entry.id.startsWith(`${options.case}/`));
@@ -262,6 +269,7 @@ async function load(url, workload, options, duration) {
       ...result,
       latency: {
         ...result.latency,
+        mean: latency.mean / 1000,
         p50: latency.getValueAtPercentile(50) / 1000,
         p95: latency.getValueAtPercentile(95) / 1000,
         p99: latency.getValueAtPercentile(99) / 1000
@@ -273,10 +281,11 @@ async function load(url, workload, options, duration) {
 }
 
 export async function runBenchmark(workload, options) {
+  const mode = workload.serverMode || options.mode;
   const fixture = workload.framework === 'RayoStorm' || workload.framework === 'Rayo' ? 'Rayo' : workload.framework;
   const child = fork(resolve(base, 'compare', `${fixture}.js`), [], {
     detached: process.platform !== 'win32',
-    env: { ...process.env, LOG_LEVEL: 'error', RAYO_BENCH: JSON.stringify({ ...options, workload }) },
+    env: { ...process.env, LOG_LEVEL: 'error', RAYO_BENCH: JSON.stringify({ ...options, mode, workload }) },
     stdio: ['ignore', 'ignore', 'pipe', 'ipc'],
     execArgv: []
   });
@@ -306,10 +315,17 @@ export async function runBenchmark(workload, options) {
     return {
       framework: workload.framework,
       case: workload.id,
-      mode: options.mode,
+      mode,
+      serverWorkers: mode === 'cluster' ? options['server-workers'] : 1,
       versions: ready.versions,
       requestsPerSecond: result.requests.average,
-      latency: { p50: result.latency.p50, p95: result.latency.p95, p99: result.latency.p99 },
+      peakRequestsPerSecond: result.requests.max,
+      latency: {
+        mean: result.latency.mean,
+        p50: result.latency.p50,
+        p95: result.latency.p95,
+        p99: result.latency.p99
+      },
       throughputBytesPerSecond: result.throughput.average,
       cpuPercent: (cpuMicros / elapsedMicros) * 100,
       peakRssBytes: finish.peakRss,
@@ -459,7 +475,47 @@ export function machineMetadata(options) {
   };
 }
 
-function printResults(runs, plan) {
+export function comparisonTable(runs) {
+  const summaries = [...new Set(runs.map((run) => run.framework))].map((framework) => {
+    const group = runs.filter((run) => run.framework === framework);
+    const average = (metric) => group.reduce((total, run) => total + metric(run), 0) / group.length;
+    const first = group[0];
+    return {
+      framework: framework === 'RayoStorm' ? 'Storm' : framework,
+      version: first.versions[framework === 'RayoStorm' ? '@rayo/storm' : framework.toLowerCase()],
+      workers: first.serverWorkers,
+      peak: Math.max(...group.map((run) => run.peakRequestsPerSecond)),
+      average: average((run) => run.requestsPerSecond),
+      latency: average((run) => run.latency.mean),
+      throughput: average((run) => run.throughputBytesPerSecond)
+    };
+  });
+  summaries.sort((left, right) => right.average - left.average);
+  const table = new Table({
+    head: ['Framework', 'Version', 'Workers', 'Reqs/sec ^', 'Reqs/sec *', 'Latency *', 'Throughput *']
+  });
+  for (const row of summaries) {
+    table.push([
+      row.framework,
+      row.version,
+      row.workers,
+      row.peak,
+      row.average.toFixed(1),
+      `${row.latency.toFixed(2)} ms`,
+      `${(row.throughput / 1024 / 1024).toFixed(2)} MiB/s`
+    ]);
+  }
+  return (
+    `\n${table}\n^ Highest one-second request sample across runs. * Mean of per-run averages.\n` +
+    'Storm runs Rayo with the listed number of server workers; other frameworks use one.\n'
+  );
+}
+
+function printResults(runs, plan, options) {
+  if (options.mode === 'all') {
+    process.stdout.write(comparisonTable(runs));
+    return;
+  }
   const table = new Table({
     head: ['Framework / case', 'Version', 'Req/sec', 'p50 ms', 'p95 ms', 'p99 ms', 'CPU %', 'RSS MiB']
   });
@@ -539,7 +595,7 @@ async function main() {
       if (options.output) writeFileSync(resolve(options.output), `${JSON.stringify({ metadata, runs }, null, 2)}\n`);
     }
   }
-  printResults(runs, plan);
+  printResults(runs, plan, options);
 }
 
 if (process.argv[1] && realpathSync(process.argv[1]) === fileURLToPath(import.meta.url)) {

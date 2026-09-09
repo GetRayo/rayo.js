@@ -1,7 +1,7 @@
 import cluster from 'node:cluster';
 import { createRequire } from 'node:module';
 import { dirname, join } from 'node:path';
-import { readFileSync } from 'node:fs';
+import { readFileSync, realpathSync } from 'node:fs';
 import { pathToFileURL } from 'node:url';
 
 const require = createRequire(import.meta.url);
@@ -24,6 +24,14 @@ export function versionOf(name, override) {
     if (parent === directory) throw new Error(`Cannot find installed version of ${name}`);
     directory = parent;
   }
+}
+
+export function dependencyVersion(name, parent, override) {
+  // Node resolves dependencies from the selected module's real location, even
+  // when the entry-point override reaches that module through a symlink.
+  const entry = realpathSync(override || require.resolve(parent));
+  const resolveFromParent = createRequire(entry);
+  return versionOf(name, resolveFromParent.resolve(name));
 }
 
 let peakRss = 0;
