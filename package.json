@@ -1,6 +1,6 @@
 {
   "private": true,
-  "name": "Rayo",
+  "name": "rayo",
   "workspaces": [
     "packages/benchmarks",
     "packages/compress",
@@ -10,7 +10,7 @@
   ],
   "type": "module",
   "engines": {
-    "node": ">=18"
+    "node": ">=24"
   },
   "author": {
     "name": "Stefan Aichholzer",
@@ -23,32 +23,30 @@
   },
   "homepage": "https://github.com/GetRayo/rayo.js",
   "scripts": {
+    "lint": "eslint --quiet .",
     "eslint:fix": "eslint --quiet --fix .",
-    "pretest": "npm install",
-    "test": "npm run eslint:fix && LOG_LEVEL=debug c8 --reporter=cobertura _mocha -R progress --timeout 10000 test/index.js",
-    "unit": "LOG_LEVEL=debug _mocha -R spec --timeout 20000 test/index.js",
+    "test": "npm run lint && npm run test:types && LOG_LEVEL=debug c8 --reporter=cobertura mocha --fail-zero -R progress --timeout 5000 test/index.js",
+    "test:types": "tsc -p test/types/tsconfig.json && tsc -p test/types/tsconfig.bundler.json",
+    "unit": "LOG_LEVEL=debug mocha --fail-zero -R spec --timeout 5000 test/index.js",
     "posttest": "c8 report --reporter=text",
-    "report": "codecov && cat ./coverage/lcov.info | coveralls && rm -rf ./coverage",
-    "copies": "cp readme.md ./packages/rayo/. && echo rayo/ benchmarks/ compress/ send/ storm/ | xargs -n 1 -I file cp LICENSE ./packages/file",
+    "copies": "cp README.md ./packages/rayo/. && echo rayo/ benchmarks/ compress/ send/ storm/ | xargs -n 1 -I file cp LICENSE ./packages/file",
     "prerelease": "npm test && npm run copies",
     "release": "GH_TOKEN=$token lerna publish --no-push",
-    "update": "npm-check -u"
+    "update": "npm update"
   },
   "devDependencies": {
-    "c8": "^8.0.1",
-    "codecov": "^3.8.1",
-    "coveralls": "^3.1.0",
-    "eslint": "^8.51.0",
-    "eslint-config-airbnb-base": "^15.0.0",
-    "eslint-config-prettier": "^9.0.0",
-    "eslint-plugin-import": "^2.28.1",
-    "eslint-plugin-prettier": "^5.0.0",
-    "lerna": "^7.3.0",
-    "mocha": "^10.2.0",
-    "npm-check": "^6.0.1",
-    "prettier": "^3.0.3",
+    "@types/node": "^26.5.0",
+    "c8": "^12.0.0",
+    "eslint": "^10.10.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.6",
+    "globals": "^17.12.0",
+    "lerna": "^10.0.1",
+    "mocha": "^12.0.0",
+    "prettier": "^3.9.6",
     "should": "^13.2.3",
-    "sinon": "^16.1.0",
-    "supertest": "^6.3.3"
+    "sinon": "^22.1.0",
+    "supertest": "^7.2.2",
+    "typescript": "^7.0.2"
   }
 }

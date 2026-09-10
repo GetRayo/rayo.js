@@ -1,5 +1,3 @@
-/* eslint import/extensions: 0 */
-
 import path from 'path';
 import should from 'should';
 import request from 'supertest';
@@ -8,11 +6,13 @@ import { fileURLToPath } from 'url';
 import { PassThrough } from 'stream';
 import compress from '../../../packages/compress/index.js';
 import helpers from '../../utils/helpers.mjs';
+import regressionTests from './regressions.mjs';
 
 const directory = path.dirname(fileURLToPath(import.meta.url));
 const sampleJSON = readFileSync(path.join(directory, '../../samples/data.json'), 'utf8');
 
 export default function compressTest() {
+  describe('streaming and negotiation regressions', regressionTests);
   it('no compressed, content-encoding', (done) => {
     request(helpers.wrap(compress, (req, res) => res.end('Thunderstruck!')))
       .get('/')
@@ -87,7 +87,7 @@ export default function compressTest() {
       .expect(helpers.header('content-type', 'application/json'))
       .expect(helpers.header('content-encoding', 'gzip'))
       .expect(helpers.header('transfer-encoding', 'chunked'))
-      .expect(helpers.header('vary', 'content-encoding'))
+      .expect(helpers.header('vary', 'Accept-Encoding'))
       .expect(200, json, done);
   });
 
@@ -114,7 +114,7 @@ export default function compressTest() {
       .expect(helpers.header('content-type', 'application/json'))
       .expect(helpers.header('content-encoding', 'gzip'))
       .expect(helpers.header('transfer-encoding', 'chunked'))
-      .expect(helpers.header('vary', 'content-type, content-encoding'))
+      .expect(helpers.header('vary', 'content-type, Accept-Encoding'))
       .expect(200, json, done);
   });
 
@@ -141,7 +141,7 @@ export default function compressTest() {
       .expect(helpers.header('content-type', 'application/json'))
       .expect(helpers.header('content-encoding', 'gzip'))
       .expect(helpers.header('transfer-encoding', 'chunked'))
-      .expect(helpers.header('vary', 'content-type, transfer-encoding, content-encoding'))
+      .expect(helpers.header('vary', 'content-type, transfer-encoding, Accept-Encoding'))
       .expect(200, json, done);
   });
 
@@ -155,7 +155,7 @@ export default function compressTest() {
     const step = helpers.wrap(
       compress,
       (req, res) => {
-        res.setHeader('vary', 'content-type, transfer-encoding, content-encoding');
+        res.setHeader('vary', 'content-type, transfer-encoding, Accept-Encoding');
         res.setHeader('content-type', 'application/json');
         res.end(json);
       },
@@ -168,7 +168,7 @@ export default function compressTest() {
       .expect(helpers.header('content-type', 'application/json'))
       .expect(helpers.header('content-encoding', 'gzip'))
       .expect(helpers.header('transfer-encoding', 'chunked'))
-      .expect(helpers.header('vary', 'content-type, transfer-encoding, content-encoding'))
+      .expect(helpers.header('vary', 'content-type, transfer-encoding, Accept-Encoding'))
       .expect(200, json, done);
   });
 
@@ -1418,5 +1418,20 @@ export default function compressTest() {
           done();
         });
     });
+  });
+
+  it('drain event triggers press.resume()', (done) => {
+    const step = helpers.wrap(
+      compress,
+      (req, res) => {
+        res.setHeader('content-type', 'text/plain');
+        res.write('x'.repeat(1000));
+        res.emit('drain');
+        res.end();
+      },
+      { threshold: 4 }
+    );
+
+    request(step).get('/').set('accept-encoding', 'gzip').expect(200, done);
   });
 }

@@ -4,7 +4,7 @@ rm -rf node_modules
 printf "\n⚡️ Working ./\n"
 npm i -q -s
 printf "\033[1A"
-./node_modules/.bin/npm-check -u
+npm update
 
 for dir in ./packages/*
 do
@@ -13,6 +13,6 @@ do
   rm -rf node_modules
   npm i -q -s
   printf "\033[1A"
-  ../../node_modules/.bin/npm-check -u
+  npm update
   cd ../..
 done

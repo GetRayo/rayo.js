@@ -1,10 +1,8 @@
-/* eslint import/extensions: 0 */
-
-import { cpus } from 'os';
+import { availableParallelism } from 'node:os';
 import { storm } from '@rayo/storm';
 
 const [, , workers, , , , keepAsString] = process.argv;
-const toLoad = keepAsString === 'yes' ? cpus().length : parseInt(workers, 10);
+const toLoad = Number(workers) || availableParallelism();
 
 let loaded = 0;
 storm(() => {}, {

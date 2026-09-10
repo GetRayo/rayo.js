@@ -7,12 +7,11 @@
     ".": {
       "require": "./index.js",
       "import": "./index.js"
-    },
-    "./": "./"
+    }
   },
   "type": "module",
   "engines": {
-    "node": ">=18"
+    "node": ">=24"
   },
   "scripts": {
     "bench": "node index.js"
@@ -28,15 +27,15 @@
   },
   "license": "MIT",
   "dependencies": {
+    "@rayo/compress": "^1.4.0",
+    "@rayo/send": "^1.2.0",
     "@rayo/storm": "^1.3.6",
-    "autocannon": "^7.12.0",
+    "autocannon": "^8.0.0",
     "cli-table": "^0.3.11",
-    "express": "^4.17.1",
-    "fastify": "^4.23.2",
-    "hono": "^3.7.5",
-    "kleur": "^4.1.4",
+    "express": "^5.2.1",
+    "fastify": "^5.12.3",
+    "hdr-histogram-js": "^3.0.1",
     "minimist": "^1.2.8",
-    "pancho": "^1.0.2",
     "polka": "^0.5.2",
     "rayo": "^1.4.6"
   },

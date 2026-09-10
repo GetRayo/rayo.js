@@ -1,5 +1,3 @@
-/* eslint import/extensions: 0 */
-
 import should from 'should';
 import Bridge from '../../../packages/rayo/bridge.mjs';
 

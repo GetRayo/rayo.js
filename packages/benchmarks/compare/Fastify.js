@@ -1,23 +1,7 @@
 import Fastify from 'fastify';
-
-const schema = {
-  schema: {
-    response: {
-      200: {
-        type: 'object',
-        properties: {
-          hello: {
-            type: 'string'
-          }
-        }
-      }
-    }
-  }
-};
+import { ready, versionOf } from '../runtime.js';
 
 const fastify = Fastify();
-fastify
-  .get('/:say', schema, (req, reply) => {
-    reply.send(`Thunderstruck... ${req.params.say}`);
-  })
-  .listen({ port: 5050 });
+fastify.get('/:say', (req, reply) => reply.raw.end(`Thunderstruck... ${req.params.say}`));
+await fastify.listen({ port: 0, host: '127.0.0.1' });
+ready(fastify.server, { fastify: versionOf('fastify') });

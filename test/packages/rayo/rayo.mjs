@@ -1,5 +1,3 @@
-/* eslint import/extensions: 0 */
-
 import should from 'should';
 import sinon from 'sinon';
 import Storm from '../../../packages/storm/index.js';
@@ -242,7 +240,7 @@ export default function rayoTest() {
     server.post('/', () => {});
     setTimeout(() => {
       test(server);
-      server.step(fake.req, fake.res, [], 'The error.');
+      server.step(fake.req, fake.res, [], 0, 'The error.');
       done();
     }, 25);
   });
@@ -258,8 +256,57 @@ export default function rayoTest() {
 
     setTimeout(() => {
       test(server);
-      server.step(fake.req, fake.res, [], 'The error.');
+      server.step(fake.req, fake.res, [], 0, 'The error.');
       done();
     }, 25);
+  });
+
+  it('Dispatch (with query parameters)', (done) => {
+    // Mock request with query string
+    const reqWithQuery = {
+      ...fake.req,
+      url: '/test?param1=value1&param2=value2'
+    };
+
+    server.get('/test', (req) => {
+      should(req.query).be.an.Object();
+      should(req.query.param1).be.equal('value1');
+      should(req.query.param2).be.equal('value2');
+      done();
+    });
+
+    server.dispatch(reqWithQuery, fake.res);
+  });
+
+  it('Dispatch (without query parameters)', (done) => {
+    // Mock request without query string
+    const reqWithoutQuery = {
+      ...fake.req,
+      url: '/test'
+    };
+
+    server.get('/test', (req) => {
+      should(req.query).be.an.Object();
+      should(Object.keys(req.query)).have.length(0);
+      done();
+    });
+
+    server.dispatch(reqWithoutQuery, fake.res);
+  });
+
+  it('step (middleware chain completion)', (done) => {
+    let middlewareExecuted = false;
+
+    const middleware = (req, res, next) => {
+      middlewareExecuted = true;
+      next();
+    };
+
+    const handler = (req, res) => {
+      should(middlewareExecuted).be.true();
+      done();
+    };
+
+    server.step(fake.req, fake.res, [middleware, handler], 0);
   });
 }
