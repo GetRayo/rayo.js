@@ -1,0 +1,133 @@
+name: Publish
+
+on:
+  workflow_dispatch:
+    inputs:
+      bump:
+        description: Version bump for all five packages
+        required: true
+        default: patch
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+
+permissions:
+  contents: read
+
+concurrency:
+  group: npm-publish
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate release request
+        env:
+          BUMP: ${{ inputs.bump }}
+        run: |
+          if [ "$GITHUB_REF" != "refs/heads/master" ]; then
+            echo "::error::Publishing requires the master branch."
+            exit 1
+          fi
+          case "$BUMP" in
+            patch|minor|major) ;;
+            *) echo "::error::Select a patch, minor, or major version bump."; exit 1 ;;
+          esac
+
+  test:
+    needs: validate
+    uses: ./.github/workflows/test.js.yml
+    secrets: inherit
+
+  version:
+    needs: test
+    runs-on: ubuntu-latest
+    outputs:
+      sha: ${{ steps.version.outputs.sha }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24
+          package-manager-cache: false
+
+      - name: Check release credentials
+        env:
+          RELEASE_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+        run: |
+          if [ -z "$RELEASE_TOKEN" ]; then
+            echo "::error::Configure the RELEASE_TOKEN repository secret."
+            exit 1
+          fi
+
+      - run: npm ci
+
+      - name: Check tracked files
+        run: |
+          git diff --exit-code
+          git diff --cached --exit-code
+
+      - name: Bump package versions
+        env:
+          BUMP: ${{ inputs.bump }}
+        run: npm run release:version -- "$BUMP"
+
+      - name: Commit package versions
+        id: version
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        with:
+          github-token: ${{ secrets.RELEASE_TOKEN }}
+          script: |
+            const { pathToFileURL } = await import('node:url');
+            const moduleUrl = pathToFileURL(`${process.env.GITHUB_WORKSPACE}/.github/scripts/version-commit.mjs`);
+            const { commitVersions } = await import(moduleUrl.href);
+            await commitVersions({ github, context, core });
+
+  publish:
+    needs: version
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
+    env:
+      RELEASE_SHA: ${{ needs.version.outputs.sha }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ needs.version.outputs.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+          package-manager-cache: false
+
+      - run: npm ci
+      - run: npm run copies
+      - run: npm run pack:check
+
+      - name: Check release state
+        run: node .github/scripts/publish.mjs check
+
+      - name: Publish packages to npm
+        run: npm run release:publish
+
+      - name: Create package tags and GitHub release
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const { pathToFileURL } = await import('node:url');
+            const moduleUrl = pathToFileURL(`${process.env.GITHUB_WORKSPACE}/.github/scripts/publish.mjs`);
+            const { finalizeRelease } = await import(moduleUrl.href);
+            await finalizeRelease({ github, context, core, revision: process.env.RELEASE_SHA });

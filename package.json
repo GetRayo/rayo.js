@@ -29,9 +29,10 @@
     "test:types": "tsc -p test/types/tsconfig.json && tsc -p test/types/tsconfig.bundler.json",
     "unit": "LOG_LEVEL=debug mocha --fail-zero -R spec --timeout 5000 test/index.js",
     "posttest": "c8 report --reporter=text",
-    "copies": "cp README.md ./packages/rayo/. && echo rayo/ benchmarks/ compress/ send/ storm/ | xargs -n 1 -I file cp LICENSE ./packages/file",
-    "prerelease": "npm test && npm run copies",
-    "release": "GH_TOKEN=$token lerna publish --no-push",
+    "copies": "node scripts/prepare-packages.mjs",
+    "pack:check": "npm pack --workspaces --dry-run --json | node scripts/check-packages.mjs",
+    "release:version": "lerna version --force-publish --yes --no-git-tag-version --no-push --ignore-scripts",
+    "release:publish": "lerna publish from-package --yes",
     "update": "npm update"
   },
   "devDependencies": {

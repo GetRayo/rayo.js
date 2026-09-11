@@ -552,6 +552,8 @@ npm run bench --workspace @rayo/benchmarks -- --list
 CI runs on Node 24 and sends its Cobertura coverage report to Codacy. Before packaging, `npm run copies`
 synchronizes the root README into `packages/rayo` and the root license into all five package directories.
 
+The [release guide](https://github.com/GetRayo/rayo.js/blob/master/docs/releases.md) covers publishing all five packages from GitHub Actions.
+
 ## Kindly sponsored by
 
 <a href="https://digitalocean.com">

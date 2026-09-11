@@ -9,6 +9,9 @@ import stormTest from './packages/storm/index.mjs';
 import monitorPathTests from './packages/storm/pathname.mjs';
 import integrationTest from './integration.mjs';
 import benchmarkTests from './benchmarks/index.js';
+import packageTests from './release/packages.js';
+import versionCommitTests from './release/version-commit.js';
+import publishTests from './release/publish.js';
 
 describe('Unit tests', () => {
   describe('Packages', () => {
@@ -27,4 +30,9 @@ describe('Unit tests', () => {
 
   describe('Integration', integrationTest);
   describe('Benchmarks', benchmarkTests);
+  describe('Release', () => {
+    describe('Package artifacts', packageTests);
+    describe('Version commits', versionCommitTests);
+    describe('Publishing', publishTests);
+  });
 });
