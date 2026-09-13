@@ -1,6 +1,6 @@
-import parseurl from 'parseurl';
 import { createServer } from 'http';
 import log from './log.mjs';
+import pathnameOf from './pathname.mjs';
 
 const round = (number) => Math.round(number * 100) / 100;
 const reform = (item) => {
@@ -49,7 +49,7 @@ const requestDispatch = (cluster, res, { workerId, command }) => {
   return send(res, JSON.stringify(pre(current)));
 };
 const requestHandler = (cluster, req, res) => {
-  const { pathname } = parseurl(req);
+  const pathname = pathnameOf(req.url);
   const [service, workerId, command = 'health'] = pathname.substring(1, pathname.length).split('/');
 
   if (service === 'monitor') {

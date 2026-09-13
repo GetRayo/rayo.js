@@ -4,12 +4,14 @@
 
 ## Install
 
+Requires Node.js 24 or newer.
+
 ```
 $> npm i @rayo/compress
 ```
 
 Both `Gzip` and `Brotli` are supported, and the algorithm will be determined by the `accept-encoding` request header.<br />
-With multiple values/options (e.g. "gzip, deflate, br"), `Gzip` will be preferred.
+With equal client quality values (e.g. "gzip, deflate, br"), `Gzip` will be preferred.
 
 ## Use
 
@@ -20,7 +22,7 @@ import rayo from 'rayo';
 import compress from '@rayo/compress';
 
 rayo({ port: 5050 })
-  .through(compress())
+  .through(compress({ threshold: 0 }))
   .get('/hello/:user', (req, res) => {
     res.setHeader('content-type', 'application/json');
     res.end(JSON.stringify({
@@ -31,17 +33,22 @@ rayo({ port: 5050 })
   .start();
 ```
 
-> **Note:** You need to set the right response header, e.g. _application/json_ for `@rayo/compress` to be able to determine whether the payload can be compressed or not. Also keep in mind that not all types of content can be compressed.
+The example uses `threshold: 0` so this short response can be compressed when the client accepts gzip or Brotli.
+
+> **Note:** Set the response's `Content-Type`, e.g. _application/json_, to match the payload. If omitted, `@rayo/compress` treats the payload as _text/plain_ when deciding whether to compress; it does not set `Content-Type`. Also keep in mind that not all types of content can be compressed.
 
 `@rayo/compress` supports compression on these MIME types:
 
 * text/plain
+* text/css
 * text/csv
 * text/html
 * text/xml
 * text/javascript
 * application/json
 * application/xml
+* application/javascript
+* application types ending in `+json` or `+xml`
 
 
 ## API
@@ -52,12 +59,12 @@ rayo({ port: 5050 })
 @returns {function}
 ```
 
- * `options.preferBrotli` (boolean, optional): Prefer `Brotli` if the `accept-encoding` request header has multiple values/options.<br />
+ * `options.preferBrotli` (boolean, optional): Prefer `Brotli` when the client gives gzip and Brotli equal quality values.<br />
    Keep in mind that `Brotli` has more performance overhead than `Gzip`.<br />
    Default: `false`.
 
 
- * `options.threshold` (number, optional): The minimum threshold (in bytes) for compressing responses.<br />
+ * `options.threshold` (number, optional): The minimum known response size (in bytes) for compression; unknown-length streams compress immediately.<br />
    Default: `1024`.
 
 
@@ -68,9 +75,46 @@ rayo({ port: 5050 })
    Default: `6`.
 
 
- * `options.chunkSize` (number, optional): Brake large responses into chunks of this size (in kilobytes). While this setting can have an impact on speed, compression is affected most dramatically by the level setting.<br />
+ * `options.chunkSize` (number, optional): Break compressed output into chunks of this size (in kibibytes). While this setting can have an impact on speed, compression is affected most dramatically by the level setting.<br />
    Default: `16`.
 
+
+
+## Streaming and response handling
+
+Compression is selected once, before the first body bytes or an explicit `writeHead()` / `flushHeaders()`:
+
+* If `Content-Length` is set, its byte count determines whether the response meets `threshold`.
+* For a single `res.end(body)`, the encoded byte length of `body` determines the threshold.
+* For streams without a known length, compression starts immediately, including when the first chunk is small.
+  The middleware does not buffer the response to discover its eventual size. Set `Content-Length` before writing
+  when you want a short stream to remain uncompressed.
+
+The middleware supports standard `res.write()` backpressure: when it returns `false`, wait for `res` to emit
+`drain` before writing again. Compressed output also pauses when the response socket is full. `res.end()` returns
+`res`, and its callback runs after the response finishes, or receives an error if the response fails or disconnects.
+Compression resources are released when the response finishes or closes. Install the middleware before headers are sent.
+
+The client's `Accept-Encoding` quality values are respected. A coding with `q=0` is never selected, explicit
+`identity` preferences are honored, and `preferBrotli` breaks ties between equally preferred gzip and Brotli.
+Eligible responses include `Vary: Accept-Encoding`, including when the client receives an uncompressed response.
+This middleware falls back to an uncompressed response when neither supported coding is acceptable; applications
+that require strict rejection of requests forbidding every available representation should handle that negotiation themselves.
+
+HEAD requests, bodyless statuses (204, 205, 304), responses already carrying `Content-Encoding`, partial responses
+with `Content-Range`, and responses with `Cache-Control: no-transform` are left uncompressed.
+
+## TypeScript
+
+Type declarations ship with the package and work with Node.js request/response types. Install `@types/node`
+in a TypeScript application. The middleware also works with Rayo's extended request/response types:
+
+```ts
+import compress, { type CompressOptions } from '@rayo/compress';
+
+const options: CompressOptions = { threshold: 2048, preferBrotli: true, level: 4 };
+const middleware = compress(options);
+```
 
 ## License
 

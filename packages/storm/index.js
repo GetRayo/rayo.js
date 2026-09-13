@@ -1,15 +1,27 @@
 import cluster from 'cluster';
 import EventEmitter from 'events';
-import { cpus } from 'os';
+import { availableParallelism } from 'node:os';
 import log from './log.mjs';
 import monitor from './monitor.mjs';
 
 class Storm extends EventEmitter {
-  constructor(work, options) {
+  constructor(work, options = {}) {
     super();
     if (!work || typeof work !== 'function') {
       throw new Error('You need to provide a worker function.');
     }
+
+    if (!['number', 'string', 'undefined'].includes(typeof options.workers)) {
+      throw new RangeError('The worker count must be a positive integer, or 0 for automatic selection.');
+    }
+    const workers =
+      options.workers === undefined || options.workers === 0 || options.workers === '0'
+        ? availableParallelism()
+        : Number(options.workers);
+    if (!Number.isSafeInteger(workers) || workers < 1) {
+      throw new RangeError('The worker count must be a positive integer, or 0 for automatic selection.');
+    }
+    this.workers = workers;
 
     this.keepAlive = options.keepAlive === undefined ? true : options.keepAlive;
     this.monitor = options.monitor === undefined ? true : options.monitor;
@@ -33,7 +45,6 @@ class Storm extends EventEmitter {
   }
 
   start(options) {
-    let processes = parseInt(options.workers, 10) || cpus().length;
     process.on('SIGINT', this.stop).on('SIGTERM', this.stop);
     cluster.on('online', (wrk) => {
       log.debug(`Worker ${wrk.process.pid} is online`);
@@ -44,17 +55,15 @@ class Storm extends EventEmitter {
       return this.fork(wrk);
     });
 
-    log.debug(`Master (${process.pid}) is forking ${processes} workers.`);
-    while (processes) {
-      processes -= 1;
+    log.debug(`Master (${process.pid}) is forking ${this.workers} workers.`);
+    for (let index = 0; index < this.workers; index += 1) {
       cluster.fork();
     }
 
     cluster.masterPid = process.pid;
     if (options.master) {
       log.debug(`Master process: ${process.pid}`);
-      options.master = options.master.bind(this, cluster);
-      options.master();
+      options.master.call(this, cluster);
     }
 
     if (this.monitor) {
@@ -65,14 +74,13 @@ class Storm extends EventEmitter {
   stop() {
     monitor.service.stop();
     this.keepAlive = false;
-    let index = Object.keys(cluster.workers).length;
-    while (index) {
-      if (cluster.workers[index]) {
-        cluster.workers[index].process.kill();
-        cluster.workers[index].kill();
+    const workers = Object.values(cluster.workers);
+    workers.forEach((worker) => {
+      if (worker) {
+        worker.process.kill();
+        worker.kill();
       }
-      index -= 1;
-    }
+    });
 
     log.debug('The cluster has been terminated.');
     this.emit('offline');

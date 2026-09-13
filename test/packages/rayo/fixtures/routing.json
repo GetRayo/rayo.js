@@ -1,0 +1,163 @@
+[
+  ["/", { "/": {}, "/*": {}, "/:name?": {} }],
+  [
+    "",
+    { "/:resource/:id?": { "resource": "" }, "/*": { "*": "" }, "/:name?": { "name": "" }, "/:name": { "name": "" } }
+  ],
+  [
+    "//",
+    { "/:resource/:id?": { "resource": "" }, "/*": { "*": "" }, "/:name?": { "name": "" }, "/:name": { "name": "" } }
+  ],
+  ["///", { "/": {}, "/*": {}, "/:name?": {} }],
+  [
+    "/users",
+    {
+      "/users/:id?": {},
+      "/:resource/:id?": { "resource": "users" },
+      "/*": { "*": "users" },
+      "/:name?": { "name": "users" },
+      "/:name": { "name": "users" }
+    }
+  ],
+  [
+    "/users/",
+    {
+      "/users/:id?": {},
+      "/:resource/:id?": { "resource": "users" },
+      "/*": { "*": "users" },
+      "/:name?": { "name": "users" },
+      "/:name": { "name": "users" }
+    }
+  ],
+  [
+    "/users/me",
+    {
+      "/users/:id": { "id": "me" },
+      "/users/me": {},
+      "/users/:name": { "name": "me" },
+      "/users/:id?": { "id": "me" },
+      "/users/*": { "*": "me" },
+      "/:resource/:id": { "resource": "users", "id": "me" },
+      "/:resource/:id?": { "resource": "users", "id": "me" },
+      "/*": { "*": "users" }
+    }
+  ],
+  [
+    "/users/a%20b",
+    {
+      "/users/:id": { "id": "a%20b" },
+      "/users/:name": { "name": "a%20b" },
+      "/users/:id?": { "id": "a%20b" },
+      "/users/*": { "*": "a%20b" },
+      "/:resource/:id": { "resource": "users", "id": "a%20b" },
+      "/:resource/:id?": { "resource": "users", "id": "a%20b" },
+      "/*": { "*": "users" }
+    }
+  ],
+  [
+    "/users/%ZZ",
+    {
+      "/users/:id": { "id": "%ZZ" },
+      "/users/:name": { "name": "%ZZ" },
+      "/users/:id?": { "id": "%ZZ" },
+      "/users/*": { "*": "%ZZ" },
+      "/:resource/:id": { "resource": "users", "id": "%ZZ" },
+      "/:resource/:id?": { "resource": "users", "id": "%ZZ" },
+      "/*": { "*": "users" }
+    }
+  ],
+  ["/users/a/b", { "/users/*": { "*": "a" }, "/*": { "*": "users" } }],
+  [
+    "/files/x.json",
+    {
+      "/files/:name.json": { "name": "x" },
+      "/files/:name": { "name": "x.json" },
+      "/:resource/:id": { "resource": "files", "id": "x.json" },
+      "/:resource/:id?": { "resource": "files", "id": "x.json" },
+      "/files/*": { "*": "x.json" },
+      "/*": { "*": "files" }
+    }
+  ],
+  [
+    "/files/x.json.json",
+    {
+      "/files/:name.json": { "name": "x.json" },
+      "/files/:name": { "name": "x.json.json" },
+      "/:resource/:id": { "resource": "files", "id": "x.json.json" },
+      "/:resource/:id?": { "resource": "files", "id": "x.json.json" },
+      "/files/*": { "*": "x.json.json" },
+      "/*": { "*": "files" }
+    }
+  ],
+  [
+    "/files/a.txt",
+    {
+      "/files/:name": { "name": "a.txt" },
+      "/:resource/:id": { "resource": "files", "id": "a.txt" },
+      "/:resource/:id?": { "resource": "files", "id": "a.txt" },
+      "/files/*": { "*": "a.txt" },
+      "/*": { "*": "files" }
+    }
+  ],
+  [
+    "/a",
+    {
+      "/:resource/:id?": { "resource": "a" },
+      "/*": { "*": "a" },
+      "/:name?": { "name": "a" },
+      "/:name": { "name": "a" },
+      "/a/:first/:last?": {}
+    }
+  ],
+  [
+    "/a/",
+    {
+      "/:resource/:id?": { "resource": "a" },
+      "/*": { "*": "a" },
+      "/:name?": { "name": "a" },
+      "/:name": { "name": "a" },
+      "/a/:first/:last?": {}
+    }
+  ],
+  [
+    "/a/b",
+    {
+      "/:resource/:id": { "resource": "a", "id": "b" },
+      "/:resource/:id?": { "resource": "a", "id": "b" },
+      "/*": { "*": "a" },
+      "/a/:first/:last?": { "first": "b" }
+    }
+  ],
+  ["/a/b/c", { "/*": { "*": "a" }, "/a/:first/:last?": { "first": "b", "last": "c" } }],
+  ["/a//b", { "/*": { "*": "a" }, "/a/:first/:last?": { "first": "", "last": "b" }, "/a//b": {} }],
+  ["/a//x", { "/*": { "*": "a" }, "/a/:first/:last?": { "first": "", "last": "x" }, "/a/:first?/x": { "first": "" } }],
+  [
+    "/trailing",
+    {
+      "/:resource/:id?": { "resource": "trailing" },
+      "/*": { "*": "trailing" },
+      "/:name?": { "name": "trailing" },
+      "/:name": { "name": "trailing" },
+      "/trailing/": {}
+    }
+  ],
+  [
+    "/trailing/",
+    {
+      "/:resource/:id?": { "resource": "trailing" },
+      "/*": { "*": "trailing" },
+      "/:name?": { "name": "trailing" },
+      "/:name": { "name": "trailing" },
+      "/trailing/": {}
+    }
+  ],
+  ["/missing/a/b", { "/*": { "*": "missing" } }],
+  [
+    "/x/thing.txt",
+    {
+      "/:resource/:id": { "resource": "x", "id": "thing.txt" },
+      "/:resource/:id?": { "resource": "x", "id": "thing.txt" },
+      "/*": { "*": "x" }
+    }
+  ]
+]

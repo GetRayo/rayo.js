@@ -36,6 +36,9 @@ lerna-debug.json
 node_modules/
 jspm_packages/
 
+# npm workspaces use the root lockfile.
+/packages/*/package-lock.json
+
 # Optional npm cache directory
 .npm
 

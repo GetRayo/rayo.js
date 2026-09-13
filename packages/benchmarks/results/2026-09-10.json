@@ -1,0 +1,849 @@
+{
+  "metadata": {
+    "node": "v24.16.0",
+    "platform": "darwin",
+    "architecture": "arm64",
+    "cpu": "Apple M1 Ultra",
+    "availableParallelism": 20,
+    "startedAt": "2026-09-09T20:25:42.837Z",
+    "options": {
+      "_": [],
+      "help": false,
+      "h": false,
+      "list": false,
+      "mode": "all",
+      "server-workers": 2,
+      "w": "2",
+      "c": "500",
+      "connections": 500,
+      "p": "20",
+      "pipelining": 20,
+      "d": "10",
+      "duration": 10,
+      "warmup": 3,
+      "r": "5",
+      "repeats": 5,
+      "seed": 1,
+      "output": "results/2026-09-10.json",
+      "suite": "compare"
+    },
+    "measuredCommit": "c98825f383deb345d35624b50b128ddddd213695",
+    "lockfileSha256": "b3361d5a7421d89d0d89f58c71d53c1f27339e7682525b92d195e67685bed6b2",
+    "osVersion": "26.6.2",
+    "memoryBytes": 68719476736,
+    "timezone": "Australia/Brisbane",
+    "command": "npm run bench --workspace @rayo/benchmarks -- --mode all --server-workers 2 -c 500 -p 20 -d 10 --warmup 3 -r 5 --seed 1 --output results/2026-09-10.json",
+    "loadGenerator": {
+      "name": "autocannon",
+      "version": "8.0.0"
+    }
+  },
+  "runs": [
+    {
+      "round": 1,
+      "framework": "Express",
+      "case": "hello",
+      "mode": "single",
+      "serverWorkers": 1,
+      "versions": {
+        "express": "5.2.1"
+      },
+      "requestsPerSecond": 90114.91,
+      "peakRequestsPerSecond": 91272,
+      "latency": {
+        "mean": 110.48466721074492,
+        "p50": 110.399,
+        "p95": 115.071,
+        "p99": 123.647
+      },
+      "throughputBytesPerSecond": 13065867.64,
+      "cpuPercent": 113.82521586821869,
+      "peakRssBytes": 340213760,
+      "heapUsedBytes": 68645032,
+      "errors": 0,
+      "timeouts": 0,
+      "mismatches": 0,
+      "statusCodeStats": {
+        "200": {
+          "count": 991279
+        }
+      },
+      "requests": 991279,
+      "duration": 11.02
+    },
+    {
+      "round": 1,
+      "framework": "Polka",
+      "case": "hello",
+      "mode": "single",
+      "serverWorkers": 1,
+      "versions": {
+        "polka": "0.5.2"
+      },
+      "requestsPerSecond": 118636.8,
+      "peakRequestsPerSecond": 122683,
+      "latency": {
+        "mean": 83.9709934822644,
+        "p50": 64.831,
+        "p95": 123.519,
+        "p99": 136.703
+      },
+      "throughputBytesPerSecond": 17202380.8,
+      "cpuPercent": 107.49389937416063,
+      "peakRssBytes": 346488832,
+      "heapUsedBytes": 43183536,
+      "errors": 0,
+      "timeouts": 0,
+      "mismatches": 0,
+      "statusCodeStats": {
+        "200": {
+          "count": 1186455
+        }
+      },
+      "requests": 1186455,
+      "duration": 10.02
+    },
+    {
+      "round": 1,
+      "framework": "Rayo",
+      "case": "hello",
+      "mode": "single",
+      "serverWorkers": 1,
+      "versions": {
+        "rayo": "1.4.6"
+      },
+      "requestsPerSecond": 118624,
+      "peakRequestsPerSecond": 122386,
+      "latency": {
+        "mean": 83.95731299617351,
+        "p50": 64.223,
+        "p95": 122.815,
+        "p99": 137.727
+      },
+      "throughputBytesPerSecond": 17202380.8,
+      "cpuPercent": 106.31884834481056,
+      "peakRssBytes": 357580800,
+      "heapUsedBytes": 41386104,
+      "errors": 0,
+      "timeouts": 0,
+      "mismatches": 0,
+      "statusCodeStats": {
+        "200": {
+          "count": 1186203
+        }
+      },
+      "requests": 1186203,
+      "duration": 10.02
+    },
+    {
+      "round": 1,
+      "framework": "RayoStorm",
+      "case": "hello",
+      "mode": "cluster",
+      "serverWorkers": 2,
+      "versions": {
+        "rayo": "1.4.6",
+        "@rayo/storm": "1.3.6"
+      },
+      "requestsPerSecond": 193305.6,
+      "peakRequestsPerSecond": 196940,
+      "latency": {
+        "mean": 53.385174557549256,
+        "p50": 52.959,
+        "p95": 55.135,
+        "p99": 103.743
+      },
+      "throughputBytesPerSecond": 28026470.4,
+      "cpuPercent": 165.96377481616668,
+      "peakRssBytes": 554336256,
+      "heapUsedBytes": 114815792,
+      "errors": 0,
+      "timeouts": 0,
+      "mismatches": 0,
+      "statusCodeStats": {
+        "200": {
+          "count": 1932927
+        }
+      },
+      "requests": 1932927,
+      "duration": 10.36
+    },
+    {
+      "round": 1,
+      "framework": "Fastify",
+      "case": "hello",
+      "mode": "single",
+      "serverWorkers": 1,
+      "versions": {
+        "fastify": "5.12.3"
+      },
+      "requestsPerSecond": 64913.46,
+      "peakRequestsPerSecond": 65824,
+      "latency": {
+        "mean": 153.11435672820116,
+        "p50": 153.087,
+        "p95": 159.743,
+        "p99": 167.167
+      },
+      "throughputBytesPerSecond": 9476282.19,
+      "cpuPercent": 103.49641197382657,
+      "peakRssBytes": 273530880,
+      "heapUsedBytes": 99261784,
+      "errors": 0,
+      "timeouts": 0,
+      "mismatches": 0,
+      "statusCodeStats": {
+        "200": {
+          "count": 714017
+        }
+      },
+      "requests": 714017,
+      "duration": 11.02
+    },
+    {
+      "round": 2,
+      "framework": "Fastify",
+      "case": "hello",
+      "mode": "single",
+      "serverWorkers": 1,
+      "versions": {
+        "fastify": "5.12.3"
+      },
+      "requestsPerSecond": 62465.46,
+      "peakRequestsPerSecond": 63244,
+      "latency": {
+        "mean": 159.0350377322519,
+        "p50": 158.847,
+        "p95": 166.399,
+        "p99": 175.615
+      },
+      "throughputBytesPerSecond": 9121047.28,
+      "cpuPercent": 103.99655087776212,
+      "peakRssBytes": 271794176,
+      "heapUsedBytes": 63312448,
+      "errors": 0,
+      "timeouts": 0,
+      "mismatches": 0,
+      "statusCodeStats": {
+        "200": {
+          "count": 687131
+        }
+      },
+      "requests": 687131,
+      "duration": 11.02
+    },
+    {
+      "round": 2,
+      "framework": "RayoStorm",
+      "case": "hello",
+      "mode": "cluster",
+      "serverWorkers": 2,
+      "versions": {
+        "rayo": "1.4.6",
+        "@rayo/storm": "1.3.6"
+      },
+      "requestsPerSecond": 186854.4,
+      "peakRequestsPerSecond": 189020,
+      "latency": {
+        "mean": 55.43296499153595,
+        "p50": 54.879,
+        "p95": 60.479,
+        "p99": 87.679
+      },
+      "throughputBytesPerSecond": 27092582.4,
+      "cpuPercent": 171.36695526205605,
+      "peakRssBytes": 594837504,
+      "heapUsedBytes": 89706288,
+      "errors": 0,
+      "timeouts": 0,
+      "mismatches": 0,
+      "statusCodeStats": {
+        "200": {
+          "count": 1868491
+        }
+      },
+      "requests": 1868491,
+      "duration": 10.4
+    },
+    {
+      "round": 2,
+      "framework": "Rayo",
+      "case": "hello",
+      "mode": "single",
+      "serverWorkers": 1,
+      "versions": {
+        "rayo": "1.4.6"
+      },
+      "requestsPerSecond": 116325.82,
+      "peakRequestsPerSecond": 120213,
+      "latency": {
+        "mean": 85.6329427902026,
+        "p50": 66.303,
+        "p95": 130.111,
+        "p99": 140.159
+      },
+      "throughputBytesPerSecond": 16867328,
+      "cpuPercent": 106.21399626707667,
+      "peakRssBytes": 356302848,
+      "heapUsedBytes": 154741528,
+      "errors": 0,
+      "timeouts": 0,
+      "mismatches": 0,
+      "statusCodeStats": {
+        "200": {
+          "count": 1279606
+        }
+      },
+      "requests": 1279606,
+      "duration": 11.11
+    },
+    {
+      "round": 2,
+      "framework": "Polka",
+      "case": "hello",
+      "mode": "single",
+      "serverWorkers": 1,
+      "versions": {
+        "polka": "0.5.2"
+      },
+      "requestsPerSecond": 119863.28,
+      "peakRequestsPerSecond": 122307,
+      "latency": {
+        "mean": 83.13546347072484,
+        "p50": 62.175,
+        "p95": 120.063,
+        "p99": 132.095
+      },
+      "throughputBytesPerSecond": 17375604.37,
+      "cpuPercent": 107.7133026124216,
+      "peakRssBytes": 346161152,
+      "heapUsedBytes": 75012952,
+      "errors": 0,
+      "timeouts": 0,
+      "mismatches": 0,
+      "statusCodeStats": {
+        "200": {
+          "count": 1318422
+        }
+      },
+      "requests": 1318422,
+      "duration": 11.02
+    },
+    {
+      "round": 2,
+      "framework": "Express",
+      "case": "hello",
+      "mode": "single",
+      "serverWorkers": 1,
+      "versions": {
+        "express": "5.2.1"
+      },
+      "requestsPerSecond": 88992,
+      "peakRequestsPerSecond": 90066,
+      "latency": {
+        "mean": 111.84994848261334,
+        "p50": 112.063,
+        "p95": 116.095,
+        "p99": 121.023
+      },
+      "throughputBytesPerSecond": 12903517.1,
+      "cpuPercent": 113.3526069589184,
+      "peakRssBytes": 287375360,
+      "heapUsedBytes": 69382056,
+      "errors": 0,
+      "timeouts": 0,
+      "mismatches": 0,
+      "statusCodeStats": {
+        "200": {
+          "count": 978854
+        }
+      },
+      "requests": 978854,
+      "duration": 11.02
+    },
+    {
+      "round": 3,
+      "framework": "Express",
+      "case": "hello",
+      "mode": "single",
+      "serverWorkers": 1,
+      "versions": {
+        "express": "5.2.1"
+      },
+      "requestsPerSecond": 89207.28,
+      "peakRequestsPerSecond": 90879,
+      "latency": {
+        "mean": 111.58855729709624,
+        "p50": 111.359,
+        "p95": 117.823,
+        "p99": 124.927
+      },
+      "throughputBytesPerSecond": 12934050.91,
+      "cpuPercent": 113.55249425637517,
+      "peakRssBytes": 287555584,
+      "heapUsedBytes": 59905256,
+      "errors": 0,
+      "timeouts": 0,
+      "mismatches": 0,
+      "statusCodeStats": {
+        "200": {
+          "count": 981315
+        }
+      },
+      "requests": 981315,
+      "duration": 11.02
+    },
+    {
+      "round": 3,
+      "framework": "Polka",
+      "case": "hello",
+      "mode": "single",
+      "serverWorkers": 1,
+      "versions": {
+        "polka": "0.5.2"
+      },
+      "requestsPerSecond": 118594.91,
+      "peakRequestsPerSecond": 121915,
+      "latency": {
+        "mean": 84.01162011289665,
+        "p50": 63.103,
+        "p95": 122.303,
+        "p99": 136.447
+      },
+      "throughputBytesPerSecond": 17194635.64,
+      "cpuPercent": 107.23120601778379,
+      "peakRssBytes": 383631360,
+      "heapUsedBytes": 97539648,
+      "errors": 0,
+      "timeouts": 0,
+      "mismatches": 0,
+      "statusCodeStats": {
+        "200": {
+          "count": 1304556
+        }
+      },
+      "requests": 1304556,
+      "duration": 11.02
+    },
+    {
+      "round": 3,
+      "framework": "Rayo",
+      "case": "hello",
+      "mode": "single",
+      "serverWorkers": 1,
+      "versions": {
+        "rayo": "1.4.6"
+      },
+      "requestsPerSecond": 120224,
+      "peakRequestsPerSecond": 123318,
+      "latency": {
+        "mean": 82.87570766247947,
+        "p50": 61.791,
+        "p95": 119.743,
+        "p99": 135.167
+      },
+      "throughputBytesPerSecond": 17432948.37,
+      "cpuPercent": 106.25210976015602,
+      "peakRssBytes": 363675648,
+      "heapUsedBytes": 144055832,
+      "errors": 0,
+      "timeouts": 0,
+      "mismatches": 0,
+      "statusCodeStats": {
+        "200": {
+          "count": 1322444
+        }
+      },
+      "requests": 1322444,
+      "duration": 11.02
+    },
+    {
+      "round": 3,
+      "framework": "RayoStorm",
+      "case": "hello",
+      "mode": "cluster",
+      "serverWorkers": 2,
+      "versions": {
+        "rayo": "1.4.6",
+        "@rayo/storm": "1.3.6"
+      },
+      "requestsPerSecond": 187724.8,
+      "peakRequestsPerSecond": 189680,
+      "latency": {
+        "mean": 55.4258559672711,
+        "p50": 55.551,
+        "p95": 58.783,
+        "p99": 60.511
+      },
+      "throughputBytesPerSecond": 27218739.2,
+      "cpuPercent": 169.17453418116688,
+      "peakRssBytes": 576372736,
+      "heapUsedBytes": 98271896,
+      "errors": 0,
+      "timeouts": 0,
+      "mismatches": 0,
+      "statusCodeStats": {
+        "200": {
+          "count": 1877240
+        }
+      },
+      "requests": 1877240,
+      "duration": 10.45
+    },
+    {
+      "round": 3,
+      "framework": "Fastify",
+      "case": "hello",
+      "mode": "single",
+      "serverWorkers": 1,
+      "versions": {
+        "fastify": "5.12.3"
+      },
+      "requestsPerSecond": 64592,
+      "peakRequestsPerSecond": 65449,
+      "latency": {
+        "mean": 153.80263523338522,
+        "p50": 151.167,
+        "p95": 156.799,
+        "p99": 159.359
+      },
+      "throughputBytesPerSecond": 9430853.82,
+      "cpuPercent": 103.9150546827924,
+      "peakRssBytes": 272236544,
+      "heapUsedBytes": 53688552,
+      "errors": 0,
+      "timeouts": 0,
+      "mismatches": 0,
+      "statusCodeStats": {
+        "200": {
+          "count": 710542
+        }
+      },
+      "requests": 710542,
+      "duration": 11.02
+    },
+    {
+      "round": 4,
+      "framework": "Fastify",
+      "case": "hello",
+      "mode": "single",
+      "serverWorkers": 1,
+      "versions": {
+        "fastify": "5.12.3"
+      },
+      "requestsPerSecond": 62279.28,
+      "peakRequestsPerSecond": 62992,
+      "latency": {
+        "mean": 159.4841556509299,
+        "p50": 159.743,
+        "p95": 165.247,
+        "p99": 170.623
+      },
+      "throughputBytesPerSecond": 9091258.19,
+      "cpuPercent": 103.44759062473943,
+      "peakRssBytes": 293289984,
+      "heapUsedBytes": 69085584,
+      "errors": 0,
+      "timeouts": 0,
+      "mismatches": 0,
+      "statusCodeStats": {
+        "200": {
+          "count": 685020
+        }
+      },
+      "requests": 685020,
+      "duration": 11.02
+    },
+    {
+      "round": 4,
+      "framework": "RayoStorm",
+      "case": "hello",
+      "mode": "cluster",
+      "serverWorkers": 2,
+      "versions": {
+        "rayo": "1.4.6",
+        "@rayo/storm": "1.3.6"
+      },
+      "requestsPerSecond": 189683.2,
+      "peakRequestsPerSecond": 189900,
+      "latency": {
+        "mean": 53.864655789904305,
+        "p50": 54.175,
+        "p95": 57.375,
+        "p99": 58.623
+      },
+      "throughputBytesPerSecond": 27503820.8,
+      "cpuPercent": 165.7827948916703,
+      "peakRssBytes": 573800448,
+      "heapUsedBytes": 70354440,
+      "errors": 0,
+      "timeouts": 0,
+      "mismatches": 0,
+      "statusCodeStats": {
+        "200": {
+          "count": 1896888
+        }
+      },
+      "requests": 1896888,
+      "duration": 10.26
+    },
+    {
+      "round": 4,
+      "framework": "Rayo",
+      "case": "hello",
+      "mode": "single",
+      "serverWorkers": 1,
+      "versions": {
+        "rayo": "1.4.6"
+      },
+      "requestsPerSecond": 102856.73,
+      "peakRequestsPerSecond": 118537,
+      "latency": {
+        "mean": 96.89512210574696,
+        "p50": 75.711,
+        "p95": 146.047,
+        "p99": 158.079
+      },
+      "throughputBytesPerSecond": 14915770.19,
+      "cpuPercent": 106.01967217828178,
+      "peakRssBytes": 361316352,
+      "heapUsedBytes": 65064256,
+      "errors": 0,
+      "timeouts": 0,
+      "mismatches": 0,
+      "statusCodeStats": {
+        "200": {
+          "count": 1131380
+        }
+      },
+      "requests": 1131380,
+      "duration": 11.02
+    },
+    {
+      "round": 4,
+      "framework": "Polka",
+      "case": "hello",
+      "mode": "single",
+      "serverWorkers": 1,
+      "versions": {
+        "polka": "0.5.2"
+      },
+      "requestsPerSecond": 112520.73,
+      "peakRequestsPerSecond": 118660,
+      "latency": {
+        "mean": 88.56785374674581,
+        "p50": 68.415,
+        "p95": 135.807,
+        "p99": 141.823
+      },
+      "throughputBytesPerSecond": 16312878.55,
+      "cpuPercent": 107.2948302670573,
+      "peakRssBytes": 343801856,
+      "heapUsedBytes": 54953488,
+      "errors": 0,
+      "timeouts": 0,
+      "mismatches": 0,
+      "statusCodeStats": {
+        "200": {
+          "count": 1237634
+        }
+      },
+      "requests": 1237634,
+      "duration": 11.02
+    },
+    {
+      "round": 4,
+      "framework": "Express",
+      "case": "hello",
+      "mode": "single",
+      "serverWorkers": 1,
+      "versions": {
+        "express": "5.2.1"
+      },
+      "requestsPerSecond": 85000.73,
+      "peakRequestsPerSecond": 87950,
+      "latency": {
+        "mean": 116.96022817126747,
+        "p50": 115.199,
+        "p95": 134.399,
+        "p99": 142.335
+      },
+      "throughputBytesPerSecond": 12324864,
+      "cpuPercent": 112.48834583414158,
+      "peakRssBytes": 286490624,
+      "heapUsedBytes": 68911448,
+      "errors": 0,
+      "timeouts": 0,
+      "mismatches": 0,
+      "statusCodeStats": {
+        "200": {
+          "count": 935052
+        }
+      },
+      "requests": 935052,
+      "duration": 11.02
+    },
+    {
+      "round": 5,
+      "framework": "Express",
+      "case": "hello",
+      "mode": "single",
+      "serverWorkers": 1,
+      "versions": {
+        "express": "5.2.1"
+      },
+      "requestsPerSecond": 81294.55,
+      "peakRequestsPerSecond": 82480,
+      "latency": {
+        "mean": 122.42981555715107,
+        "p50": 122.431,
+        "p95": 127.679,
+        "p99": 143.231
+      },
+      "throughputBytesPerSecond": 11785681.46,
+      "cpuPercent": 111.41599981817755,
+      "peakRssBytes": 286703616,
+      "heapUsedBytes": 68298912,
+      "errors": 0,
+      "timeouts": 0,
+      "mismatches": 0,
+      "statusCodeStats": {
+        "200": {
+          "count": 894174
+        }
+      },
+      "requests": 894174,
+      "duration": 11.02
+    },
+    {
+      "round": 5,
+      "framework": "Polka",
+      "case": "hello",
+      "mode": "single",
+      "serverWorkers": 1,
+      "versions": {
+        "polka": "0.5.2"
+      },
+      "requestsPerSecond": 85164.8,
+      "peakRequestsPerSecond": 106554,
+      "latency": {
+        "mean": 116.73231232410944,
+        "p50": 127.935,
+        "p95": 153.215,
+        "p99": 169.343
+      },
+      "throughputBytesPerSecond": 12349440,
+      "cpuPercent": 95.77200674983702,
+      "peakRssBytes": 342736896,
+      "heapUsedBytes": 64236384,
+      "errors": 0,
+      "timeouts": 0,
+      "mismatches": 0,
+      "statusCodeStats": {
+        "200": {
+          "count": 851737
+        }
+      },
+      "requests": 851737,
+      "duration": 10.02
+    },
+    {
+      "round": 5,
+      "framework": "Rayo",
+      "case": "hello",
+      "mode": "single",
+      "serverWorkers": 1,
+      "versions": {
+        "rayo": "1.4.6"
+      },
+      "requestsPerSecond": 110612.37,
+      "peakRequestsPerSecond": 124594,
+      "latency": {
+        "mean": 90.11957828616137,
+        "p50": 103.103,
+        "p95": 137.983,
+        "p99": 160.383
+      },
+      "throughputBytesPerSecond": 16038818.91,
+      "cpuPercent": 103.80238567298446,
+      "peakRssBytes": 362856448,
+      "heapUsedBytes": 75882696,
+      "errors": 0,
+      "timeouts": 0,
+      "mismatches": 0,
+      "statusCodeStats": {
+        "200": {
+          "count": 1216754
+        }
+      },
+      "requests": 1216754,
+      "duration": 11.02
+    },
+    {
+      "round": 5,
+      "framework": "RayoStorm",
+      "case": "hello",
+      "mode": "cluster",
+      "serverWorkers": 2,
+      "versions": {
+        "rayo": "1.4.6",
+        "@rayo/storm": "1.3.6"
+      },
+      "requestsPerSecond": 178611.2,
+      "peakRequestsPerSecond": 189940,
+      "latency": {
+        "mean": 57.63378260321911,
+        "p50": 55.487,
+        "p95": 76.927,
+        "p99": 91.647
+      },
+      "throughputBytesPerSecond": 25899827.2,
+      "cpuPercent": 163.6177452976129,
+      "peakRssBytes": 579731456,
+      "heapUsedBytes": 49112792,
+      "errors": 0,
+      "timeouts": 0,
+      "mismatches": 0,
+      "statusCodeStats": {
+        "200": {
+          "count": 1786273
+        }
+      },
+      "requests": 1786273,
+      "duration": 10.35
+    },
+    {
+      "round": 5,
+      "framework": "Fastify",
+      "case": "hello",
+      "mode": "single",
+      "serverWorkers": 1,
+      "versions": {
+        "fastify": "5.12.3"
+      },
+      "requestsPerSecond": 57028.37,
+      "peakRequestsPerSecond": 63300,
+      "latency": {
+        "mean": 174.02776146043072,
+        "p50": 183.039,
+        "p95": 194.943,
+        "p99": 198.911
+      },
+      "throughputBytesPerSecond": 8326050.91,
+      "cpuPercent": 103.31527936687344,
+      "peakRssBytes": 272695296,
+      "heapUsedBytes": 62069928,
+      "errors": 0,
+      "timeouts": 0,
+      "mismatches": 0,
+      "statusCodeStats": {
+        "200": {
+          "count": 627267
+        }
+      },
+      "requests": 627267,
+      "duration": 11.02
+    }
+  ],
+  "complete": true
+}
