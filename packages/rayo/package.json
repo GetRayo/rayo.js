@@ -1,6 +1,6 @@
 {
   "name": "rayo",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "description": "⚡️ Rayo, an extremely fast micro-framework for Nodejs.",
   "main": "index.js",
   "types": "index.d.ts",
@@ -37,7 +37,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@rayo/storm": "^1.4.0"
+    "@rayo/storm": "^1.5.0"
   },
   "gitHead": "9484f4df8529d7cca0b40cef41b92201c3a00fc3"
 }
