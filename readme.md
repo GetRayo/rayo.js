@@ -19,6 +19,7 @@ Your server will feel like it got hit by a lightning bolt...
 ## In a nutshell
 
 - Really fast (Like, _really_ fast. See [@rayo/benchmarks]),
+- zero dependencies,
 - similar API to Express¹,
 - compatible with (most) Express middleware²,
 - extensible & pluggable,
